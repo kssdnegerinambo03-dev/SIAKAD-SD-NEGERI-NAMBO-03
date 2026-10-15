@@ -4,6 +4,7 @@ import { Sidebar, ActiveTab } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { DuplicateAlertModal } from './components/DuplicateAlertModal';
 import { SchoolSettingsModal } from './components/SchoolSettingsModal';
+import { DatabaseSyncModal } from './components/DatabaseSyncModal';
 import { DashboardView } from './components/DashboardView';
 import { DataInputView } from './components/DataInputView';
 import { ClassManagementView } from './components/ClassManagementView';
@@ -25,6 +26,7 @@ const MainAppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isDatabaseSyncOpen, setIsDatabaseSyncOpen] = useState(false);
   const { schoolProfile } = useSchool();
 
   return (
@@ -36,6 +38,7 @@ const MainAppContent: React.FC = () => {
         isOpenMobile={isOpenMobile}
         setIsOpenMobile={setIsOpenMobile}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenDatabaseSync={() => setIsDatabaseSyncOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -44,6 +47,7 @@ const MainAppContent: React.FC = () => {
         <Navbar
           onToggleMobileMenu={() => setIsOpenMobile(prev => !prev)}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenDatabaseSync={() => setIsDatabaseSyncOpen(true)}
         />
 
         {/* View Content */}
@@ -140,6 +144,10 @@ const MainAppContent: React.FC = () => {
       <SchoolSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+      <DatabaseSyncModal
+        isOpen={isDatabaseSyncOpen}
+        onClose={() => setIsDatabaseSyncOpen(false)}
       />
     </div>
   );

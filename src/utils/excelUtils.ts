@@ -224,3 +224,171 @@ export function downloadTemplateRekapUmur() {
   ];
   downloadWorkbook(dummyData, 'Template_Import_Rekapitulasi_Umur_Siswa_SDN_Nambo_03', 'Rekap Umur Siswa');
 }
+
+/**
+ * Downloads a complete multi-sheet master Excel workbook containing the whole school year dataset
+ */
+export function downloadMasterExcelArchive(payload: {
+  schoolProfile: any;
+  classes: any[];
+  students: any[];
+  teachers: any[];
+  staff: any[];
+  teachingHours: any[];
+  attendanceRecords: any[];
+  teacherReportCards: any[];
+  manualAgeRecaps: any[];
+}) {
+  const wb = XLSX.utils.book_new();
+
+  // 1. Profil Sekolah
+  const profileRows = [
+    { Parameter: 'Nama Sekolah', Nilai: payload.schoolProfile.namaSekolah },
+    { Parameter: 'NPSN', Nilai: payload.schoolProfile.npsn },
+    { Parameter: 'Kepala Sekolah', Nilai: payload.schoolProfile.namaKepalaSekolah },
+    { Parameter: 'NIP Kepala Sekolah', Nilai: payload.schoolProfile.nipKepalaSekolah },
+    { Parameter: 'Alamat Sekolah', Nilai: payload.schoolProfile.alamat },
+    { Parameter: 'Tahun Ajaran', Nilai: payload.schoolProfile.tahunAjaran },
+    { Parameter: 'Semester Aktif', Nilai: payload.schoolProfile.semesterAktif },
+    { Parameter: 'Desa / Kelurahan', Nilai: payload.schoolProfile.desaKelurahan },
+    { Parameter: 'Kecamatan', Nilai: payload.schoolProfile.kecamatan },
+    { Parameter: 'Kabupaten', Nilai: payload.schoolProfile.kabupaten },
+    { Parameter: 'Provinsi', Nilai: payload.schoolProfile.provinsi },
+    { Parameter: 'Tanggal Export Data', Nilai: new Date().toLocaleString('id-ID') }
+  ];
+  const wsProfile = XLSX.utils.json_to_sheet(profileRows);
+  XLSX.utils.book_append_sheet(wb, wsProfile, 'Profil Sekolah');
+
+  // 2. Daftar Rombel & Ekskul
+  const classesRows = payload.classes.map((c, i) => ({
+    No: i + 1,
+    'Nama Rombel / Ekskul': c.nama,
+    Jenis: c.jenis,
+    Kapasitas: c.kapasitas,
+    Deskripsi: c.deskripsi || '-',
+    'ID Rombel': c.id
+  }));
+  const wsClasses = XLSX.utils.json_to_sheet(classesRows);
+  XLSX.utils.book_append_sheet(wb, wsClasses, 'Rombel & Ekskul');
+
+  // 3. Buku Induk Siswa Lengkap
+  const studentRows = payload.students.map((s, i) => {
+    const clsName = payload.classes.find(c => c.id === s.kelasId)?.nama || s.kelasId;
+    return {
+      No: i + 1,
+      NISN: s.nisn,
+      NIS: s.nis,
+      'Nama Lengkap': s.namaLengkap,
+      Kelas: clsName,
+      'Jenis Kelamin': s.jenisKelamin,
+      Agama: s.agama,
+      'Tempat Lahir': s.tempatLahir,
+      'Tanggal Lahir': s.tanggalLahir,
+      NIK: s.nik,
+      Alamat: s.alamat,
+      'Status Siswa': s.status,
+      'Penerima PIP': s.isPIP ? 'Ya (Penerima)' : 'Tidak',
+      'Tinggi Badan (cm)': s.tinggiBadan || '-',
+      'Berat Badan (kg)': s.beratBadan || '-',
+      'Asal Sekolah Pindahan': s.asalSekolah || '-',
+      'Tanggal Pindah': s.tanggalPindah || '-',
+      'Alasan Mutasi/DO': s.alasanKeluar || '-'
+    };
+  });
+  const wsStudents = XLSX.utils.json_to_sheet(studentRows);
+  XLSX.utils.book_append_sheet(wb, wsStudents, 'Buku Induk Siswa');
+
+  // 4. Data Guru & Tenaga Kependidikan
+  const gtkRows = [
+    ...payload.teachers.map((t, i) => ({
+      No: i + 1,
+      Peran: 'Guru',
+      'Nama Lengkap': t.nama,
+      Gelar: t.gelar,
+      NIP: t.nip || '-',
+      NUPTK: t.nuptk || '-',
+      Jabatan: t.jabatan,
+      'Status Kepegawaian': t.statusKepegawaian,
+      Golongan: t.golongan || '-',
+      'No HP': t.noHp || '-',
+      Email: t.email || '-',
+      'Status Aktif': t.statusAktif ? 'Aktif' : 'Non-Aktif'
+    })),
+    ...payload.staff.map((st, i) => ({
+      No: payload.teachers.length + i + 1,
+      Peran: 'Tenaga Kependidikan (TU)',
+      'Nama Lengkap': st.nama,
+      Gelar: '-',
+      NIP: st.nip || '-',
+      NUPTK: '-',
+      Jabatan: st.tugas,
+      'Status Kepegawaian': st.statusKepegawaian,
+      Golongan: '-',
+      'No HP': st.noHp || '-',
+      Email: '-',
+      'Status Aktif': st.statusAktif ? 'Aktif' : 'Non-Aktif'
+    }))
+  ];
+  const wsGtk = XLSX.utils.json_to_sheet(gtkRows);
+  XLSX.utils.book_append_sheet(wb, wsGtk, 'Guru & Kepegawaian');
+
+  // 5. Pembagian Jam Mengajar
+  const hoursRows = payload.teachingHours.map((h, i) => {
+    const guru = payload.teachers.find(t => t.id === h.guruId)?.nama || h.guruId;
+    const cls = payload.classes.find(c => c.id === h.kelasId)?.nama || h.kelasId;
+    return {
+      No: i + 1,
+      'Nama Guru': guru,
+      'Mata Pelajaran': h.mataPelajaran,
+      Kelas: cls,
+      'Jumlah Jam Pelajaran (JP)': h.jumlahJP,
+      Hari: h.hari || '-',
+      'Jam Mulai': h.jamMulai || '-',
+      'Jam Selesai': h.jamSelesai || '-'
+    };
+  });
+  const wsHours = XLSX.utils.json_to_sheet(hoursRows);
+  XLSX.utils.book_append_sheet(wb, wsHours, 'Jam Mengajar');
+
+  // 6. Presensi Harian Siswa
+  const attRows = payload.attendanceRecords.map((a, i) => {
+    const cls = payload.classes.find(c => c.id === a.kelasId)?.nama || a.kelasId;
+    const pct = a.totalSiswa > 0 ? Math.round((a.hadir / a.totalSiswa) * 100) : 0;
+    return {
+      No: i + 1,
+      Tanggal: a.tanggal,
+      Bulan: a.bulan,
+      Kelas: cls,
+      'Total Siswa': a.totalSiswa,
+      Hadir: a.hadir,
+      Sakit: a.sakit,
+      Izin: a.izin,
+      Alpa: a.alpa,
+      '% Kehadiran': `${pct}%`,
+      Catatan: a.catatan || '-'
+    };
+  });
+  const wsAtt = XLSX.utils.json_to_sheet(attRows);
+  XLSX.utils.book_append_sheet(wb, wsAtt, 'Presensi Harian');
+
+  // 7. Rapot Kinerja Guru
+  const reportRows = payload.teacherReportCards.map((rc, i) => {
+    const guru = payload.teachers.find(t => t.id === rc.guruId)?.nama || rc.guruId;
+    return {
+      No: i + 1,
+      'Nama Guru': guru,
+      'Tahun Ajaran': rc.tahunAjaran,
+      Semester: rc.semester,
+      'Predikat Kinerja': rc.predikatKinerja,
+      'Skor Akhir': rc.nilaiSkorAkhir,
+      'Catatan Kepala Sekolah': rc.catatanKepalaSekolah,
+      'Rekomendasi Kepala Sekolah': rc.rekomendasiKepalaSekolah,
+      'Tanggal Penetapan': rc.tanggalPenetapan
+    };
+  });
+  const wsReports = XLSX.utils.json_to_sheet(reportRows);
+  XLSX.utils.book_append_sheet(wb, wsReports, 'Rapot Kinerja Guru');
+
+  XLSX.writeFile(wb, `Master_Arsip_SIAKAD_SDN_Nambo_03_TA_2026_2027.xlsx`);
+}
+

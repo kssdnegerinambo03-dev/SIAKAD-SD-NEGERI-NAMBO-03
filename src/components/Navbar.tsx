@@ -1,14 +1,15 @@
 import React from 'react';
-import { Menu, RotateCcw, Building2, Calendar, ShieldCheck, Settings } from 'lucide-react';
+import { Menu, RotateCcw, Building2, Calendar, ShieldCheck, Settings, Database } from 'lucide-react';
 import { useSchool } from '../context/SchoolContext';
 import { OfficialLogo } from './OfficialLogo';
 
 interface NavbarProps {
   onToggleMobileMenu: () => void;
   onOpenSettings: () => void;
+  onOpenDatabaseSync: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu, onOpenSettings }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu, onOpenSettings, onOpenDatabaseSync }) => {
   const { schoolProfile, resetAllToDefaults } = useSchool();
 
   return (
@@ -51,6 +52,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu, onOpenSettin
             <span className="text-slate-400">|</span>
             <span className="text-emerald-700 font-bold">Sem. {schoolProfile.semester}</span>
           </div>
+
+          <button
+            onClick={onOpenDatabaseSync}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors shadow-xs"
+            title="Pusat Sinkronisasi & Arsip Satu Tahun Ajaran (Download Master Excel & JSON)"
+          >
+            <Database className="w-4 h-4 text-blue-600" />
+            <span className="hidden sm:inline">Database & Arsip TA</span>
+            <span className="relative flex h-2 w-2 ml-0.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+          </button>
 
           <button
             onClick={onOpenSettings}

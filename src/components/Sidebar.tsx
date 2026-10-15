@@ -9,7 +9,8 @@ import {
   Settings,
   ChevronRight,
   Sparkles,
-  Award
+  Award,
+  Database
 } from 'lucide-react';
 import { OfficialLogo } from './OfficialLogo';
 import { useSchool } from '../context/SchoolContext';
@@ -22,6 +23,7 @@ interface SidebarProps {
   isOpenMobile: boolean;
   setIsOpenMobile: (open: boolean) => void;
   onOpenSettings: () => void;
+  onOpenDatabaseSync: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -29,7 +31,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   isOpenMobile,
   setIsOpenMobile,
-  onOpenSettings
+  onOpenSettings,
+  onOpenDatabaseSync
 }) => {
   const { schoolProfile, students, teachers, classes } = useSchool();
 
@@ -202,13 +205,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={onOpenSettings}
-            className="mt-3 w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-lg transition-colors border border-slate-700/50"
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span>Profil Sekolah & Logo</span>
-          </button>
+          <div className="mt-3 space-y-2">
+            <button
+              onClick={onOpenDatabaseSync}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-blue-300 hover:text-white bg-blue-900/40 hover:bg-blue-900/60 rounded-xl transition-colors border border-blue-700/50 shadow-xs"
+            >
+              <Database className="w-3.5 h-3.5 text-blue-400" />
+              <span>Database & Arsip 1 TA</span>
+            </button>
+
+            <button
+              onClick={onOpenSettings}
+              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 text-xs font-medium text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700/50"
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>Profil Sekolah & Logo</span>
+            </button>
+          </div>
         </div>
       </aside>
     </>

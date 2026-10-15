@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import {
   Student,
   ClassGroup,
@@ -27,6 +27,7 @@ import {
   initialTeacherReportCards,
   initialManualAgeRecaps
 } from '../data/initialData';
+import { downloadMasterExcelArchive } from '../utils/excelUtils';
 
 interface DuplicateAlertModalData {
   isOpen: boolean;
@@ -128,6 +129,13 @@ interface SchoolContextType {
   duplicateAlert: DuplicateAlertModalData;
   closeDuplicateAlert: () => void;
   showDuplicateAlert: (title: string, message: string, duplicates: { nisn: string; nama?: string; context?: string }[]) => void;
+  // Central Server Synchronization & Full Academic Year Archives
+  syncStatus: 'synced' | 'syncing' | 'offline' | 'error';
+  lastSyncTime: string | null;
+  forceSyncNow: () => Promise<void>;
+  downloadFullDatabaseJSON: () => void;
+  downloadMasterExcelArchive: () => void;
+  restoreDatabaseFromJSON: (file: File) => Promise<{ success: boolean; error?: string }>;
 
   // General App Helpers
   resetAllToDefaults: () => void;
@@ -223,54 +231,311 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setDuplicateAlert(prev => ({ ...prev, isOpen: false }));
   };
 
-  // Sync with LocalStorage
+  // Central Server Synchronization State
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline' | 'error'>('syncing');
+  const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
+  const lastServerUpdateRef = useRef<string | null>(null);
+  const isHydratedFromServerRef = useRef<boolean>(false);
+
+  // Sync state to LocalStorage
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}profile`, JSON.stringify(schoolProfile));
-  }, [schoolProfile]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}classes`, JSON.stringify(classes));
-  }, [classes]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}teachers`, JSON.stringify(teachers));
-  }, [teachers]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}staff`, JSON.stringify(staff));
-  }, [staff]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}students`, JSON.stringify(students));
-  }, [students]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}teaching_hours`, JSON.stringify(teachingHours));
-  }, [teachingHours]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}practices`, JSON.stringify(practices));
-  }, [practices]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}berakhlak`, JSON.stringify(berakhlakList));
-  }, [berakhlakList]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}tasks`, JSON.stringify(additionalTasks));
-  }, [additionalTasks]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}attendance`, JSON.stringify(attendanceRecords));
-  }, [attendanceRecords]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}report_cards`, JSON.stringify(teacherReportCards));
-  }, [teacherReportCards]);
-
-  useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}manual_age_recaps`, JSON.stringify(manualAgeRecaps));
-  }, [manualAgeRecaps]);
+  }, [
+    schoolProfile,
+    classes,
+    teachers,
+    staff,
+    students,
+    teachingHours,
+    practices,
+    berakhlakList,
+    additionalTasks,
+    attendanceRecords,
+    teacherReportCards,
+    manualAgeRecaps
+  ]);
+
+  // Initial load from central server + background polling for collaborative sync
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchServerData = async () => {
+      try {
+        setSyncStatus('syncing');
+        const res = await fetch('/api/school-data');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            const d = json.data;
+            if (isMounted) {
+              if (d.schoolProfile) setSchoolProfile(d.schoolProfile);
+              if (d.classes && Array.isArray(d.classes)) setClasses(d.classes);
+              if (d.teachers && Array.isArray(d.teachers)) setTeachers(d.teachers);
+              if (d.staff && Array.isArray(d.staff)) setStaff(d.staff);
+              if (d.students && Array.isArray(d.students)) setStudents(d.students);
+              if (d.teachingHours && Array.isArray(d.teachingHours)) setTeachingHours(d.teachingHours);
+              if (d.practices && Array.isArray(d.practices)) setPractices(d.practices);
+              if (d.berakhlakList && Array.isArray(d.berakhlakList)) setBerakhlakList(d.berakhlakList);
+              if (d.additionalTasks && Array.isArray(d.additionalTasks)) setAdditionalTasks(d.additionalTasks);
+              if (d.attendanceRecords && Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
+              if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
+              if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
+              lastServerUpdateRef.current = d.serverUpdatedAt || null;
+              setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+              setSyncStatus('synced');
+            }
+          } else {
+            // Server database is empty: initialize server with initial seed data
+            const payload = {
+              schoolProfile,
+              classes,
+              teachers,
+              staff,
+              students,
+              teachingHours,
+              practices,
+              berakhlakList,
+              additionalTasks,
+              attendanceRecords,
+              teacherReportCards,
+              manualAgeRecaps
+            };
+            await fetch('/api/school-data/sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            setSyncStatus('synced');
+            setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+          }
+        } else {
+          setSyncStatus('offline');
+        }
+      } catch (e) {
+        console.warn('Central server sync offline, falling back to local database:', e);
+        setSyncStatus('offline');
+      } finally {
+        isHydratedFromServerRef.current = true;
+      }
+    };
+
+    fetchServerData();
+
+    // Background sync polling every 10 seconds to merge updates from other teachers / devices
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/school-data');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data && json.data.serverUpdatedAt) {
+            if (json.data.serverUpdatedAt !== lastServerUpdateRef.current) {
+              const d = json.data;
+              if (d.schoolProfile) setSchoolProfile(d.schoolProfile);
+              if (d.classes && Array.isArray(d.classes)) setClasses(d.classes);
+              if (d.teachers && Array.isArray(d.teachers)) setTeachers(d.teachers);
+              if (d.staff && Array.isArray(d.staff)) setStaff(d.staff);
+              if (d.students && Array.isArray(d.students)) setStudents(d.students);
+              if (d.teachingHours && Array.isArray(d.teachingHours)) setTeachingHours(d.teachingHours);
+              if (d.practices && Array.isArray(d.practices)) setPractices(d.practices);
+              if (d.berakhlakList && Array.isArray(d.berakhlakList)) setBerakhlakList(d.berakhlakList);
+              if (d.additionalTasks && Array.isArray(d.additionalTasks)) setAdditionalTasks(d.additionalTasks);
+              if (d.attendanceRecords && Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
+              if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
+              if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
+              lastServerUpdateRef.current = d.serverUpdatedAt;
+              setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+              setSyncStatus('synced');
+            }
+          }
+        }
+      } catch {
+        // silent polling error
+      }
+    }, 10000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Continuous auto-save to central server (debounced by 800ms)
+  useEffect(() => {
+    if (!isHydratedFromServerRef.current) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        setSyncStatus('syncing');
+        const payload = {
+          schoolProfile,
+          classes,
+          teachers,
+          staff,
+          students,
+          teachingHours,
+          practices,
+          berakhlakList,
+          additionalTasks,
+          attendanceRecords,
+          teacherReportCards,
+          manualAgeRecaps
+        };
+        const res = await fetch('/api/school-data/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const json = await res.json();
+          lastServerUpdateRef.current = json.serverUpdatedAt;
+          setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+          setSyncStatus('synced');
+        } else {
+          setSyncStatus('error');
+        }
+      } catch {
+        setSyncStatus('offline');
+      }
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [
+    schoolProfile,
+    classes,
+    teachers,
+    staff,
+    students,
+    teachingHours,
+    practices,
+    berakhlakList,
+    additionalTasks,
+    attendanceRecords,
+    teacherReportCards,
+    manualAgeRecaps
+  ]);
+
+  const forceSyncNow = async () => {
+    try {
+      setSyncStatus('syncing');
+      const payload = {
+        schoolProfile,
+        classes,
+        teachers,
+        staff,
+        students,
+        teachingHours,
+        practices,
+        berakhlakList,
+        additionalTasks,
+        attendanceRecords,
+        teacherReportCards,
+        manualAgeRecaps
+      };
+      const res = await fetch('/api/school-data/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const json = await res.json();
+        lastServerUpdateRef.current = json.serverUpdatedAt;
+        setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+        setSyncStatus('synced');
+      } else {
+        setSyncStatus('error');
+      }
+    } catch {
+      setSyncStatus('offline');
+    }
+  };
+
+  const downloadFullDatabaseJSON = () => {
+    const payload = {
+      schoolProfile,
+      classes,
+      teachers,
+      staff,
+      students,
+      teachingHours,
+      practices,
+      berakhlakList,
+      additionalTasks,
+      attendanceRecords,
+      teacherReportCards,
+      manualAgeRecaps,
+      exportedAt: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Backup_Database_SIAKAD_SDN_Nambo_03_TA_2026_2027.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadMasterExcel = () => {
+    downloadMasterExcelArchive({
+      schoolProfile,
+      classes,
+      students,
+      teachers,
+      staff,
+      teachingHours,
+      attendanceRecords,
+      teacherReportCards,
+      manualAgeRecaps
+    });
+  };
+
+  const restoreDatabaseFromJSON = async (file: File): Promise<{ success: boolean; error?: string }> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const parsed = JSON.parse(e.target?.result as string);
+          if (parsed.schoolProfile) setSchoolProfile(parsed.schoolProfile);
+          if (parsed.classes && Array.isArray(parsed.classes)) setClasses(parsed.classes);
+          if (parsed.teachers && Array.isArray(parsed.teachers)) setTeachers(parsed.teachers);
+          if (parsed.staff && Array.isArray(parsed.staff)) setStaff(parsed.staff);
+          if (parsed.students && Array.isArray(parsed.students)) setStudents(parsed.students);
+          if (parsed.teachingHours && Array.isArray(parsed.teachingHours)) setTeachingHours(parsed.teachingHours);
+          if (parsed.practices && Array.isArray(parsed.practices)) setPractices(parsed.practices);
+          if (parsed.berakhlakList && Array.isArray(parsed.berakhlakList)) setBerakhlakList(parsed.berakhlakList);
+          if (parsed.additionalTasks && Array.isArray(parsed.additionalTasks)) setAdditionalTasks(parsed.additionalTasks);
+          if (parsed.attendanceRecords && Array.isArray(parsed.attendanceRecords)) setAttendanceRecords(parsed.attendanceRecords);
+          if (parsed.teacherReportCards && Array.isArray(parsed.teacherReportCards)) setTeacherReportCards(parsed.teacherReportCards);
+          if (parsed.manualAgeRecaps && Array.isArray(parsed.manualAgeRecaps)) setManualAgeRecaps(parsed.manualAgeRecaps);
+
+          // Sync to server immediately
+          await fetch('/api/school-data/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(parsed)
+          });
+
+          setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+          setSyncStatus('synced');
+          resolve({ success: true });
+        } catch (err: any) {
+          resolve({ success: false, error: err.message });
+        }
+      };
+      reader.onerror = () => resolve({ success: false, error: 'Gagal membaca file backup' });
+      reader.readAsText(file);
+    });
+  };
 
   const updateSchoolProfile = (updated: Partial<SchoolProfile>) => {
     setSchoolProfile(prev => ({ ...prev, ...updated }));
@@ -1088,6 +1353,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setTeacherReportCards(initialTeacherReportCards);
       setManualAgeRecaps(initialManualAgeRecaps);
       localStorage.clear();
+      fetch('/api/school-data/reset', { method: 'POST' }).catch(() => {});
       alert('Data berhasil direset ke pengaturan awal SD Negeri Nambo 03.');
     }
   };
@@ -1163,7 +1429,13 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         duplicateAlert,
         closeDuplicateAlert,
         showDuplicateAlert,
-        resetAllToDefaults
+        resetAllToDefaults,
+        syncStatus,
+        lastSyncTime,
+        forceSyncNow,
+        downloadFullDatabaseJSON,
+        downloadMasterExcelArchive: handleDownloadMasterExcel,
+        restoreDatabaseFromJSON
       }}
     >
       {children}
