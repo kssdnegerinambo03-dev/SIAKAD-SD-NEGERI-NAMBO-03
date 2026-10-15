@@ -10,7 +10,8 @@ import {
   ChevronRight,
   Sparkles,
   Award,
-  Database
+  Database,
+  Share2
 } from 'lucide-react';
 import { OfficialLogo } from './OfficialLogo';
 import { useSchool } from '../context/SchoolContext';
@@ -24,6 +25,7 @@ interface SidebarProps {
   setIsOpenMobile: (open: boolean) => void;
   onOpenSettings: () => void;
   onOpenDatabaseSync: () => void;
+  onOpenShare: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,7 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isOpenMobile,
   setIsOpenMobile,
   onOpenSettings,
-  onOpenDatabaseSync
+  onOpenDatabaseSync,
+  onOpenShare
 }) => {
   const { schoolProfile, students, teachers, classes } = useSchool();
 
@@ -206,6 +209,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <div className="mt-3 space-y-2">
+            <button
+              onClick={onOpenShare}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900/80 rounded-xl transition-colors border border-emerald-600/50 shadow-xs"
+            >
+              <Share2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Bagikan Aplikasi & Data</span>
+            </button>
+
             <button
               onClick={onOpenDatabaseSync}
               className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-blue-300 hover:text-white bg-blue-900/40 hover:bg-blue-900/60 rounded-xl transition-colors border border-blue-700/50 shadow-xs"

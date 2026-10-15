@@ -5,6 +5,7 @@ import { Navbar } from './components/Navbar';
 import { DuplicateAlertModal } from './components/DuplicateAlertModal';
 import { SchoolSettingsModal } from './components/SchoolSettingsModal';
 import { DatabaseSyncModal } from './components/DatabaseSyncModal';
+import { ShareLinkModal } from './components/ShareLinkModal';
 import { DashboardView } from './components/DashboardView';
 import { DataInputView } from './components/DataInputView';
 import { ClassManagementView } from './components/ClassManagementView';
