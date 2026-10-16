@@ -11,12 +11,13 @@ import {
   Sparkles,
   Award,
   Database,
-  Share2
+  Share2,
+  Server
 } from 'lucide-react';
 import { OfficialLogo } from './OfficialLogo';
 import { useSchool } from '../context/SchoolContext';
 
-export type ActiveTab = 'dashboard' | 'input-data' | 'manajemen-kelas' | 'kepegawaian' | 'absensi-umur';
+export type ActiveTab = 'dashboard' | 'input-data' | 'manajemen-kelas' | 'kepegawaian' | 'absensi-umur' | 'sinkronisasi';
 
 interface SidebarProps {
   activeTab: ActiveTab;
@@ -37,11 +38,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenDatabaseSync,
   onOpenShare
 }) => {
-  const { schoolProfile, students, teachers, classes } = useSchool();
+  const { schoolProfile, students, teachers, classes, syncLogs } = useSchool();
 
   const totalSiswa = students.filter(s => s.status === 'Aktif' || s.status === 'Pindahan Masuk').length;
   const totalGuru = teachers.filter(t => t.statusAktif).length;
   const totalKelas = classes.filter(c => c.jenis === 'Utama').length;
+  const pendingLogs = syncLogs.filter(l => !l.diverifikasiKepsek).length;
 
   const menuItems = [
     {
@@ -78,6 +80,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       sublabel: 'Harian TA 2026-2027 & Usia',
       icon: CalendarCheck,
       badge: '2026/2027'
+    },
+    {
+      id: 'sinkronisasi' as ActiveTab,
+      label: 'Tabel Sinkronisasi Data',
+      sublabel: 'Monitoring Kepala Sekolah',
+      icon: Server,
+      badge: pendingLogs > 0 ? `${pendingLogs} Baru` : 'Sinkron'
     }
   ];
 

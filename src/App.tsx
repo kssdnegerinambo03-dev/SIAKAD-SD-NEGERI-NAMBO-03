@@ -11,6 +11,7 @@ import { DataInputView } from './components/DataInputView';
 import { ClassManagementView } from './components/ClassManagementView';
 import { StaffManagementView } from './components/StaffManagementView';
 import { AttendanceView } from './components/AttendanceView';
+import { SyncMonitoringView } from './components/SyncMonitoringView';
 import { OfficialLogo } from './components/OfficialLogo';
 import {
   LayoutDashboard,
@@ -20,7 +21,8 @@ import {
   CalendarCheck,
   ShieldCheck,
   Building2,
-  Heart
+  Heart,
+  Server
 } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
@@ -28,6 +30,7 @@ const MainAppContent: React.FC = () => {
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDatabaseSyncOpen, setIsDatabaseSyncOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const { schoolProfile } = useSchool();
 
   return (
@@ -40,6 +43,7 @@ const MainAppContent: React.FC = () => {
         setIsOpenMobile={setIsOpenMobile}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDatabaseSync={() => setIsDatabaseSyncOpen(true)}
+        onOpenShare={() => setIsShareOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -49,6 +53,7 @@ const MainAppContent: React.FC = () => {
           onToggleMobileMenu={() => setIsOpenMobile(prev => !prev)}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenDatabaseSync={() => setIsDatabaseSyncOpen(true)}
+          onOpenShare={() => setIsShareOpen(true)}
         />
 
         {/* View Content */}
@@ -58,6 +63,7 @@ const MainAppContent: React.FC = () => {
           {activeTab === 'manajemen-kelas' && <ClassManagementView />}
           {activeTab === 'kepegawaian' && <StaffManagementView />}
           {activeTab === 'absensi-umur' && <AttendanceView />}
+          {activeTab === 'sinkronisasi' && <SyncMonitoringView />}
         </main>
 
         {/* Official Footer with School Identity */}
@@ -137,6 +143,16 @@ const MainAppContent: React.FC = () => {
             <CalendarCheck className="w-5 h-5 mb-0.5" />
             <span>Absensi</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('sinkronisasi')}
+            className={`flex flex-col items-center py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
+              activeTab === 'sinkronisasi' ? 'text-emerald-700' : 'text-slate-500'
+            }`}
+          >
+            <Server className="w-5 h-5 mb-0.5" />
+            <span>Sinkron</span>
+          </button>
         </nav>
       </div>
 
@@ -149,6 +165,10 @@ const MainAppContent: React.FC = () => {
       <DatabaseSyncModal
         isOpen={isDatabaseSyncOpen}
         onClose={() => setIsDatabaseSyncOpen(false)}
+      />
+      <ShareLinkModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
       />
     </div>
   );

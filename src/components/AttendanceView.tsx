@@ -66,6 +66,7 @@ export const AttendanceView: React.FC = () => {
   // Age Recap state
   const [ageRecapMonth, setAgeRecapMonth] = useState<string>('2026-10');
   const [ageRecapClassId, setAgeRecapClassId] = useState<string>('all');
+  const [ageDetailMode, setAgeDetailMode] = useState<'detailed' | 'compact'>('detailed');
 
   // Manual & Imported Age Recap state stored with localStorage persistence
   const [manualAgeRecap, setManualAgeRecap] = useState<Record<string, {
@@ -566,25 +567,34 @@ export const AttendanceView: React.FC = () => {
         Bulan: monthLabel,
         '<6 Th (L)': row.counts['<6 th'].L,
         '<6 Th (P)': row.counts['<6 th'].P,
+        '<6 Th (Jml)': row.counts['<6 th'].total,
         '6 Th (L)': row.counts['6 th'].L,
         '6 Th (P)': row.counts['6 th'].P,
+        '6 Th (Jml)': row.counts['6 th'].total,
         '7 Th (L)': row.counts['7 th'].L,
         '7 Th (P)': row.counts['7 th'].P,
+        '7 Th (Jml)': row.counts['7 th'].total,
         '8 Th (L)': row.counts['8 th'].L,
         '8 Th (P)': row.counts['8 th'].P,
+        '8 Th (Jml)': row.counts['8 th'].total,
         '9 Th (L)': row.counts['9 th'].L,
         '9 Th (P)': row.counts['9 th'].P,
+        '9 Th (Jml)': row.counts['9 th'].total,
         '10 Th (L)': row.counts['10 th'].L,
         '10 Th (P)': row.counts['10 th'].P,
+        '10 Th (Jml)': row.counts['10 th'].total,
         '11 Th (L)': row.counts['11 th'].L,
         '11 Th (P)': row.counts['11 th'].P,
+        '11 Th (Jml)': row.counts['11 th'].total,
         '12 Th (L)': row.counts['12 th'].L,
         '12 Th (P)': row.counts['12 th'].P,
+        '12 Th (Jml)': row.counts['12 th'].total,
         '>12 Th (L)': row.counts['>12 th'].L,
         '>12 Th (P)': row.counts['>12 th'].P,
-        'Total L': row.totalL,
-        'Total P': row.totalP,
-        'Jumlah Total': row.grandTotal
+        '>12 Th (Jml)': row.counts['>12 th'].total,
+        'Total Siswa (L)': row.totalL,
+        'Total Siswa (P)': row.totalP,
+        'Grand Total Siswa': row.grandTotal
       });
     });
 
@@ -595,21 +605,34 @@ export const AttendanceView: React.FC = () => {
   const handlePrintAgeRecapPDF = () => {
     const monthLabel = academicYearMonths.find(m => m.key === ageRecapMonth)?.label || ageRecapMonth;
     const headers = [
-      'No', 'Kelas', '<6th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '>12th', 'L', 'P', 'Total'
+      'No',
+      'Kelas',
+      '<6 Th (L/P/T)',
+      '6 Th (L/P/T)',
+      '7 Th (L/P/T)',
+      '8 Th (L/P/T)',
+      '9 Th (L/P/T)',
+      '10 Th (L/P/T)',
+      '11 Th (L/P/T)',
+      '12 Th (L/P/T)',
+      '>12 Th (L/P/T)',
+      'Total L',
+      'Total P',
+      'Total'
     ];
 
     const rows = ageRecapData.map((d, idx) => [
       idx + 1,
       d.className,
-      d.counts['<6 th'].total,
-      d.counts['6 th'].total,
-      d.counts['7 th'].total,
-      d.counts['8 th'].total,
-      d.counts['9 th'].total,
-      d.counts['10 th'].total,
-      d.counts['11 th'].total,
-      d.counts['12 th'].total,
-      d.counts['>12 th'].total,
+      `${d.counts['<6 th'].L} / ${d.counts['<6 th'].P} (${d.counts['<6 th'].total})`,
+      `${d.counts['6 th'].L} / ${d.counts['6 th'].P} (${d.counts['6 th'].total})`,
+      `${d.counts['7 th'].L} / ${d.counts['7 th'].P} (${d.counts['7 th'].total})`,
+      `${d.counts['8 th'].L} / ${d.counts['8 th'].P} (${d.counts['8 th'].total})`,
+      `${d.counts['9 th'].L} / ${d.counts['9 th'].P} (${d.counts['9 th'].total})`,
+      `${d.counts['10 th'].L} / ${d.counts['10 th'].P} (${d.counts['10 th'].total})`,
+      `${d.counts['11 th'].L} / ${d.counts['11 th'].P} (${d.counts['11 th'].total})`,
+      `${d.counts['12 th'].L} / ${d.counts['12 th'].P} (${d.counts['12 th'].total})`,
+      `${d.counts['>12 th'].L} / ${d.counts['>12 th'].P} (${d.counts['>12 th'].total})`,
       d.totalL,
       d.totalP,
       d.grandTotal
@@ -618,12 +641,13 @@ export const AttendanceView: React.FC = () => {
     const grandTotalSiswa = ageRecapData.reduce((sum, d) => sum + d.grandTotal, 0);
     const summaryNotes = [
       `Bulan Rekapitulasi: ${monthLabel} (Tahun Ajaran 2026-2027)`,
-      `Total Peserta Didik Direkapitulasi: ${grandTotalSiswa} siswa`,
-      `Dihitung berdasarkan tanggal lahir aktual seluruh siswa terdaftar di SDN Nambo 03`
+      `Keterangan Format Kolom Umur: L / P (Total) misal "14 / 13 (27)" = 14 Laki-laki, 13 Perempuan, Total 27 siswa`,
+      `Total Peserta Didik Terdata: ${grandTotalSiswa} siswa (${ageRecapData.reduce((s, r) => s + r.totalL, 0)} Laki-laki, ${ageRecapData.reduce((s, r) => s + r.totalP, 0)} Perempuan)`,
+      `Dihitung berdasarkan data tanggal lahir aktual dan mutasi/penyesuaian manual guru di SD Negeri Nambo 03`
     ];
 
     printOfficialDocument({
-      title: 'REKAPITULASI UMUR SISWA PER KELAS DAN PER BULAN',
+      title: 'BUKU REKAPITULASI UMUR SISWA (LAKI-LAKI & PEREMPUAN) PER KELAS',
       subtitle: `SD NEGERI NAMBO 03 KLAPANUNGGAL BOGOR (${monthLabel})`,
       documentNumber: `421.2/098/SDN-N03/UMUR/2026`,
       tableHeaders: headers,
@@ -1098,116 +1122,352 @@ export const AttendanceView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-slate-500 text-[11px]">
-              <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-                <span>Otomatis (Profil Siswa)</span>
-              </span>
-              <span className="flex items-center gap-1 ml-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
-                <span>Manual / Import Guru</span>
-              </span>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setAgeDetailMode('detailed')}
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                    ageDetailMode === 'detailed'
+                      ? 'bg-blue-700 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Detail L & P Tiap Umur
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAgeDetailMode('compact')}
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                    ageDetailMode === 'compact'
+                      ? 'bg-blue-700 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Ringkasan Jml
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 text-slate-500 text-[11px]">
+                <span className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                  <span>Otomatis Profil</span>
+                </span>
+                <span className="flex items-center gap-1 ml-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+                  <span>Manual/Import</span>
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Comprehensive Age Matrix Table */}
           <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-center text-xs text-slate-700 border-collapse">
-                <thead className="bg-slate-100 text-[11px] font-bold uppercase text-slate-700 border-b border-slate-200">
-                  <tr>
-                    <th className="p-3 text-left">Nama Kelas</th>
-                    <th className="p-3 bg-blue-50/50">&lt;6 th</th>
-                    <th className="p-3">6 th</th>
-                    <th className="p-3 bg-blue-50/50">7 th</th>
-                    <th className="p-3">8 th</th>
-                    <th className="p-3 bg-blue-50/50">9 th</th>
-                    <th className="p-3">10 th</th>
-                    <th className="p-3 bg-blue-50/50">11 th</th>
-                    <th className="p-3">12 th</th>
-                    <th className="p-3 bg-blue-50/50">&gt;12 th</th>
-                    <th className="p-3 bg-emerald-50 text-emerald-800">L</th>
-                    <th className="p-3 bg-pink-50 text-pink-800">P</th>
-                    <th className="p-3 bg-slate-200 font-extrabold text-slate-900">Total</th>
-                    <th className="p-3 text-center">Status & Aksi</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {ageRecapData.map(row => (
-                    <tr key={row.classId} className="hover:bg-slate-50">
-                      <td className="p-3 text-left font-bold text-slate-900">{row.className}</td>
-                      <td className="p-3 bg-blue-50/20 font-mono">{row.counts['<6 th'].total}</td>
-                      <td className="p-3 font-mono">{row.counts['6 th'].total}</td>
-                      <td className="p-3 bg-blue-50/20 font-mono">{row.counts['7 th'].total}</td>
-                      <td className="p-3 font-mono">{row.counts['8 th'].total}</td>
-                      <td className="p-3 bg-blue-50/20 font-mono">{row.counts['9 th'].total}</td>
-                      <td className="p-3 font-mono">{row.counts['10 th'].total}</td>
-                      <td className="p-3 bg-blue-50/20 font-mono">{row.counts['11 th'].total}</td>
-                      <td className="p-3 font-mono">{row.counts['12 th'].total}</td>
-                      <td className="p-3 bg-blue-50/20 font-mono">{row.counts['>12 th'].total}</td>
-                      <td className="p-3 bg-emerald-50/40 font-bold text-blue-700 font-mono">{row.totalL}</td>
-                      <td className="p-3 bg-pink-50/40 font-bold text-pink-700 font-mono">{row.totalP}</td>
-                      <td className="p-3 bg-slate-100 font-extrabold font-mono text-slate-900">{row.grandTotal}</td>
-                      <td className="p-3 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
-                          {row.isManual ? (
-                            <>
-                              <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-amber-100 text-amber-800">
-                                Manual
-                              </span>
-                              <button
-                                onClick={() => handleOpenAgeModal(row.classId)}
-                                className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
-                                title="Edit Manual"
-                              >
-                                <Edit className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => handleResetClassToAuto(row.classId)}
-                                className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded"
-                                title="Reset ke Profil Siswa Otomatis"
-                              >
-                                <RotateCcw className="w-3.5 h-3.5" />
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-emerald-100 text-emerald-800">
-                                Otomatis
-                              </span>
-                              <button
-                                onClick={() => handleOpenAgeModal(row.classId)}
-                                className="p-1 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded"
-                                title="Sesuaikan Manual"
-                              >
-                                <Edit className="w-3.5 h-3.5" />
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
+              {ageDetailMode === 'detailed' ? (
+                /* DETAILED VIEW: L, P, and Jumlah for every single age bracket */
+                <table className="w-full text-center text-xs text-slate-700 border-collapse min-w-[1300px]">
+                  <thead className="bg-slate-100 text-[11px] font-bold text-slate-700 border-b border-slate-200">
+                    {/* Level 1: Age Brackets with colSpan=3 */}
+                    <tr className="border-b border-slate-200/70">
+                      <th rowSpan={2} className="p-3 text-left bg-slate-100 text-slate-800 sticky left-0 z-10 border-r border-slate-200">
+                        Nama Kelas
+                      </th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-blue-50/60 text-blue-900">&lt;6 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-slate-50 text-slate-900">6 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-blue-50/60 text-blue-900">7 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-slate-50 text-slate-900">8 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-blue-50/60 text-blue-900">9 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-slate-50 text-slate-900">10 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-blue-50/60 text-blue-900">11 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-slate-50 text-slate-900">12 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-blue-50/60 text-blue-900">&gt;12 Tahun</th>
+                      <th colSpan={3} className="p-2 border-r border-slate-200 bg-emerald-50 text-emerald-950 font-extrabold">TOTAL SISWA</th>
+                      <th rowSpan={2} className="p-3 text-center bg-slate-100">Status & Aksi</th>
                     </tr>
-                  ))}
-                </tbody>
-                <tfoot className="bg-slate-100/90 font-extrabold text-slate-900 border-t-2 border-slate-300">
-                  <tr>
-                    <td className="p-3 text-left">TOTAL KESELURUHAN</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['<6 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['6 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['7 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['8 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['9 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['10 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['11 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['12 th'].total, 0)}</td>
-                    <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['>12 th'].total, 0)}</td>
-                    <td className="p-3 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.totalL, 0)}</td>
-                    <td className="p-3 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.totalP, 0)}</td>
-                    <td className="p-3 font-mono bg-slate-200">{ageRecapData.reduce((s, r) => s + r.grandTotal, 0)}</td>
-                    <td className="p-3 text-center text-slate-400 font-normal text-[11px]">-</td>
-                  </tr>
-                </tfoot>
-              </table>
+                    {/* Level 2: Sub-headers L, P, Jml */}
+                    <tr className="bg-slate-50 text-[10px] font-bold text-slate-600 border-b border-slate-200">
+                      {/* <6 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 6 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 7 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 8 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 9 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 10 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 11 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* 12 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* >12 th */}
+                      <th className="py-1.5 px-2 bg-blue-50/40 text-blue-700">L</th>
+                      <th className="py-1.5 px-2 bg-pink-50/40 text-pink-700">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-slate-100/70 text-slate-800">Jml</th>
+                      {/* Total */}
+                      <th className="py-1.5 px-2 bg-blue-100/70 text-blue-900 font-bold">L</th>
+                      <th className="py-1.5 px-2 bg-pink-100/70 text-pink-900 font-bold">P</th>
+                      <th className="py-1.5 px-2 border-r border-slate-200 bg-emerald-100 text-emerald-950 font-extrabold">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {ageRecapData.map(row => (
+                      <tr key={row.classId} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-3 text-left font-bold text-slate-900 sticky left-0 bg-white shadow-xs z-10 border-r border-slate-200">
+                          {row.className}
+                        </td>
+                        {/* <6 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['<6 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['<6 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['<6 th'].total}</td>
+                        {/* 6 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['6 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['6 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['6 th'].total}</td>
+                        {/* 7 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700 bg-blue-50/30 font-semibold">{row.counts['7 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700 bg-pink-50/30 font-semibold">{row.counts['7 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-blue-950 bg-blue-100/50 border-r border-slate-100">{row.counts['7 th'].total}</td>
+                        {/* 8 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['8 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['8 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['8 th'].total}</td>
+                        {/* 9 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['9 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['9 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['9 th'].total}</td>
+                        {/* 10 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['10 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['10 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['10 th'].total}</td>
+                        {/* 11 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['11 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['11 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['11 th'].total}</td>
+                        {/* 12 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['12 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['12 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['12 th'].total}</td>
+                        {/* >12 th */}
+                        <td className="py-2.5 px-2 font-mono text-blue-700">{row.counts['>12 th'].L}</td>
+                        <td className="py-2.5 px-2 font-mono text-pink-700">{row.counts['>12 th'].P}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-slate-800 bg-slate-50/70 border-r border-slate-100">{row.counts['>12 th'].total}</td>
+                        {/* Totals */}
+                        <td className="py-2.5 px-2 font-mono font-bold text-blue-800 bg-blue-50/50">{row.totalL}</td>
+                        <td className="py-2.5 px-2 font-mono font-bold text-pink-800 bg-pink-50/50">{row.totalP}</td>
+                        <td className="py-2.5 px-2 font-mono font-extrabold text-slate-900 bg-emerald-50 border-r border-slate-100">{row.grandTotal}</td>
+                        {/* Status & Aksi */}
+                        <td className="p-2.5 text-center">
+                          <div className="flex items-center justify-center gap-1.5">
+                            {row.isManual ? (
+                              <>
+                                <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-amber-100 text-amber-800">
+                                  Manual
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenAgeModal(row.classId)}
+                                  className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                                  title="Edit Manual"
+                                >
+                                  <Edit className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleResetClassToAuto(row.classId)}
+                                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded"
+                                  title="Reset ke Profil Siswa Otomatis"
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5" />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-emerald-100 text-emerald-800">
+                                  Otomatis
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenAgeModal(row.classId)}
+                                  className="p-1 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded"
+                                  title="Sesuaikan Manual"
+                                >
+                                  <Edit className="w-3.5 h-3.5" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
+                    <tr>
+                      <td className="p-3 text-left font-extrabold sticky left-0 bg-slate-100 border-r border-slate-300">TOTAL KESELURUHAN</td>
+                      {/* <6 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['<6 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['<6 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['<6 th'].total, 0)}</td>
+                      {/* 6 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['6 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['6 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['6 th'].total, 0)}</td>
+                      {/* 7 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['7 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['7 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['7 th'].total, 0)}</td>
+                      {/* 8 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['8 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['8 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['8 th'].total, 0)}</td>
+                      {/* 9 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['9 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['9 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['9 th'].total, 0)}</td>
+                      {/* 10 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['10 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['10 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['10 th'].total, 0)}</td>
+                      {/* 11 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['11 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['11 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['11 th'].total, 0)}</td>
+                      {/* 12 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['12 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['12 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['12 th'].total, 0)}</td>
+                      {/* >12 */}
+                      <td className="p-2 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.counts['>12 th'].L, 0)}</td>
+                      <td className="p-2 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.counts['>12 th'].P, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold bg-slate-200/70 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.counts['>12 th'].total, 0)}</td>
+                      {/* Total */}
+                      <td className="p-2 font-mono font-extrabold text-blue-800 bg-blue-100">{ageRecapData.reduce((s, r) => s + r.totalL, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold text-pink-800 bg-pink-100">{ageRecapData.reduce((s, r) => s + r.totalP, 0)}</td>
+                      <td className="p-2 font-mono font-extrabold text-slate-950 bg-emerald-100 border-r border-slate-200">{ageRecapData.reduce((s, r) => s + r.grandTotal, 0)}</td>
+                      <td className="p-2 text-center text-slate-400 font-normal text-[11px]">-</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              ) : (
+                /* COMPACT VIEW: Summary by age group total */
+                <table className="w-full text-center text-xs text-slate-700 border-collapse">
+                  <thead className="bg-slate-100 text-[11px] font-bold uppercase text-slate-700 border-b border-slate-200">
+                    <tr>
+                      <th className="p-3 text-left">Nama Kelas</th>
+                      <th className="p-3 bg-blue-50/50">&lt;6 th</th>
+                      <th className="p-3">6 th</th>
+                      <th className="p-3 bg-blue-50/50">7 th</th>
+                      <th className="p-3">8 th</th>
+                      <th className="p-3 bg-blue-50/50">9 th</th>
+                      <th className="p-3">10 th</th>
+                      <th className="p-3 bg-blue-50/50">11 th</th>
+                      <th className="p-3">12 th</th>
+                      <th className="p-3 bg-blue-50/50">&gt;12 th</th>
+                      <th className="p-3 bg-emerald-50 text-blue-800 font-bold">Total L</th>
+                      <th className="p-3 bg-pink-50 text-pink-800 font-bold">Total P</th>
+                      <th className="p-3 bg-slate-200 font-extrabold text-slate-900">Total Siswa</th>
+                      <th className="p-3 text-center">Status & Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {ageRecapData.map(row => (
+                      <tr key={row.classId} className="hover:bg-slate-50">
+                        <td className="p-3 text-left font-bold text-slate-900">{row.className}</td>
+                        <td className="p-3 bg-blue-50/20 font-mono">{row.counts['<6 th'].total}</td>
+                        <td className="p-3 font-mono">{row.counts['6 th'].total}</td>
+                        <td className="p-3 bg-blue-50/20 font-mono">{row.counts['7 th'].total}</td>
+                        <td className="p-3 font-mono">{row.counts['8 th'].total}</td>
+                        <td className="p-3 bg-blue-50/20 font-mono">{row.counts['9 th'].total}</td>
+                        <td className="p-3 font-mono">{row.counts['10 th'].total}</td>
+                        <td className="p-3 bg-blue-50/20 font-mono">{row.counts['11 th'].total}</td>
+                        <td className="p-3 font-mono">{row.counts['12 th'].total}</td>
+                        <td className="p-3 bg-blue-50/20 font-mono">{row.counts['>12 th'].total}</td>
+                        <td className="p-3 bg-emerald-50/40 font-bold text-blue-700 font-mono">{row.totalL}</td>
+                        <td className="p-3 bg-pink-50/40 font-bold text-pink-700 font-mono">{row.totalP}</td>
+                        <td className="p-3 bg-slate-100 font-extrabold font-mono text-slate-900">{row.grandTotal}</td>
+                        <td className="p-3 text-center">
+                          <div className="flex items-center justify-center gap-1.5">
+                            {row.isManual ? (
+                              <>
+                                <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-amber-100 text-amber-800">
+                                  Manual
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenAgeModal(row.classId)}
+                                  className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded"
+                                  title="Edit Manual"
+                                >
+                                  <Edit className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleResetClassToAuto(row.classId)}
+                                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded"
+                                  title="Reset ke Profil Siswa Otomatis"
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5" />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-emerald-100 text-emerald-800">
+                                  Otomatis
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenAgeModal(row.classId)}
+                                  className="p-1 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded"
+                                  title="Sesuaikan Manual"
+                                >
+                                  <Edit className="w-3.5 h-3.5" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="bg-slate-100/90 font-extrabold text-slate-900 border-t-2 border-slate-300">
+                    <tr>
+                      <td className="p-3 text-left">TOTAL KESELURUHAN</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['<6 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['6 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['7 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['8 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['9 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['10 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['11 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['12 th'].total, 0)}</td>
+                      <td className="p-3 font-mono">{ageRecapData.reduce((s, r) => s + r.counts['>12 th'].total, 0)}</td>
+                      <td className="p-3 font-mono text-blue-700">{ageRecapData.reduce((s, r) => s + r.totalL, 0)}</td>
+                      <td className="p-3 font-mono text-pink-700">{ageRecapData.reduce((s, r) => s + r.totalP, 0)}</td>
+                      <td className="p-3 font-mono bg-slate-200">{ageRecapData.reduce((s, r) => s + r.grandTotal, 0)}</td>
+                      <td className="p-3 text-center text-slate-400 font-normal text-[11px]">-</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              )}
             </div>
           </div>
 

@@ -147,18 +147,62 @@ export function downloadTemplateAbsensiHarian() {
 
 export function downloadTemplatePraktikKinerja() {
   const dummyData = [
-    { No: 1, 'Nama Guru': 'Hj. Siti Rohmah, S.Pd.SD', Indikator: 'Penerapan Disiplin Positif', 'Catatan Refleksi Guru': 'Membangun kesepakatan kelas bersama peserta didik dan menguatkan disiplin positif tanpa hukuman fisik.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-09-15', 'Catatan Kepala Sekolah': 'Sangat baik dan konsisten memfasilitasi restitusi peserta didik.' },
-    { No: 2, 'Nama Guru': 'Asep Saepudin, S.Pd.', Indikator: 'Keteraturan Suasana Kelas', 'Catatan Refleksi Guru': 'Mengelola dinamika kelas melalui ice breaking terstruktur.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-09-22', 'Catatan Kepala Sekolah': 'Kelas sangat antusias dan tertib.' },
-    { No: 3, 'Nama Guru': 'Rian Permana, S.Pd.Jas.', Indikator: 'Aktivitas Interaktif', 'Catatan Refleksi Guru': 'Mendorong seluruh siswa aktif terlibat dalam permainan tim bola kasti.', 'Status Observasi (Sudah/Belum)': 'Belum', 'Tanggal Observasi (YYYY-MM-DD)': '', 'Catatan Kepala Sekolah': 'Jadwal observasi tanggal 20 Oktober 2026' },
-    { No: 4, 'Nama Guru': 'Dewi Lestari, S.Pd.', Indikator: 'Ekspektasi pada Peserta Didik', 'Catatan Refleksi Guru': 'Memberikan tantangan bertingkat sesuai kesiapan belajar murid.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-09-29', 'Catatan Kepala Sekolah': 'Diferensiasi proses terlaksana optimal.' },
-    { No: 5, 'Nama Guru': 'Nurul Hidayah, S.Pd.', Indikator: 'Instruksi yang Adaptif', 'Catatan Refleksi Guru': 'Menyesuaikan penjelasan menggunakan benda konkrit saat siswa kesulitan berhitung.', 'Status Observasi (Sudah/Belum)': 'Belum', 'Tanggal Observasi (YYYY-MM-DD)': '', 'Catatan Kepala Sekolah': '' },
-    { No: 6, 'Nama Guru': 'Eni Maryani, S.Pd.SD', Indikator: 'Umpan Balik Konstruktif', 'Catatan Refleksi Guru': 'Memberikan catatan apresiatif pada lembar asesmen formatif siswa.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-10-02', 'Catatan Kepala Sekolah': 'Umpan balik membangkitkan motivasi siswa.' },
-    { No: 7, 'Nama Guru': 'Fitri Handayani, S.Pd.', Indikator: 'Perhatian dan Kepedulian', 'Catatan Refleksi Guru': 'Mendengarkan keluh kesah siswa dan merangkul siswa pemalu.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-10-05', 'Catatan Kepala Sekolah': 'Pendekatan humanis sangat terasa.' },
-    { No: 8, 'Nama Guru': 'Bambang Supriyanto, S.Pd.SD, M.Pd.', Indikator: 'Keteraturan Suasana Kelas', 'Catatan Refleksi Guru': 'Membuat aturan kerja kelompok yang jelas dengan pembagian peran merata.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-10-08', 'Catatan Kepala Sekolah': 'Kepemimpinan pembelajaran sangat matang.' },
-    { No: 9, 'Nama Guru': 'Sri Wahyuni, S.Pd.', Indikator: 'Instruksi yang Adaptif', 'Catatan Refleksi Guru': 'Menggunakan mind mapping digital pada materi Bahasa Indonesia.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-10-10', 'Catatan Kepala Sekolah': 'Inovatif dan menarik minat siswa.' },
-    { No: 10, 'Nama Guru': 'Ustadz Ahmad Fauzi, S.Pd.I.', Indikator: 'Penerapan Disiplin Positif', 'Catatan Refleksi Guru': 'Membiasakan sholat dhuha berjamaah dan hafalan surat pendek dengan reward bintang kebaikan.', 'Status Observasi (Sudah/Belum)': 'Sudah', 'Tanggal Observasi (YYYY-MM-DD)': '2026-10-12', 'Catatan Kepala Sekolah': 'Karakter religius tertanam kuat.' }
+    {
+      No: 1,
+      'Nama Guru': 'Hj. Siti Rohmah, S.Pd.SD',
+      Indikator: 'Penerapan Disiplin Positif',
+      'Target Perilaku (Perencanaan)': 'Guru mengajak peserta didik menyepakati aturan dan konsekuensi positif secara partisipatif di awal tema.',
+      'Upaya Mempelajari': 'Mempelajari modul Pelatihan Mandiri PMM Topik Disiplin Positif dan panduan restitusi fase A.',
+      'Jadwal Rencana Observasi': '2026-09-15',
+      'Waktu Rencana': '08.00 - 09.30 WIB',
+      'Status Observasi (Sudah/Belum)': 'Sudah',
+      'Tanggal Observasi (YYYY-MM-DD)': '2026-09-15',
+      'Rating Observasi (Pelaksanaan)': 'Dilakukan dan Efektif',
+      'Fokus Pengamatan': 'Mendengarkan pandangan setiap siswa, tidak menggunakan hukuman fisik/verbal, nada suara tenang.',
+      'Catatan Observasi Kepala Sekolah': 'Sangat baik, guru menerapkan kesepakatan kelas dengan bahasa afirmatif dan ramah anak.',
+      'Refleksi Guru (Umpan Balik)': 'Sebagian siswa pemalu mulai berani bersuara dan antusias.',
+      'Umpan Balik Kepala Sekolah': 'Pertahankan pendekatan humanis ini dan bagikan praktik baik pada rapat KKG mini sekolah.',
+      'Rencana Tindak Lanjut': 'Mengikuti Webinar PMM Komunitas Belajar tentang Pendekatan Restitusi pada Fase A.',
+      'Skor Akhir': 100
+    },
+    {
+      No: 2,
+      'Nama Guru': 'Asep Saepudin, S.Pd.',
+      Indikator: 'Keteraturan Suasana Kelas',
+      'Target Perilaku (Perencanaan)': 'Guru memberikan instruksi yang terstruktur dan menggunakan sinyal transisi yang jelas.',
+      'Upaya Mempelajari': 'Mengunduh panduan manajemen kelas interaktif dan berdiskusi dengan rekan sejawat.',
+      'Jadwal Rencana Observasi': '2026-09-22',
+      'Waktu Rencana': '09.30 - 11.00 WIB',
+      'Status Observasi (Sudah/Belum)': 'Sudah',
+      'Tanggal Observasi (YYYY-MM-DD)': '2026-09-22',
+      'Rating Observasi (Pelaksanaan)': 'Dilakukan dan Efektif',
+      'Fokus Pengamatan': 'Alur percobaan sains terkoordinasi dengan baik. LKPD dimengerti seluruh kelompok.',
+      'Catatan Observasi Kepala Sekolah': 'Suasana kelas kondusif, siswa antusias berkolaborasi dalam kelompok IPAS.',
+      'Refleksi Guru (Umpan Balik)': 'Eksperimen berjalan lancar, presentasi hasil kelompok perlu penambahan waktu.',
+      'Umpan Balik Kepala Sekolah': 'Metode eksperimen tepat sasaran. Pertimbangkan pemanfaatan Chromebook untuk merekam data.',
+      'Rencana Tindak Lanjut': 'Menyusun rubrik presentasi kelompok interaktif berbasis rubrik analitik.',
+      'Skor Akhir': 100
+    },
+    {
+      No: 3,
+      'Nama Guru': 'Rian Permana, S.Pd.Jas.',
+      Indikator: 'Aktivitas Interaktif',
+      'Target Perilaku (Perencanaan)': 'Guru memfasilitasi kegiatan belajar yang memberi peran setara pada semua peserta didik.',
+      'Upaya Mempelajari': 'Mempelajari asesmen gerak adaptif dan modifikasi permainan tradisional.',
+      'Jadwal Rencana Observasi': '2026-10-20',
+      'Waktu Rencana': '07.00 - 08.30 WIB',
+      'Status Observasi (Sudah/Belum)': 'Belum',
+      'Tanggal Observasi (YYYY-MM-DD)': '',
+      'Rating Observasi (Pelaksanaan)': 'Belum Dilakukan',
+      'Fokus Pengamatan': 'Observasi lapangan terjadwal di pekan ke-3 Oktober 2026.',
+      'Catatan Observasi Kepala Sekolah': 'Jadwal observasi tanggal 20 Oktober 2026.',
+      'Refleksi Guru (Umpan Balik)': 'Modul ajar dan perlengkapan sarana sudah disiapkan lengkap.',
+      'Umpan Balik Kepala Sekolah': 'Siapkan instrumen asesmen unjuk kerja siswa sebelum observasi.',
+      'Rencana Tindak Lanjut': 'Pelaksanaan observasi sesuai kalender pembelajaran PJOK.',
+      'Skor Akhir': 0
+    }
   ];
-  downloadWorkbook(dummyData, 'Template_Import_Praktik_Kinerja_Guru_SDN_Nambo_03', 'Praktik Kinerja');
+  downloadWorkbook(dummyData, 'Template_Import_Praktik_Kinerja_Lengkap_SDN_Nambo_03', 'Praktik Kinerja');
 }
 
 export function downloadTemplateBerAKHLAK() {

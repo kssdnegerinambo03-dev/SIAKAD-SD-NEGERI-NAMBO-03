@@ -11,7 +11,9 @@ import {
   AttendanceRecord,
   SchoolProfile,
   TeacherReportCard,
-  ManualAgeRecap
+  ManualAgeRecap,
+  SyncAuditLog,
+  SchoolRole
 } from '../types';
 import {
   initialSchoolProfile,
@@ -25,7 +27,8 @@ import {
   initialAdditionalTasks,
   initialAttendanceRecords,
   initialTeacherReportCards,
-  initialManualAgeRecaps
+  initialManualAgeRecaps,
+  initialSyncLogs
 } from '../data/initialData';
 import { downloadMasterExcelArchive } from '../utils/excelUtils';
 
@@ -129,13 +132,23 @@ interface SchoolContextType {
   duplicateAlert: DuplicateAlertModalData;
   closeDuplicateAlert: () => void;
   showDuplicateAlert: (title: string, message: string, duplicates: { nisn: string; nama?: string; context?: string }[]) => void;
-  // Central Server Synchronization & Full Academic Year Archives
+  // Central Server Synchronization, Audit Logs & Full Academic Year Archives
   syncStatus: 'synced' | 'syncing' | 'offline' | 'error';
   lastSyncTime: string | null;
   forceSyncNow: () => Promise<void>;
   downloadFullDatabaseJSON: () => void;
   downloadMasterExcelArchive: () => void;
   restoreDatabaseFromJSON: (file: File) => Promise<{ success: boolean; error?: string }>;
+
+  // Data Synchronization & Headmaster Monitoring Table
+  syncLogs: SyncAuditLog[];
+  currentActiveUser: { name: string; role: SchoolRole; label: string };
+  setCurrentActiveUser: (user: { name: string; role: SchoolRole; label: string }) => void;
+  addSyncLog: (log: Omit<SyncAuditLog, 'id' | 'timestamp' | 'statusSinkron'>) => void;
+  verifySyncLogByKepsek: (id: string, catatan?: string) => void;
+  verifyAllSyncLogsByKepsek: () => void;
+  deleteSyncLog: (id: string) => void;
+  clearAllSyncLogs: () => void;
 
   // General App Helpers
   resetAllToDefaults: () => void;
@@ -206,6 +219,22 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return saved ? JSON.parse(saved) : initialManualAgeRecaps;
   });
 
+  const [syncLogs, setSyncLogs] = useState<SyncAuditLog[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}sync_logs`);
+    return saved ? JSON.parse(saved) : initialSyncLogs;
+  });
+
+  const [currentActiveUser, setCurrentActiveUser] = useState<{ name: string; role: SchoolRole; label: string }>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}current_user`);
+    return saved
+      ? JSON.parse(saved)
+      : {
+          name: 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.',
+          role: 'Kepala Sekolah',
+          label: 'Kepala Sekolah (AM. MEGA PURNAMATATI, S. Pd.,M.Pd.)'
+        };
+  });
+
   // Duplicate NISN Alert Modal state
   const [duplicateAlert, setDuplicateAlert] = useState<DuplicateAlertModalData>({
     isOpen: false,
@@ -251,6 +280,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem(`${STORAGE_KEY_PREFIX}attendance`, JSON.stringify(attendanceRecords));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}report_cards`, JSON.stringify(teacherReportCards));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}manual_age_recaps`, JSON.stringify(manualAgeRecaps));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}sync_logs`, JSON.stringify(syncLogs));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}current_user`, JSON.stringify(currentActiveUser));
   }, [
     schoolProfile,
     classes,
@@ -263,7 +294,9 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     additionalTasks,
     attendanceRecords,
     teacherReportCards,
-    manualAgeRecaps
+    manualAgeRecaps,
+    syncLogs,
+    currentActiveUser
   ]);
 
   // Initial load from central server + background polling for collaborative sync
@@ -291,6 +324,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.attendanceRecords && Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
               if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
               if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
+              if (d.syncLogs && Array.isArray(d.syncLogs)) setSyncLogs(d.syncLogs);
               lastServerUpdateRef.current = d.serverUpdatedAt || null;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
@@ -309,7 +343,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               additionalTasks,
               attendanceRecords,
               teacherReportCards,
-              manualAgeRecaps
+              manualAgeRecaps,
+              syncLogs
             };
             await fetch('/api/school-data/sync', {
               method: 'POST',
@@ -353,6 +388,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.attendanceRecords && Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
               if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
               if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
+              if (d.syncLogs && Array.isArray(d.syncLogs)) setSyncLogs(d.syncLogs);
               lastServerUpdateRef.current = d.serverUpdatedAt;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
@@ -389,7 +425,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           additionalTasks,
           attendanceRecords,
           teacherReportCards,
-          manualAgeRecaps
+          manualAgeRecaps,
+          syncLogs
         };
         const res = await fetch('/api/school-data/sync', {
           method: 'POST',
@@ -422,8 +459,71 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     additionalTasks,
     attendanceRecords,
     teacherReportCards,
-    manualAgeRecaps
+    manualAgeRecaps,
+    syncLogs
   ]);
+
+  const addSyncLog = (log: Omit<SyncAuditLog, 'id' | 'timestamp' | 'statusSinkron'>) => {
+    const now = new Date();
+    const formattedTime = now.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    const newLog: SyncAuditLog = {
+      ...log,
+      id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      timestamp: formattedTime,
+      statusSinkron: 'Tersinkron ke Server'
+    };
+    setSyncLogs(prev => [newLog, ...prev]);
+  };
+
+  const verifySyncLogByKepsek = (id: string, catatan?: string) => {
+    const now = new Date();
+    const formattedTime = now.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    setSyncLogs(prev => prev.map(log => {
+      if (log.id === id) {
+        return {
+          ...log,
+          diverifikasiKepsek: true,
+          catatanKepsek: catatan || 'Telah dipantau & diverifikasi Kepala Sekolah.',
+          waktuVerifikasi: formattedTime
+        };
+      }
+      return log;
+    }));
+  };
+
+  const verifyAllSyncLogsByKepsek = () => {
+    const now = new Date();
+    const formattedTime = now.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    setSyncLogs(prev => prev.map(log => ({
+      ...log,
+      diverifikasiKepsek: true,
+      catatanKepsek: log.catatanKepsek || 'Dipantau dan divalidasi berkala oleh Kepala Sekolah.',
+      waktuVerifikasi: log.waktuVerifikasi || formattedTime
+    })));
+  };
+
+  const deleteSyncLog = (id: string) => {
+    setSyncLogs(prev => prev.filter(l => l.id !== id));
+  };
+
+  const clearAllSyncLogs = () => {
+    setSyncLogs([]);
+  };
 
   const forceSyncNow = async () => {
     try {
@@ -440,7 +540,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         additionalTasks,
         attendanceRecords,
         teacherReportCards,
-        manualAgeRecaps
+        manualAgeRecaps,
+        syncLogs
       };
       const res = await fetch('/api/school-data/sync', {
         method: 'POST',
@@ -452,6 +553,16 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         lastServerUpdateRef.current = json.serverUpdatedAt;
         setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
         setSyncStatus('synced');
+
+        addSyncLog({
+          wargaSekolah: currentActiveUser.name,
+          peran: currentActiveUser.role,
+          lingkup: 'Database Pusat',
+          jenisAksi: 'Sinkronisasi',
+          judul: 'Sinkronisasi Manual Database Server Terpusat',
+          rincianPerubahan: 'Data 395 siswa, guru, presensi, dan rekap umur tersinkronisasi online utuh.',
+          diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+        });
       } else {
         setSyncStatus('error');
       }
@@ -474,6 +585,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       attendanceRecords,
       teacherReportCards,
       manualAgeRecaps,
+      syncLogs,
       exportedAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -517,6 +629,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (parsed.attendanceRecords && Array.isArray(parsed.attendanceRecords)) setAttendanceRecords(parsed.attendanceRecords);
           if (parsed.teacherReportCards && Array.isArray(parsed.teacherReportCards)) setTeacherReportCards(parsed.teacherReportCards);
           if (parsed.manualAgeRecaps && Array.isArray(parsed.manualAgeRecaps)) setManualAgeRecaps(parsed.manualAgeRecaps);
+          if (parsed.syncLogs && Array.isArray(parsed.syncLogs)) setSyncLogs(parsed.syncLogs);
 
           // Sync to server immediately
           await fetch('/api/school-data/sync', {
@@ -612,22 +725,56 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
 
     setStudents(prev => [newStudent, ...prev]);
+
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: studentData.kelasId ? (classes.find(c => c.id === studentData.kelasId)?.nama || 'Siswa') : 'Buku Induk Siswa',
+      jenisAksi: 'Tambah',
+      judul: `Penambahan Siswa: ${studentData.nama}`,
+      rincianPerubahan: `NISN: ${cleanNisn}, JK: ${studentData.jenisKelamin}, Status: ${studentData.status || 'Aktif'}`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+
     return { success: true };
   };
 
   const updateStudent = (nisn: string, updated: Partial<Student>) => {
+    let studentName = nisn;
     setStudents(prev =>
       prev.map(s => {
         if (s.nisn === nisn) {
+          studentName = s.nama;
           return { ...s, ...updated, updatedAt: new Date().toISOString() };
         }
         return s;
       })
     );
+
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: updated.kelasId ? (classes.find(c => c.id === updated.kelasId)?.nama || 'Siswa') : 'Buku Induk Siswa',
+      jenisAksi: 'Ubah',
+      judul: `Pembaruan Biodata Siswa: ${studentName}`,
+      rincianPerubahan: `Perubahan atribut (${Object.keys(updated).join(', ')})`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
   };
 
   const deleteStudent = (nisn: string) => {
+    const target = students.find(s => s.nisn === nisn);
     setStudents(prev => prev.filter(s => s.nisn !== nisn));
+
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: 'Buku Induk Siswa',
+      jenisAksi: 'Hapus',
+      judul: `Penghapusan Siswa: ${target?.nama || nisn}`,
+      rincianPerubahan: `Data NISN ${nisn} dihapus dari pangkalan data`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
   };
 
   const deleteStudentsBulk = (nisnList: string[]) => {
@@ -998,18 +1145,42 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
 
       const statusObs = String(row['Status Observasi (Sudah/Belum)'] || '').toLowerCase().includes('sudah') ? 'Sudah' : 'Belum';
-      const skor = statusObs === 'Sudah' ? 100 : 0;
+      const skor = Number(row['Skor Akhir'] || (statusObs === 'Sudah' ? 100 : 0));
+
+      const ratingObsRaw = String(row['Rating Observasi (Pelaksanaan)'] || row['Rating Observasi'] || '').trim();
+      let ratingObservasi: 'Belum Dilakukan' | 'Dilakukan tapi Belum Efektif' | 'Dilakukan dan Efektif' = 'Belum Dilakukan';
+      if (ratingObsRaw.toLowerCase().includes('efektif') && !ratingObsRaw.toLowerCase().includes('belum')) {
+        ratingObservasi = 'Dilakukan dan Efektif';
+      } else if (ratingObsRaw.toLowerCase().includes('belum efektif')) {
+        ratingObservasi = 'Dilakukan tapi Belum Efektif';
+      } else if (statusObs === 'Sudah') {
+        ratingObservasi = 'Dilakukan dan Efektif';
+      }
 
       newItems.push({
         id: `pp-imp-${Date.now()}-${idx}`,
         guruId: matchingTeacher.id,
         indikator: String(row['Indikator'] || 'Penerapan Disiplin Positif'),
-        catatanGuru: String(row['Catatan Refleksi Guru'] || ''),
+        catatanGuru: String(row['Catatan Refleksi Guru'] || row['Refleksi Guru (Umpan Balik)'] || ''),
         statusObservasi: statusObs,
         skor,
         tanggalObservasi: String(row['Tanggal Observasi (YYYY-MM-DD)'] || ''),
-        catatanKepsek: String(row['Catatan Kepala Sekolah'] || ''),
-        periode: 'Semester Ganjil 2026/2027'
+        catatanKepsek: String(row['Catatan Observasi Kepala Sekolah'] || row['Catatan Kepala Sekolah'] || ''),
+        periode: 'Semester Ganjil 2026/2027',
+        // 1. Perencanaan
+        targetPerilaku: String(row['Target Perilaku (Perencanaan)'] || row['Target Perilaku'] || ''),
+        upayaMempelajari: String(row['Upaya Mempelajari'] || ''),
+        jadwalRencana: String(row['Jadwal Rencana Observasi'] || row['Jadwal Rencana'] || ''),
+        jamRencana: String(row['Waktu Rencana'] || row['Jam Rencana'] || ''),
+        // 2. Pelaksanaan
+        ratingObservasi,
+        fokusPengamatan: String(row['Fokus Pengamatan'] || ''),
+        catatanPengamatanKepsek: String(row['Catatan Observasi Kepala Sekolah'] || row['Catatan Kepala Sekolah'] || ''),
+        // 3. Umpan Balik
+        refleksiPascaObservasi: String(row['Refleksi Guru (Umpan Balik)'] || row['Catatan Refleksi Guru'] || ''),
+        umpanBalikKepsek: String(row['Umpan Balik Kepala Sekolah'] || row['Umpan Balik'] || ''),
+        rencanaTindakLanjut: String(row['Rencana Tindak Lanjut'] || ''),
+        skorTindakLanjut: skor
       });
       successCount++;
     });
@@ -1435,7 +1606,15 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         forceSyncNow,
         downloadFullDatabaseJSON,
         downloadMasterExcelArchive: handleDownloadMasterExcel,
-        restoreDatabaseFromJSON
+        restoreDatabaseFromJSON,
+        syncLogs,
+        currentActiveUser,
+        setCurrentActiveUser,
+        addSyncLog,
+        verifySyncLogByKepsek,
+        verifyAllSyncLogsByKepsek,
+        deleteSyncLog,
+        clearAllSyncLogs
       }}
     >
       {children}

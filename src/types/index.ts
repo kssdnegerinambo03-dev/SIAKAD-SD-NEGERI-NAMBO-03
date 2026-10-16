@@ -101,6 +101,25 @@ export interface PerformancePractice {
   tanggalObservasi?: string;
   catatanKepsek?: string;
   periode: string; // e.g., 'Semester Ganjil 2026/2027'
+
+  // 1. Tahap Perencanaan (Pra-Observasi)
+  targetPerilaku?: string; // Target perilaku fokus observasi
+  upayaMempelajari?: string; // Upaya mempelajari materi/strategi
+  jadwalRencana?: string; // Tanggal rencana pelaksanaan observasi
+  jamRencana?: string; // Waktu pelaksanaan (contoh: 08.00 - 09.30)
+  kelasTargetId?: string; // Rombel observasi (contoh: c-1a)
+  mapelTarget?: string; // Mata pelajaran / materi observasi
+
+  // 2. Tahap Pelaksanaan (Observasi Kelas Langsung)
+  ratingObservasi?: 'Belum Dilakukan' | 'Dilakukan tapi Belum Efektif' | 'Dilakukan dan Efektif';
+  fokusPengamatan?: string; // Fokus pengamatan tindakan guru di kelas
+  catatanPengamatanKepsek?: string; // Catatan pengamatan observer/Kepala Sekolah
+
+  // 3. Tahap Umpan Balik & Pasca-Observasi (Tindak Lanjut)
+  refleksiPascaObservasi?: string; // Refleksi guru setelah diobservasi
+  umpanBalikKepsek?: string; // Umpan balik & rekomendasi Kepala Sekolah
+  rencanaTindakLanjut?: string; // Rencana tindak lanjut pengembangan kompetensi
+  skorTindakLanjut?: number; // Skor tindak lanjut
 }
 
 export interface PerformanceBerAKHLAK {
@@ -201,4 +220,21 @@ export interface ManualAgeRecap {
   moreThan12L: number;
   moreThan12P: number;
   updatedAt?: string;
+}
+
+export type SchoolRole = 'Kepala Sekolah' | 'Guru Kelas' | 'Guru Mapel' | 'Operator Dapodik' | 'Staf Tata Usaha';
+
+export interface SyncAuditLog {
+  id: string;
+  timestamp: string; // ISO or formatted
+  wargaSekolah: string; // e.g. 'Hj. Siti Rohmah, S.Pd.SD'
+  peran: SchoolRole;
+  lingkup: string; // e.g. 'Kelas 1A', 'Praktik Kinerja', 'Presensi', 'Profil Sekolah', 'Database Pusat'
+  jenisAksi: 'Tambah' | 'Ubah' | 'Hapus' | 'Import Excel' | 'Sinkronisasi' | 'Pemulihan';
+  judul: string;
+  rincianPerubahan: string;
+  statusSinkron: 'Tersinkron ke Server' | 'Pending Sinkron';
+  diverifikasiKepsek: boolean;
+  catatanKepsek?: string;
+  waktuVerifikasi?: string;
 }

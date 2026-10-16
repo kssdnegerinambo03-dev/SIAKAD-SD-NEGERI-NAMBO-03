@@ -8,7 +8,8 @@ import {
   PerformancePractice,
   PerformanceBerAKHLAK,
   AdditionalTask,
-  AttendanceRecord
+  AttendanceRecord,
+  SyncAuditLog
 } from '../types';
 
 export const initialSchoolProfile: SchoolProfile = {
@@ -75,292 +76,9 @@ export const initialStaff: Staff[] = [
   { id: 's-4', nik: '3201241004780005', nip: '-', nama: 'Pak Sukardi', tugas: 'Penjaga Sekolah & Keamanan', statusKepegawaian: 'Honorer / PTT', pendidikan: 'SMA', noHp: '087812000404', statusAktif: true, alamat: 'Bantarkopo RT 01/04' }
 ];
 
-export const initialStudents: Student[] = [
-  {
-    nisn: '0192837401',
-    nis: '4011',
-    nama: 'Ahmad Faiz Ramadhan',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2019-04-12',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201241204190001',
-    alamat: 'Kp. Bantarkopo RT 02/04 Desa Bantarjati',
-    tinggiBadan: 118,
-    beratBadan: 21,
-    kelasId: 'c-1a',
-    status: 'Aktif',
-    isPIP: true,
-    ekskulIds: ['e-pramuka', 'e-futsal'],
-    createdAt: '2026-07-10T08:00:00Z',
-    updatedAt: '2026-07-10T08:00:00Z'
-  },
-  {
-    nisn: '0192837402',
-    nis: '4012',
-    nama: 'Anindya Putri Kirana',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2019-06-25',
-    agama: 'Islam',
-    jenisKelamin: 'P',
-    nik: '3201246506190002',
-    alamat: 'Jl. Raya Nambo RT 01/04',
-    tinggiBadan: 116,
-    beratBadan: 19,
-    kelasId: 'c-1a',
-    status: 'Aktif',
-    isPIP: false,
-    ekskulIds: ['e-pramuka', 'e-tari'],
-    createdAt: '2026-07-10T08:05:00Z',
-    updatedAt: '2026-07-10T08:05:00Z'
-  },
-  {
-    nisn: '0192837403',
-    nis: '4013',
-    nama: 'Bagas Aditya Pratama',
-    tempatLahir: 'Jakarta',
-    tanggalLahir: '2019-02-18',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201241802190003',
-    alamat: 'Perum Nambo Asri Blok C No. 5',
-    tinggiBadan: 120,
-    beratBadan: 23,
-    kelasId: 'c-1b',
-    status: 'Aktif',
-    isPIP: false,
-    ekskulIds: ['e-pramuka'],
-    createdAt: '2026-07-10T08:10:00Z',
-    updatedAt: '2026-07-10T08:10:00Z'
-  },
-  {
-    nisn: '0183746501',
-    nis: '3921',
-    nama: 'Christian Jonathan Siregar',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2018-05-14',
-    agama: 'Kristen',
-    jenisKelamin: 'L',
-    nik: '3201241405180004',
-    alamat: 'Ds. Klapanunggal RT 03/01',
-    tinggiBadan: 124,
-    beratBadan: 24,
-    kelasId: 'c-2a',
-    status: 'Aktif',
-    isPIP: true,
-    ekskulIds: ['e-pramuka', 'e-futsal'],
-    createdAt: '2025-07-12T08:00:00Z',
-    updatedAt: '2026-07-15T08:00:00Z'
-  },
-  {
-    nisn: '0183746502',
-    nis: '3922',
-    nama: 'Dina Maulida',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2018-09-08',
-    agama: 'Islam',
-    jenisKelamin: 'P',
-    nik: '3201244809180005',
-    alamat: 'Kp. Nambo Ilir RT 04/02',
-    tinggiBadan: 122,
-    beratBadan: 22,
-    kelasId: 'c-2a',
-    status: 'Aktif',
-    isPIP: false,
-    ekskulIds: ['e-pramuka', 'e-dokter'],
-    createdAt: '2025-07-12T08:00:00Z',
-    updatedAt: '2026-07-15T08:00:00Z'
-  },
-  {
-    nisn: '0174859601',
-    nis: '3831',
-    nama: 'Fajar Nugraha',
-    tempatLahir: 'Sukabumi',
-    tanggalLahir: '2017-03-30',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201243003170006',
-    alamat: 'Jl. Bantarkopo RT 01/04',
-    tinggiBadan: 130,
-    beratBadan: 27,
-    kelasId: 'c-3a',
-    status: 'Pindahan Masuk',
-    isPIP: true,
-    ekskulIds: ['e-pramuka', 'e-silat'],
-    transferInfo: {
-      asalSekolah: 'SDN Cibadak 01 Sukabumi',
-      tanggalPindah: '2026-08-01',
-      nomorSurat: '421.2/108/DISDIK/2026',
-      alasan: 'Ikut Orang Tua Pindah Tugas Kerja di Pabrik Semen Nambo',
-      kelasTujuanId: 'c-3a'
-    },
-    createdAt: '2026-08-01T09:00:00Z',
-    updatedAt: '2026-08-01T09:00:00Z'
-  },
-  {
-    nisn: '0165968701',
-    nis: '3741',
-    nama: 'Gita Saraswati',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2016-08-19',
-    agama: 'Hindu',
-    jenisKelamin: 'P',
-    nik: '3201245908160007',
-    alamat: 'Kec. Klapanunggal RT 05/02',
-    tinggiBadan: 135,
-    beratBadan: 31,
-    kelasId: 'c-4a',
-    status: 'Aktif',
-    isPIP: false,
-    ekskulIds: ['e-pramuka', 'e-tari', 'e-sains'],
-    createdAt: '2024-07-10T08:00:00Z',
-    updatedAt: '2026-07-10T08:00:00Z'
-  },
-  {
-    nisn: '0165968702',
-    nis: '3742',
-    nama: 'Hafiz Al-Baqir',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2016-11-04',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201240411160008',
-    alamat: 'Kp. Bantarjati RT 02/04',
-    tinggiBadan: 138,
-    beratBadan: 32,
-    kelasId: 'c-4a',
-    status: 'Aktif',
-    isPIP: true,
-    ekskulIds: ['e-pramuka', 'e-marawis'],
-    createdAt: '2024-07-10T08:00:00Z',
-    updatedAt: '2026-07-10T08:00:00Z'
-  },
-  {
-    nisn: '0156079801',
-    nis: '3651',
-    nama: 'Indra Gunawan',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2015-01-22',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201242201150009',
-    alamat: 'Jl. Raya Nambo KM 3',
-    tinggiBadan: 142,
-    beratBadan: 36,
-    kelasId: 'c-5a',
-    status: 'Aktif',
-    isPIP: true,
-    ekskulIds: ['e-pramuka', 'e-futsal', 'e-silat'],
-    createdAt: '2023-07-15T08:00:00Z',
-    updatedAt: '2026-07-15T08:00:00Z'
-  },
-  {
-    nisn: '0156079802',
-    nis: '3652',
-    nama: 'Maria Fransiska',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2015-07-14',
-    agama: 'Katolik',
-    jenisKelamin: 'P',
-    nik: '3201245407150010',
-    alamat: 'Perum Griya Bantarjati Blok B1',
-    tinggiBadan: 140,
-    beratBadan: 34,
-    kelasId: 'c-5b',
-    status: 'Aktif',
-    isPIP: false,
-    ekskulIds: ['e-pramuka', 'e-sains'],
-    createdAt: '2023-07-15T08:00:00Z',
-    updatedAt: '2026-07-15T08:00:00Z'
-  },
-  {
-    nisn: '0147180901',
-    nis: '3561',
-    nama: 'Muhammad Rizki Pratama',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2014-06-10',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201241006140011',
-    alamat: 'Kp. Bantarkopo RT 03/04',
-    tinggiBadan: 148,
-    beratBadan: 40,
-    kelasId: 'c-6a',
-    status: 'Aktif',
-    isPIP: true,
-    ekskulIds: ['e-pramuka', 'e-futsal'],
-    createdAt: '2022-07-18T08:00:00Z',
-    updatedAt: '2026-07-18T08:00:00Z'
-  },
-  {
-    nisn: '0147180902',
-    nis: '3562',
-    nama: 'Nadira Aulia Zahra',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2014-10-03',
-    agama: 'Islam',
-    jenisKelamin: 'P',
-    nik: '3201244310140012',
-    alamat: 'Desa Bantarjati RT 01/03',
-    tinggiBadan: 146,
-    beratBadan: 38,
-    kelasId: 'c-6a',
-    status: 'Aktif',
-    isPIP: false,
-    ekskulIds: ['e-pramuka', 'e-tari', 'e-dokter'],
-    createdAt: '2022-07-18T08:00:00Z',
-    updatedAt: '2026-07-18T08:00:00Z'
-  },
-  {
-    nisn: '0147180903',
-    nis: '3563',
-    nama: 'Kevin Sanjaya',
-    tempatLahir: 'Cirebon',
-    tanggalLahir: '2014-04-15',
-    agama: 'Buddha',
-    jenisKelamin: 'L',
-    nik: '3201241504140013',
-    alamat: 'Jl. Industri Nambo No. 12',
-    tinggiBadan: 147,
-    beratBadan: 41,
-    kelasId: 'c-6b',
-    status: 'Mutasi Keluar',
-    isPIP: false,
-    ekskulIds: ['e-pramuka'],
-    exitInfo: {
-      sekolahTujuan: 'SDN 1 Kesambi Cirebon',
-      tanggalKeluar: '2026-09-05',
-      alasan: 'Kepindahan domisili keluarga ke Cirebon',
-      nomorSurat: '421.2/089/SDN-N03/IX/2026'
-    },
-    createdAt: '2022-07-18T08:00:00Z',
-    updatedAt: '2026-09-05T10:00:00Z'
-  },
-  {
-    nisn: '0147180904',
-    nis: '3564',
-    nama: 'Rian Firmansyah',
-    tempatLahir: 'Bogor',
-    tanggalLahir: '2014-01-29',
-    agama: 'Islam',
-    jenisKelamin: 'L',
-    nik: '3201242901140014',
-    alamat: 'Kp. Nambo Hilir RT 02/01',
-    tinggiBadan: 145,
-    beratBadan: 39,
-    kelasId: 'c-6b',
-    status: 'Berhenti DO',
-    isPIP: true,
-    ekskulIds: ['e-pramuka'],
-    exitInfo: {
-      tanggalKeluar: '2026-08-20',
-      alasan: 'Faktor ekonomi keluarga & menolak bersekolah setelah konseling 3 kali',
-      nomorSurat: '421.2/074/SDN-N03/VIII/2026'
-    },
-    createdAt: '2022-07-18T08:00:00Z',
-    updatedAt: '2026-08-20T11:00:00Z'
-  }
-];
+import { officialStudentsData } from './studentsData';
+
+export const initialStudents: Student[] = officialStudentsData;
 
 export const initialTeachingHours: TeachingHour[] = [
   { id: 'th-1', guruId: 't-1', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-1a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '11.30' },
@@ -387,7 +105,23 @@ export const initialPractices: PerformancePractice[] = [
     skor: 100,
     tanggalObservasi: '2026-09-15',
     catatanKepsek: 'Sangat baik, guru menerapkan kesepakatan kelas dengan bahasa afirmatif dan ramah anak.',
-    periode: 'Semester Ganjil 2026/2027'
+    periode: 'Semester Ganjil 2026/2027',
+    // 1. Perencanaan
+    targetPerilaku: 'Guru mengajak peserta didik menyepakati aturan dan konsekuensi positif secara partisipatif di awal tema.',
+    upayaMempelajari: 'Mempelajari modul Pelatihan Mandiri PMM Topik Disiplin Positif dan panduan restitusi anak usia dini/fase A.',
+    jadwalRencana: '2026-09-15',
+    jamRencana: '08.00 - 09.30 WIB',
+    kelasTargetId: 'c-1a',
+    mapelTarget: 'Pendidikan Pancasila - Kesepakatan Kelas',
+    // 2. Pelaksanaan
+    ratingObservasi: 'Dilakukan dan Efektif',
+    fokusPengamatan: 'Guru mendengarkan pandangan setiap siswa, tidak menggunakan hukuman fisik/verbal, dan menggunakan nada suara tenang.',
+    catatanPengamatanKepsek: 'Pengelolaan kelas sangat hangat dan kondusif. Seluruh siswa kelas 1A tampak antusias dan merasa aman.',
+    // 3. Umpan Balik
+    refleksiPascaObservasi: 'Sebagian siswa pemalu mulai berani bersuara. Ke depannya saya akan menyiapkan stiker simbol apresiasi perilaku positif.',
+    umpanBalikKepsek: 'Pertahankan pendekatan humanis ini dan bagikan praktik baik (best practice) pada rapat KKG mini sekolah.',
+    rencanaTindakLanjut: 'Mengikuti Webinar PMM Komunitas Belajar tentang Pendekatan Restitusi pada Fase A serta berdiskusi dengan guru kelas 1B.',
+    skorTindakLanjut: 100
   },
   {
     id: 'pp-2',
@@ -398,7 +132,23 @@ export const initialPractices: PerformancePractice[] = [
     skor: 100,
     tanggalObservasi: '2026-09-22',
     catatanKepsek: 'Suasana kelas kondusif, siswa antusias berkolaborasi dalam kelompok IPAS.',
-    periode: 'Semester Ganjil 2026/2027'
+    periode: 'Semester Ganjil 2026/2027',
+    // 1. Perencanaan
+    targetPerilaku: 'Guru memberikan instruksi yang terstruktur dan menggunakan sinyal transisi yang jelas saat pergantian aktivitas kelompok.',
+    upayaMempelajari: 'Mengunduh panduan manajemen kelas interaktif dan berdiskusi dengan rekan sejawat di Gugus Klapanunggal.',
+    jadwalRencana: '2026-09-22',
+    jamRencana: '09.30 - 11.00 WIB',
+    kelasTargetId: 'c-4a',
+    mapelTarget: 'IPAS - Wujud Zat dan Perubahannya',
+    // 2. Pelaksanaan
+    ratingObservasi: 'Dilakukan dan Efektif',
+    fokusPengamatan: 'Alur percobaan sains terkoordinasi dengan baik. Lembar kerja peserta didik (LKPD) dimengerti semua kelompok.',
+    catatanPengamatanKepsek: 'Pengaturan waktu (time management) sangat rapi dan siswa disiplin membersihkan meja kerja laboratorium mini.',
+    // 3. Umpan Balik
+    refleksiPascaObservasi: 'Eksperimen berjalan lancar, namun alokasi waktu untuk presentasi hasil masih perlu ditambah sekitar 10 menit.',
+    umpanBalikKepsek: 'Metode eksperimen sudah tepat sasaran. Pertimbangkan pemanfaatan media digital Chromebook untuk merekam hasil pengamatan.',
+    rencanaTindakLanjut: 'Menyusun rubrik presentasi kelompok interaktif dan mengintegrasikannya dengan asesmen formatif.',
+    skorTindakLanjut: 98
   },
   {
     id: 'pp-3',
@@ -407,7 +157,23 @@ export const initialPractices: PerformancePractice[] = [
     catatanGuru: 'Melibatkan seluruh siswa dalam permainan pemanasan PJOK berpasangan yang inklusif tanpa membedakan gender.',
     statusObservasi: 'Belum',
     skor: 0,
-    periode: 'Semester Ganjil 2026/2027'
+    periode: 'Semester Ganjil 2026/2027',
+    // 1. Perencanaan
+    targetPerilaku: 'Guru memfasilitasi kegiatan belajar yang memberi peran setara pada semua peserta didik dalam aktivitas gerak dasar.',
+    upayaMempelajari: 'Mempelajari asesmen gerak adaptif untuk anak berkebutuhan khusus dan modifikasi permainan tradisional.',
+    jadwalRencana: '2026-10-20',
+    jamRencana: '07.00 - 08.30 WIB',
+    kelasTargetId: 'c-2a',
+    mapelTarget: 'PJOK - Pola Gerak Dasar Lokomotor',
+    // 2. Pelaksanaan
+    ratingObservasi: 'Belum Dilakukan',
+    fokusPengamatan: 'Rencana observasi terjadwal pada pekan ke-3 Oktober 2026 di lapangan olahraga SD Negeri Nambo 03.',
+    catatanPengamatanKepsek: 'Menunggu jadwal pelaksanaan observasi kelas tatap muka.',
+    // 3. Umpan Balik
+    refleksiPascaObservasi: 'Persiapan modul ajar dan sarana bola keranjang mini sudah siap 100%.',
+    umpanBalikKepsek: 'Siapkan lembar penilaian observasi sebelum pelaksanaan.',
+    rencanaTindakLanjut: 'Pelaksanaan observasi sesuai jadwal kalender akademik.',
+    skorTindakLanjut: 0
   }
 ];
 
@@ -623,6 +389,105 @@ export const initialManualAgeRecaps = [
     moreThan12L: 0,
     moreThan12P: 0,
     updatedAt: '2026-10-15T08:00:00Z'
+  }
+];
+
+export const initialSyncLogs: SyncAuditLog[] = [
+  {
+    id: 'log-1',
+    timestamp: '2026-10-16 07:15:20',
+    wargaSekolah: 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.',
+    peran: 'Kepala Sekolah',
+    lingkup: 'Database Pusat',
+    jenisAksi: 'Sinkronisasi',
+    judul: 'Sinkronisasi Master Database Semester Ganjil 2026/2027',
+    rincianPerubahan: 'Pembaruan data 395 siswa aktif dan validasi kelengkapan berkas Dapodik SDN Nambo 03',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: true,
+    catatanKepsek: 'Data telah divalidasi sesuai Buku Induk dan dokumen resmi sekolah.',
+    waktuVerifikasi: '2026-10-16 07:16:00'
+  },
+  {
+    id: 'log-2',
+    timestamp: '2026-10-16 07:30:15',
+    wargaSekolah: 'Hj. Siti Rohmah, S.Pd.SD',
+    peran: 'Guru Kelas',
+    lingkup: 'Kelas 1A',
+    jenisAksi: 'Ubah',
+    judul: 'Input Presensi Harian & Rekap Umur Siswa',
+    rincianPerubahan: 'Presensi harian Kelas 1A dicatat: Hadir 38 siswa (L: 20, P: 18), Sakit 0, Izin 0, Alpa 0. Rekap umur bulan Oktober 2026 diperbarui.',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: true,
+    catatanKepsek: 'Disetujui. Kehadiran 100% dipertahankan.',
+    waktuVerifikasi: '2026-10-16 08:00:00'
+  },
+  {
+    id: 'log-3',
+    timestamp: '2026-10-16 07:45:00',
+    wargaSekolah: 'Dewi Lestari, S.Pd.',
+    peran: 'Guru Kelas',
+    lingkup: 'Kelas 1B',
+    jenisAksi: 'Ubah',
+    judul: 'Pembaruan Data Biodata Siswa Kelas 1B',
+    rincianPerubahan: 'Memperbarui NISN dan alamat tempat tinggal siswa atas nama Bagas Aditya Pratama',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: true,
+    catatanKepsek: 'Sudah sesuai Kartu Keluarga orang tua siswa.',
+    waktuVerifikasi: '2026-10-16 08:05:00'
+  },
+  {
+    id: 'log-4',
+    timestamp: '2026-10-16 08:15:30',
+    wargaSekolah: 'Nurul Hidayah, S.Pd.',
+    peran: 'Guru Kelas',
+    lingkup: 'Kelas 2A',
+    jenisAksi: 'Ubah',
+    judul: 'Pengisian Catatan Kinerja Guru (Perencanaan & Target Perilaku)',
+    rincianPerubahan: 'Menambahkan target perilaku observasi: Keteraturan Suasana Kelas dan Eksplorasi Konsep',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: true,
+    catatanKepsek: 'Jadwal observasi disetujui pada tanggal 20 Oktober 2026.',
+    waktuVerifikasi: '2026-10-16 08:30:00'
+  },
+  {
+    id: 'log-5',
+    timestamp: '2026-10-16 08:45:10',
+    wargaSekolah: 'Asep Saepudin, S.Pd.',
+    peran: 'Guru Kelas',
+    lingkup: 'Kelas 4A',
+    jenisAksi: 'Ubah',
+    judul: 'Catatan Presensi Bulanan & Pelaksanaan Observasi Kelas',
+    rincianPerubahan: 'Pelaksanaan observasi pembelajaran IPAS berjalan efektif dengan skor 94.',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: true,
+    catatanKepsek: 'Observasi telah selesai dan umpan balik telah diunggah.',
+    waktuVerifikasi: '2026-10-16 09:00:00'
+  },
+  {
+    id: 'log-6',
+    timestamp: '2026-10-16 09:10:45',
+    wargaSekolah: 'Rizky Ramadhan',
+    peran: 'Operator Dapodik',
+    lingkup: 'Buku Induk Siswa',
+    jenisAksi: 'Import Excel',
+    judul: 'Sinkronisasi Data NISN & Dapodik Kemendikbud',
+    rincianPerubahan: 'Pengecekan konsistensi 395 data peserta didik aktif SDN Nambo 03 tanpa data ganda.',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: true,
+    catatanKepsek: 'Data Dapodik terpadu, tidak ada duplikasi.',
+    waktuVerifikasi: '2026-10-16 09:15:00'
+  },
+  {
+    id: 'log-7',
+    timestamp: '2026-10-16 09:30:00',
+    wargaSekolah: 'Drs. H. Mulyadi, M.M.Pd.',
+    peran: 'Guru Kelas',
+    lingkup: 'Kelas 6A',
+    jenisAksi: 'Ubah',
+    judul: 'Input Hasil Asesmen Formatif & Kehadiran Kelas 6A',
+    rincianPerubahan: 'Mencatat kehadiran 31 siswa Kelas 6A lengkap dan pemantauan persiapan ujian kelulusan.',
+    statusSinkron: 'Tersinkron ke Server',
+    diverifikasiKepsek: false
   }
 ];
 
