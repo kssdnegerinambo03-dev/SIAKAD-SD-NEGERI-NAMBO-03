@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import officialLogoImg from '../assets/images/sdn_nambo_03_logo_1792141390269.jpg';
 
 interface LogoProps {
   className?: string;
@@ -15,155 +16,118 @@ export const OfficialLogo: React.FC<LogoProps> = ({
   textColor = 'text-slate-800',
   customLogoUrl
 }) => {
+  const [imageError, setImageError] = useState(false);
   const numericSize = typeof size === 'number' ? size : 48;
+  const logoSrc = customLogoUrl || officialLogoImg || '/logo_nambo_03.jpg';
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {customLogoUrl ? (
-        <img
-          src={customLogoUrl}
-          alt="Logo SD Negeri Nambo 03"
-          className="object-contain rounded-full shadow-sm bg-white p-0.5 border border-emerald-100"
-          style={{ width: numericSize, height: numericSize }}
-        />
-      ) : (
-        <div
-          className="relative shrink-0 flex items-center justify-center transition-transform hover:scale-105"
-          style={{ width: numericSize, height: numericSize }}
-          title="Logo Resmi SD Negeri Nambo 03 - NPSN 20200352"
-        >
+      <div
+        className="relative shrink-0 flex items-center justify-center transition-transform hover:scale-105"
+        style={{ width: numericSize, height: numericSize }}
+        title="Logo Resmi SD Negeri Nambo 03 Kec. Klapanunggal - NPSN 20200352"
+      >
+        {!imageError ? (
+          <img
+            src={logoSrc}
+            alt="Logo Resmi SD Negeri Nambo 03"
+            className="w-full h-full object-contain drop-shadow-md rounded-xl select-none"
+            onError={() => setImageError(true)}
+          />
+        ) : (
           <svg
             viewBox="0 0 200 200"
-            className="w-full h-full drop-shadow-md"
+            className="w-full h-full drop-shadow-md select-none"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Outer Decorative Circle with Gold Rim */}
-            <circle cx="100" cy="100" r="96" fill="#0B2F64" stroke="#EAB308" strokeWidth="6" />
-            <circle cx="100" cy="100" r="88" fill="#0E3D7D" stroke="#FFFFFF" strokeWidth="2" strokeDasharray="4 2" />
-
-            {/* Circular Text SD NEGERI NAMBO 03 - KABUPATEN BOGOR */}
+            {/* 8-pointed scalloped lotus crest shield (Deep Royal Blue) */}
             <path
-              id="textPathTop"
-              d="M 28 100 A 72 72 0 1 1 172 100"
-              fill="none"
+              d="M 100 8 C 114 20 126 18 140 18 C 146 32 158 40 172 48 C 166 64 174 76 182 90 C 182 108 174 120 172 136 C 158 144 146 154 140 168 C 126 168 114 176 100 192 C 86 176 74 168 60 168 C 54 154 42 144 28 136 C 26 120 18 108 18 90 C 26 76 34 64 28 48 C 42 40 54 32 60 18 C 74 18 86 20 100 8 Z"
+              fill="#1A2D82"
+              stroke="#E68A00"
+              strokeWidth="5"
+              strokeLinejoin="round"
             />
-            <text fill="#FEF08A" fontSize="13.5" fontWeight="800" letterSpacing="2.5" textAnchor="middle">
-              <textPath href="#textPathTop" startOffset="50%">
+
+            {/* Inner Golden Line */}
+            <path
+              d="M 100 16 C 112 26 122 24 135 24 C 140 36 150 43 162 50 C 157 63 164 74 171 86 C 171 102 164 112 162 126 C 150 133 140 141 135 154 C 122 154 112 161 100 176 C 88 161 78 154 65 154 C 60 141 50 133 38 126 C 36 112 29 102 29 86 C 36 74 43 63 38 50 C 50 43 60 36 65 24 C 78 24 88 26 100 16 Z"
+              fill="none"
+              stroke="#FACC15"
+              strokeWidth="2"
+            />
+
+            {/* Inner Vibrant Green Circle */}
+            <circle cx="100" cy="100" r="70" fill="#00A651" stroke="#FFFFFF" strokeWidth="2" />
+
+            {/* Top Text Arc: SD NEGERI NAMBO 03 */}
+            <path id="namboTextTop" d="M 38 100 A 62 62 0 1 1 162 100" fill="none" />
+            <text fill="#FFFFFF" fontSize="13.5" fontWeight="900" letterSpacing="1.8" textAnchor="middle">
+              <textPath href="#namboTextTop" startOffset="50%">
                 SD NEGERI NAMBO 03
               </textPath>
             </text>
 
-            <path
-              id="textPathBottom"
-              d="M 172 100 A 72 72 0 1 1 28 100"
-              fill="none"
-            />
-            <text fill="#FFFFFF" fontSize="10.5" fontWeight="700" letterSpacing="1.8" textAnchor="middle">
-              <textPath href="#textPathBottom" startOffset="50%">
-                NPSN 20200352 • BOGOR
+            {/* Left and Right Stars */}
+            <polygon points="35,100 37,95 42,95 38,92 40,87 35,90 30,87 32,92 28,95 33,95" fill="#FFFFFF" />
+            <polygon points="165,100 167,95 172,95 168,92 170,87 165,90 160,87 162,92 158,95 163,95" fill="#FFFFFF" />
+
+            {/* Bottom Text Arc: KEC. KLAPANUNGGAL */}
+            <path id="namboTextBottom" d="M 162 100 A 62 62 0 1 1 38 100" fill="none" />
+            <text fill="#FFFFFF" fontSize="11" fontWeight="800" letterSpacing="1.5" textAnchor="middle">
+              <textPath href="#namboTextBottom" startOffset="50%">
+                KEC. KLAPANUNGGAL
               </textPath>
             </text>
 
-            {/* Center Golden Pentagon Shield */}
-            <path
-              d="M 100 40 L 148 68 L 132 136 L 100 156 L 68 136 L 52 68 Z"
-              fill="url(#shieldGrad)"
-              stroke="#FACC15"
-              strokeWidth="4"
-              filter="drop-shadow(0 3px 6px rgba(0,0,0,0.4))"
-            />
+            {/* Golden Rice Stalk (Padi) Left */}
+            <path d="M 72 136 C 58 116 58 84 76 68" stroke="#FACC15" strokeWidth="2.5" strokeLinecap="round" />
+            <ellipse cx="68" cy="126" rx="4" ry="2.5" transform="rotate(-30 68 126)" fill="#FACC15" />
+            <ellipse cx="64" cy="114" rx="4" ry="2.5" transform="rotate(-40 64 114)" fill="#FACC15" />
+            <ellipse cx="62" cy="102" rx="4" ry="2.5" transform="rotate(-45 62 102)" fill="#FACC15" />
+            <ellipse cx="64" cy="90" rx="4" ry="2.5" transform="rotate(-55 64 90)" fill="#FACC15" />
+            <ellipse cx="69" cy="78" rx="4" ry="2.5" transform="rotate(-65 69 78)" fill="#FACC15" />
+            <ellipse cx="76" cy="68" rx="4" ry="2.5" transform="rotate(-75 76 68)" fill="#FACC15" />
 
-            {/* Inner Shield Background */}
+            {/* White Cotton Stalk (Kapas) Right */}
+            <path d="M 128 136 C 142 116 142 84 124 68" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="132" cy="126" r="3.5" fill="#FFFFFF" stroke="#16A34A" strokeWidth="1" />
+            <circle cx="136" cy="114" r="3.5" fill="#FFFFFF" stroke="#16A34A" strokeWidth="1" />
+            <circle cx="138" cy="102" r="3.5" fill="#FFFFFF" stroke="#16A34A" strokeWidth="1" />
+            <circle cx="136" cy="90" r="3.5" fill="#FFFFFF" stroke="#16A34A" strokeWidth="1" />
+            <circle cx="131" cy="78" r="3.5" fill="#FFFFFF" stroke="#16A34A" strokeWidth="1" />
+            <circle cx="124" cy="68" r="3.5" fill="#FFFFFF" stroke="#16A34A" strokeWidth="1" />
+
+            {/* Open Book: Orange Left Page, Blue Right Page */}
+            {/* Left Page (Orange) */}
             <path
-              d="M 100 46 L 142 71 L 128 131 L 100 149 L 72 131 L 58 71 Z"
-              fill="#0284C7"
+              d="M 100 86 L 76 80 L 74 112 L 100 118 Z"
+              fill="#FF7A00"
               stroke="#FFFFFF"
               strokeWidth="1.5"
             />
-
-            {/* Golden Rice & Cotton Wreath */}
-            {/* Rice Stalk Left (Golden) */}
+            {/* Right Page (Blue) */}
             <path
-              d="M 64 126 C 60 106 63 80 82 66"
-              stroke="#FACC15"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <circle cx="66" cy="116" r="3.5" fill="#FACC15" />
-            <circle cx="63" cy="104" r="3.5" fill="#FACC15" />
-            <circle cx="65" cy="92" r="3.5" fill="#FACC15" />
-            <circle cx="71" cy="80" r="3.5" fill="#FACC15" />
-            <circle cx="79" cy="71" r="3.5" fill="#FACC15" />
-
-            {/* Cotton Stalk Right (White-Green) */}
-            <path
-              d="M 136 126 C 140 106 137 80 118 66"
-              stroke="#10B981"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <circle cx="134" cy="116" r="3.5" fill="#FFFFFF" stroke="#10B981" strokeWidth="1.5" />
-            <circle cx="137" cy="104" r="3.5" fill="#FFFFFF" stroke="#10B981" strokeWidth="1.5" />
-            <circle cx="135" cy="92" r="3.5" fill="#FFFFFF" stroke="#10B981" strokeWidth="1.5" />
-            <circle cx="129" cy="80" r="3.5" fill="#FFFFFF" stroke="#10B981" strokeWidth="1.5" />
-            <circle cx="121" cy="71" r="3.5" fill="#FFFFFF" stroke="#10B981" strokeWidth="1.5" />
-
-            {/* Open Book of Knowledge */}
-            <path
-              d="M 78 116 C 88 112 96 112 100 118 C 104 112 112 112 122 116 L 122 130 C 112 126 104 126 100 131 C 96 126 88 126 78 130 Z"
-              fill="#FFFFFF"
-              stroke="#1E293B"
-              strokeWidth="2"
-            />
-            <path d="M 100 118 L 100 131" stroke="#1E293B" strokeWidth="1.5" />
-
-            {/* Central Flame / Torch of Education (Suluh Tut Wuri Handayani) */}
-            <path
-              d="M 100 68 C 94 77 91 85 95 94 C 97 99 100 101 100 101 C 100 101 103 99 105 94 C 109 85 106 77 100 68 Z"
-              fill="url(#flameGrad)"
-            />
-            <path
-              d="M 100 78 C 97 84 96 88 98 94 C 99 97 100 98 100 98 C 100 98 101 97 102 94 C 104 88 103 84 100 78 Z"
-              fill="#FEF08A"
-            />
-            <rect x="97" y="101" width="6" height="12" rx="1.5" fill="#EAB308" stroke="#78350F" strokeWidth="1" />
-
-            {/* Golden Star at the Apex */}
-            <polygon
-              points="100,48 102.5,54 108,54.5 104,58 105.2,63.5 100,60.5 94.8,63.5 96,58 92,54.5 97.5,54"
-              fill="#FEF08A"
-              stroke="#B45309"
-              strokeWidth="0.8"
-            />
-
-            {/* Lower Banner Ribbon */}
-            <path
-              d="M 72 138 L 100 144 L 128 138 L 132 148 L 100 155 L 68 148 Z"
-              fill="#E11D48"
+              d="M 100 86 L 124 80 L 126 112 L 100 118 Z"
+              fill="#0077C8"
               stroke="#FFFFFF"
-              strokeWidth="1.2"
+              strokeWidth="1.5"
             />
-            <text x="100" y="149" fill="#FFFFFF" fontSize="7" fontWeight="900" textAnchor="middle" letterSpacing="0.8">
-              BERAKHLAK
-            </text>
+            {/* Center Book Spine */}
+            <line x1="100" y1="86" x2="100" y2="118" stroke="#FFFFFF" strokeWidth="2" />
 
-            {/* Gradients */}
-            <defs>
-              <linearGradient id="shieldGrad" x1="52" y1="40" x2="148" y2="156" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#F59E0B" />
-                <stop offset="0.5" stopColor="#D97706" />
-                <stop offset="1" stopColor="#B45309" />
-              </linearGradient>
-              <linearGradient id="flameGrad" x1="100" y1="68" x2="100" y2="101" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#EF4444" />
-                <stop offset="0.6" stopColor="#F97316" />
-                <stop offset="1" stopColor="#FBBF24" />
-              </linearGradient>
-            </defs>
+            {/* Stylized Wing Ribbons below the book */}
+            {/* Blue wings */}
+            <path d="M 72 116 C 82 126 94 128 100 126 C 106 128 118 126 128 116 C 118 134 106 136 100 134 C 94 136 82 134 72 116 Z" fill="#0077C8" />
+            {/* Orange lower wings */}
+            <path d="M 78 128 C 88 136 96 138 100 137 C 104 138 112 136 122 128 C 114 142 104 144 100 143 C 96 144 86 142 78 128 Z" fill="#FF7A00" />
+
+            {/* Tied bottom stalk knot */}
+            <rect x="94" y="140" width="12" height="6" rx="2" fill="#EAB308" stroke="#78350F" strokeWidth="1" />
           </svg>
-        </div>
-      )}
+        )}
+      </div>
 
       {showText && (
         <div className="flex flex-col leading-tight">

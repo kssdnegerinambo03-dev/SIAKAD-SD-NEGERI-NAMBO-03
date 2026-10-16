@@ -26,7 +26,8 @@ export const initialSchoolProfile: SchoolProfile = {
   desa: 'Bantarjati',
   kecamatan: 'Klapanunggal',
   kabupaten: 'Kabupaten Bogor',
-  provinsi: 'Jawa Barat'
+  provinsi: 'Jawa Barat',
+  logoUrl: '/logo_nambo_03.jpg'
 };
 
 export const initialClasses: ClassGroup[] = [

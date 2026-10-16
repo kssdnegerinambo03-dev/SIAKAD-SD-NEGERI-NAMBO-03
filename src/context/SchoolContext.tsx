@@ -265,6 +265,12 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
   const lastServerUpdateRef = useRef<string | null>(null);
   const isHydratedFromServerRef = useRef<boolean>(false);
+  const isRemoteUpdateRef = useRef<boolean>(false);
+  const hasLocalChangesRef = useRef<boolean>(false);
+
+  const markLocalChange = () => {
+    hasLocalChangesRef.current = true;
+  };
 
   // Sync state to LocalStorage
   useEffect(() => {
@@ -312,6 +318,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (json.success && json.data) {
             const d = json.data;
             if (isMounted) {
+              isRemoteUpdateRef.current = true;
               if (d.schoolProfile) setSchoolProfile(d.schoolProfile);
               if (d.classes && Array.isArray(d.classes)) setClasses(d.classes);
               if (d.teachers && Array.isArray(d.teachers)) setTeachers(d.teachers);
@@ -328,6 +335,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               lastServerUpdateRef.current = d.serverUpdatedAt || null;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
+              hasLocalChangesRef.current = false;
             }
           } else {
             // Server database is empty: initialize server with initial seed data
@@ -367,7 +375,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     fetchServerData();
 
-    // Background sync polling every 10 seconds to merge updates from other teachers / devices
+    // Fast background sync polling every 4 seconds for instant multi-user synchronization
     const interval = setInterval(async () => {
       try {
         const res = await fetch('/api/school-data');
@@ -376,6 +384,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (json.success && json.data && json.data.serverUpdatedAt) {
             if (json.data.serverUpdatedAt !== lastServerUpdateRef.current) {
               const d = json.data;
+              isRemoteUpdateRef.current = true;
               if (d.schoolProfile) setSchoolProfile(d.schoolProfile);
               if (d.classes && Array.isArray(d.classes)) setClasses(d.classes);
               if (d.teachers && Array.isArray(d.teachers)) setTeachers(d.teachers);
@@ -392,13 +401,14 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               lastServerUpdateRef.current = d.serverUpdatedAt;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
+              hasLocalChangesRef.current = false;
             }
           }
         }
       } catch {
         // silent polling error
       }
-    }, 10000);
+    }, 4000);
 
     return () => {
       isMounted = false;
@@ -406,9 +416,16 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     };
   }, []);
 
-  // Continuous auto-save to central server (debounced by 800ms)
+  // Continuous auto-save to central server (debounced by 600ms) only on local edits
   useEffect(() => {
     if (!isHydratedFromServerRef.current) return;
+    if (isRemoteUpdateRef.current) {
+      isRemoteUpdateRef.current = false;
+      return;
+    }
+    if (!hasLocalChangesRef.current) {
+      return;
+    }
 
     const timer = setTimeout(async () => {
       try {
@@ -438,13 +455,14 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           lastServerUpdateRef.current = json.serverUpdatedAt;
           setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
           setSyncStatus('synced');
+          hasLocalChangesRef.current = false;
         } else {
           setSyncStatus('error');
         }
       } catch {
         setSyncStatus('offline');
       }
-    }, 800);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [
@@ -543,28 +561,49 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         manualAgeRecaps,
         syncLogs
       };
-      const res = await fetch('/api/school-data/sync', {
+
+      // 1. Post local changes to server
+      await fetch('/api/school-data/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (res.ok) {
-        const json = await res.json();
-        lastServerUpdateRef.current = json.serverUpdatedAt;
-        setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
-        setSyncStatus('synced');
 
-        addSyncLog({
-          wargaSekolah: currentActiveUser.name,
-          peran: currentActiveUser.role,
-          lingkup: 'Database Pusat',
-          jenisAksi: 'Sinkronisasi',
-          judul: 'Sinkronisasi Manual Database Server Terpusat',
-          rincianPerubahan: 'Data 395 siswa, guru, presensi, dan rekap umur tersinkronisasi online utuh.',
-          diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
-        });
-      } else {
-        setSyncStatus('error');
+      // 2. Immediately fetch the fresh unified database from server
+      const getRes = await fetch('/api/school-data');
+      if (getRes.ok) {
+        const json = await getRes.json();
+        if (json.success && json.data) {
+          const d = json.data;
+          isRemoteUpdateRef.current = true;
+          if (d.schoolProfile) setSchoolProfile(d.schoolProfile);
+          if (d.classes && Array.isArray(d.classes)) setClasses(d.classes);
+          if (d.teachers && Array.isArray(d.teachers)) setTeachers(d.teachers);
+          if (d.staff && Array.isArray(d.staff)) setStaff(d.staff);
+          if (d.students && Array.isArray(d.students)) setStudents(d.students);
+          if (d.teachingHours && Array.isArray(d.teachingHours)) setTeachingHours(d.teachingHours);
+          if (d.practices && Array.isArray(d.practices)) setPractices(d.practices);
+          if (d.berakhlakList && Array.isArray(d.berakhlakList)) setBerakhlakList(d.berakhlakList);
+          if (d.additionalTasks && Array.isArray(d.additionalTasks)) setAdditionalTasks(d.additionalTasks);
+          if (d.attendanceRecords && Array.isArray(d.attendanceRecords)) setAttendanceRecords(d.attendanceRecords);
+          if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
+          if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
+          if (d.syncLogs && Array.isArray(d.syncLogs)) setSyncLogs(d.syncLogs);
+          lastServerUpdateRef.current = d.serverUpdatedAt;
+          setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
+          setSyncStatus('synced');
+          hasLocalChangesRef.current = false;
+
+          addSyncLog({
+            wargaSekolah: currentActiveUser.name,
+            peran: currentActiveUser.role,
+            lingkup: 'Database Pusat',
+            jenisAksi: 'Sinkronisasi',
+            judul: 'Sinkronisasi Manual Database Server Terpusat',
+            rincianPerubahan: 'Data 395 siswa, guru, presensi, dan rekap umur tersinkronisasi online utuh untuk seluruh warga sekolah.',
+            diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+          });
+        }
       }
     } catch {
       setSyncStatus('offline');

@@ -13,7 +13,8 @@
     "desa": "Bantarjati",
     "kecamatan": "Klapanunggal",
     "kabupaten": "Kabupaten Bogor",
-    "provinsi": "Jawa Barat"
+    "provinsi": "Jawa Barat",
+    "logoUrl": "/logo_nambo_03.jpg"
   },
   "classes": [
     {
@@ -9721,5 +9722,127 @@
       "updatedAt": "2026-10-15T08:00:00Z"
     }
   ],
-  "serverUpdatedAt": "2026-10-16T07:38:01.755Z"
+  "syncLogs": [
+    {
+      "wargaSekolah": "AM. MEGA PURNAMATATI, S. Pd.,M.Pd.",
+      "peran": "Kepala Sekolah",
+      "lingkup": "Database Pusat",
+      "jenisAksi": "Sinkronisasi",
+      "judul": "Sinkronisasi Manual Database Server Terpusat",
+      "rincianPerubahan": "Data 395 siswa, guru, presensi, dan rekap umur tersinkronisasi online utuh.",
+      "diverifikasiKepsek": true,
+      "id": "log-1792137731642-84il",
+      "timestamp": "16/10/2026 15.02.11",
+      "statusSinkron": "Tersinkron ke Server"
+    },
+    {
+      "wargaSekolah": "AM. MEGA PURNAMATATI, S. Pd.,M.Pd.",
+      "peran": "Kepala Sekolah",
+      "lingkup": "Database Pusat",
+      "jenisAksi": "Sinkronisasi",
+      "judul": "Sinkronisasi Manual Database Server Terpusat",
+      "rincianPerubahan": "Data 395 siswa, guru, presensi, dan rekap umur tersinkronisasi online utuh.",
+      "diverifikasiKepsek": true,
+      "id": "log-1792137654466-ht01",
+      "timestamp": "16/10/2026 15.00.54",
+      "statusSinkron": "Tersinkron ke Server"
+    },
+    {
+      "id": "log-1",
+      "timestamp": "2026-10-16 07:15:20",
+      "wargaSekolah": "AM. MEGA PURNAMATATI, S. Pd.,M.Pd.",
+      "peran": "Kepala Sekolah",
+      "lingkup": "Database Pusat",
+      "jenisAksi": "Sinkronisasi",
+      "judul": "Sinkronisasi Master Database Semester Ganjil 2026/2027",
+      "rincianPerubahan": "Pembaruan data 395 siswa aktif dan validasi kelengkapan berkas Dapodik SDN Nambo 03",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": true,
+      "catatanKepsek": "Data telah divalidasi sesuai Buku Induk dan dokumen resmi sekolah.",
+      "waktuVerifikasi": "2026-10-16 07:16:00"
+    },
+    {
+      "id": "log-2",
+      "timestamp": "2026-10-16 07:30:15",
+      "wargaSekolah": "Hj. Siti Rohmah, S.Pd.SD",
+      "peran": "Guru Kelas",
+      "lingkup": "Kelas 1A",
+      "jenisAksi": "Ubah",
+      "judul": "Input Presensi Harian & Rekap Umur Siswa",
+      "rincianPerubahan": "Presensi harian Kelas 1A dicatat: Hadir 38 siswa (L: 20, P: 18), Sakit 0, Izin 0, Alpa 0. Rekap umur bulan Oktober 2026 diperbarui.",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": true,
+      "catatanKepsek": "Disetujui. Kehadiran 100% dipertahankan.",
+      "waktuVerifikasi": "2026-10-16 08:00:00"
+    },
+    {
+      "id": "log-3",
+      "timestamp": "2026-10-16 07:45:00",
+      "wargaSekolah": "Dewi Lestari, S.Pd.",
+      "peran": "Guru Kelas",
+      "lingkup": "Kelas 1B",
+      "jenisAksi": "Ubah",
+      "judul": "Pembaruan Data Biodata Siswa Kelas 1B",
+      "rincianPerubahan": "Memperbarui NISN dan alamat tempat tinggal siswa atas nama Bagas Aditya Pratama",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": true,
+      "catatanKepsek": "Sudah sesuai Kartu Keluarga orang tua siswa.",
+      "waktuVerifikasi": "2026-10-16 08:05:00"
+    },
+    {
+      "id": "log-4",
+      "timestamp": "2026-10-16 08:15:30",
+      "wargaSekolah": "Nurul Hidayah, S.Pd.",
+      "peran": "Guru Kelas",
+      "lingkup": "Kelas 2A",
+      "jenisAksi": "Ubah",
+      "judul": "Pengisian Catatan Kinerja Guru (Perencanaan & Target Perilaku)",
+      "rincianPerubahan": "Menambahkan target perilaku observasi: Keteraturan Suasana Kelas dan Eksplorasi Konsep",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": true,
+      "catatanKepsek": "Jadwal observasi disetujui pada tanggal 20 Oktober 2026.",
+      "waktuVerifikasi": "2026-10-16 08:30:00"
+    },
+    {
+      "id": "log-5",
+      "timestamp": "2026-10-16 08:45:10",
+      "wargaSekolah": "Asep Saepudin, S.Pd.",
+      "peran": "Guru Kelas",
+      "lingkup": "Kelas 4A",
+      "jenisAksi": "Ubah",
+      "judul": "Catatan Presensi Bulanan & Pelaksanaan Observasi Kelas",
+      "rincianPerubahan": "Pelaksanaan observasi pembelajaran IPAS berjalan efektif dengan skor 94.",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": true,
+      "catatanKepsek": "Observasi telah selesai dan umpan balik telah diunggah.",
+      "waktuVerifikasi": "2026-10-16 09:00:00"
+    },
+    {
+      "id": "log-6",
+      "timestamp": "2026-10-16 09:10:45",
+      "wargaSekolah": "Rizky Ramadhan",
+      "peran": "Operator Dapodik",
+      "lingkup": "Buku Induk Siswa",
+      "jenisAksi": "Import Excel",
+      "judul": "Sinkronisasi Data NISN & Dapodik Kemendikbud",
+      "rincianPerubahan": "Pengecekan konsistensi 395 data peserta didik aktif SDN Nambo 03 tanpa data ganda.",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": true,
+      "catatanKepsek": "Data Dapodik terpadu, tidak ada duplikasi.",
+      "waktuVerifikasi": "2026-10-16 09:15:00"
+    },
+    {
+      "id": "log-7",
+      "timestamp": "2026-10-16 09:30:00",
+      "wargaSekolah": "Drs. H. Mulyadi, M.M.Pd.",
+      "peran": "Guru Kelas",
+      "lingkup": "Kelas 6A",
+      "jenisAksi": "Ubah",
+      "judul": "Input Hasil Asesmen Formatif & Kehadiran Kelas 6A",
+      "rincianPerubahan": "Mencatat kehadiran 31 siswa Kelas 6A lengkap dan pemantauan persiapan ujian kelulusan.",
+      "statusSinkron": "Tersinkron ke Server",
+      "diverifikasiKepsek": false
+    }
+  ],
+  "serverUpdatedAt": "2026-10-16T08:02:13.517Z"
 }
