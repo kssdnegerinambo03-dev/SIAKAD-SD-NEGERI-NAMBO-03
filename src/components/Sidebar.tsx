@@ -12,10 +12,13 @@ import {
   Award,
   Database,
   Share2,
-  Server
+  Server,
+  LogOut,
+  UserCheck
 } from 'lucide-react';
 import { OfficialLogo } from './OfficialLogo';
 import { useSchool } from '../context/SchoolContext';
+import { AuthSession } from './LoginScreen';
 
 export type ActiveTab = 'dashboard' | 'input-data' | 'manajemen-kelas' | 'kepegawaian' | 'absensi-umur' | 'sinkronisasi';
 
@@ -27,6 +30,8 @@ interface SidebarProps {
   onOpenSettings: () => void;
   onOpenDatabaseSync: () => void;
   onOpenShare: () => void;
+  currentSession?: AuthSession | null;
+  onLogout?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -36,7 +41,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setIsOpenMobile,
   onOpenSettings,
   onOpenDatabaseSync,
-  onOpenShare
+  onOpenShare,
+  currentSession,
+  onLogout
 }) => {
   const { schoolProfile, students, teachers, classes, syncLogs } = useSchool();
 
@@ -202,25 +209,55 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
 
-        {/* Headmaster & Institutional Badge */}
-        <div className="p-4 border-t border-slate-800/80 bg-slate-900/70">
-          <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/60 space-y-1.5">
-            <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
-              <Award className="w-4 h-4 text-amber-400" />
-              <span>Kepala Sekolah</span>
+        {/* User Identity & Institutional Section */}
+        <div className="p-4 border-t border-slate-800/80 bg-slate-900/70 space-y-3">
+          {/* Dynamic Active Logged-in Teacher / User Profile */}
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-2xl p-3 border border-emerald-500/40 shadow-inner space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-400">
+                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Pengguna Aktif</span>
+              </div>
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Terverifikasi</span>
+              </span>
             </div>
-            <div className="text-xs font-bold text-white truncate" title={schoolProfile.kepalaSekolah}>
-              {schoolProfile.kepalaSekolah}
-            </div>
-            <div className="text-[10px] font-mono text-slate-400 truncate">
-              NIP: {schoolProfile.nipKepalaSekolah}
+
+            <div className="space-y-0.5">
+              <div
+                className="text-xs font-extrabold text-white truncate"
+                title={currentSession?.user.name || schoolProfile.kepalaSekolah}
+              >
+                {currentSession?.user.name || schoolProfile.kepalaSekolah}
+              </div>
+              <div className="text-[11px] font-semibold text-emerald-200 truncate">
+                {currentSession?.user.jabatan || 'Pendidik & Tenaga Kependidikan'}
+              </div>
+              <div className="text-[10px] font-mono text-slate-400 truncate flex items-center justify-between pt-0.5">
+                <span>NIP: {currentSession?.user.nip && currentSession?.user.nip !== '-' ? currentSession.user.nip : 'Honorer/PTK'}</span>
+                {currentSession?.user.statusKepegawaian && (
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                    {currentSession.user.statusKepegawaian}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="mt-3 space-y-2">
+          {/* Quick Institutional Headmaster Info (if not already logged in as Headmaster) */}
+          {currentSession?.user.role !== 'Kepala Sekolah' && (
+            <div className="bg-slate-950/40 rounded-xl px-2.5 py-1.5 border border-slate-800/70 text-[10px] flex items-center justify-between text-slate-400">
+              <span className="truncate">Kepsek: <strong className="text-slate-200">{schoolProfile.kepalaSekolah}</strong></span>
+              <span className="text-amber-400 font-bold shrink-0 ml-1">PNS</span>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="space-y-2">
             <button
               onClick={onOpenShare}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900/80 rounded-xl transition-colors border border-emerald-600/50 shadow-xs"
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900/80 rounded-xl transition-colors border border-emerald-600/50 shadow-xs cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5 text-emerald-400" />
               <span>Bagikan Aplikasi & Data</span>
@@ -228,7 +265,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={onOpenDatabaseSync}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-blue-300 hover:text-white bg-blue-900/40 hover:bg-blue-900/60 rounded-xl transition-colors border border-blue-700/50 shadow-xs"
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-blue-300 hover:text-white bg-blue-900/40 hover:bg-blue-900/60 rounded-xl transition-colors border border-blue-700/50 shadow-xs cursor-pointer"
             >
               <Database className="w-3.5 h-3.5 text-blue-400" />
               <span>Database & Arsip 1 TA</span>
@@ -236,11 +273,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={onOpenSettings}
-              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 text-xs font-medium text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700/50"
+              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 text-xs font-medium text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700/50 cursor-pointer"
             >
               <Settings className="w-3.5 h-3.5" />
               <span>Profil Sekolah & Logo</span>
             </button>
+
+            {/* Logout / Switch Account Button */}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/50 hover:bg-rose-900/80 rounded-xl transition-all border border-rose-800/60 shadow-xs cursor-pointer active:scale-98"
+                title="Hapus sesi login dan kembali ke Halaman Akses/Login awal"
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                <span>Keluar / Ganti Akun</span>
+              </button>
+            )}
           </div>
         </div>
       </aside>

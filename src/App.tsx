@@ -13,6 +13,7 @@ import { StaffManagementView } from './components/StaffManagementView';
 import { AttendanceView } from './components/AttendanceView';
 import { SyncMonitoringView } from './components/SyncMonitoringView';
 import { OfficialLogo } from './components/OfficialLogo';
+import { LoginScreen, AuthSession, AUTH_STORAGE_KEY } from './components/LoginScreen';
 import {
   LayoutDashboard,
   UserPlus,
@@ -26,12 +27,39 @@ import {
 } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
+  const [session, setSession] = useState<AuthSession | null>(() => {
+    try {
+      const local = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (local) return JSON.parse(local);
+      const sess = sessionStorage.getItem(AUTH_STORAGE_KEY);
+      if (sess) return JSON.parse(sess);
+    } catch {
+      // fallback
+    }
+    return null;
+  });
+
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [isOpenMobile, setIsOpenMobile] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDatabaseSyncOpen, setIsDatabaseSyncOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const { schoolProfile } = useSchool();
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+    setSession(null);
+  };
+
+  // If user is not authenticated, show Lock/Login Screen and lock the dashboard
+  if (!session || !session.isAuthenticated) {
+    return <LoginScreen onLoginSuccess={newSession => setSession(newSession)} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col lg:flex-row antialiased">
@@ -44,6 +72,8 @@ const MainAppContent: React.FC = () => {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDatabaseSync={() => setIsDatabaseSyncOpen(true)}
         onOpenShare={() => setIsShareOpen(true)}
+        currentSession={session}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
@@ -54,6 +84,8 @@ const MainAppContent: React.FC = () => {
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenDatabaseSync={() => setIsDatabaseSyncOpen(true)}
           onOpenShare={() => setIsShareOpen(true)}
+          currentSession={session}
+          onLogout={handleLogout}
         />
 
         {/* View Content */}
