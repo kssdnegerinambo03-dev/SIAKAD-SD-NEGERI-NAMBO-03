@@ -1,0 +1,105 @@
+9. KODING DAN KECERDASAN ARTIFISIAL
+No Elemen Deskrifsi Capaian Pembelajaran
+1. Berpikir
+Komputasional
+Kerangka berfikir sistematis yang
+menggabungkan dekomposisi,
+abstraksi, identifikasi pola, dan
+perancangan algoritma untuk
+merumuskan solusi permasalahan
+kompleks yang dapat dijalankan oleh
+manusia atau mesin.
+Berpikir komputasional dilakukan
+dengan mengintegrasikan logika,
+kreativitas berdasarkan data, dan
+analisis sebagai tindakan
+komputasional untuk memecahkan
+permasalahan lintas bidang secara
+efektif baik mandiri maupun kolaboratif
+FASE C
+Memahami permasalahan sederhana
+dalam kehidupan sehari-hari,
+menerapkan pemecahan masalah
+secara sistematis, serta menuliskan
+instruksi logis dan terstruktur
+menggunakan sekumpulan kosakata
+atau simbol.
+2. Literasi Digital Kecakapan bermedia digital yang
+berfokus pada produksi dan diseminasi
+konten digital dengan memahami etika
+dan keamanan digital.
+FASE C
+Memahami konsep dasar, manfaat,
+dan dampak teknologi digital,
+memahami sistem komputer tingkat
+pradasar, menerapkan pengamanan
+informasi pribadi dalam komunikasi
+daring, memanfaatkan internet, dan
+memproduksi serta mendiseminasi
+konten digital dalam bentuk teks dan
+gambar.
+3. Algoritma
+Pemrograman
+Mengembangkan solusi dari berbagai
+persoalan dengan membaca bermakna
+dan menulis instruksi yang logis,
+sistematis, bertahap, konvergen, dan
+linier berdasarkan paradigma
+pemrograman yang meningkat secara
+berjenjang, serta dapat dikerjakan
+secara mandiri atau berkolaborasi
+dengan yang lain.
+4. Analisis Data Kemampuan untuk menstrukturkan,
+menginput, memproses (antara lain
+menganalisis, mengambil kesimpulan,
+membuat keputusan, dan
+memprediksi), dan menyajikan data
+secara bermakna.
+5. Literasi dan
+Etika
+Kecerdasan
+Artifisial
+Mengetahui konsep dasar KA,
+bagaimana KA bekerja, manfaat dan
+dampak KA, serta sikap kritis dan etika
+dalam pemanfaatan KA.`
+FASE C
+Kecerdasan Artifisial Memahami
+konsep KA sederhana, manfaat dan
+dampak KA pada kehidupan sehari-
+hari, prinsip bahwa KA dikembangkan
+untuk meningkatkan kesejahteraan
+manusia daN tidak boleh
+merugikan
+manusia, mengetahui
+perbedaan manusia dan
+komputer dalam
+melakukan penginderaan, da
+mengetahui perbedaan
+antara mesin cerdas dan mesin non-
+cerdas. Memahami etika dasar
+penggunaan KA seperti empati dan
+tidak menyakiti orang lain.
+
+-- 26 of 27 --
+
+6. Pemanfaatan
+dan
+Pengembangan
+Kecerdasan
+Artifisial
+Kemampuan memanfaatkan KA untuk
+penyelesaian masalah dan peningkatan
+efisiensi pada kehidupan nyata, serta
+menciptakan dan memperbaiki sistem
+KA.
+FASE C
+Menyimulasikan secara sederhana
+kerja KA saat mengenali pola,
+mengklasifikasi benda konkret
+berdasarkan sifatnya, dan mengetahui
+bagaimana prediksi sistem KA
+dipengaruhi input benda konkret.
+
+-- 27 of 27 --
+

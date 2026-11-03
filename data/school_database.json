@@ -4,17 +4,18 @@
     "npsn": "20200352",
     "kepalaSekolah": "AM. MEGA PURNAMATATI, S. Pd.,M.Pd.",
     "nipKepalaSekolah": "198607172014062001",
-    "alamat": "Jl. Raya Nambo Bantarkopo RT 001/004 Desa Bantarjati Kecamatan Klapanunggal Kabupaten Bogor",
+    "alamat": "Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati Kecamatan Klapanunggal Kabupaten Bogor 16871",
     "tahunAjaran": "2026-2027",
     "semester": "Ganjil",
-    "email": "kssdnegerinambo03@gmail.com",
+    "email": "sdnnambo03bantarjati@gmail.com",
     "telepon": "(021) 82490352",
-    "kodePos": "16710",
+    "kodePos": "16871",
     "desa": "Bantarjati",
     "kecamatan": "Klapanunggal",
     "kabupaten": "Kabupaten Bogor",
     "provinsi": "Jawa Barat",
-    "logoUrl": "/logo_nambo_03.jpg"
+    "logoUrl": "/logo_nambo_03.jpg",
+    "nss": "101020232021"
   },
   "classes": [
     {

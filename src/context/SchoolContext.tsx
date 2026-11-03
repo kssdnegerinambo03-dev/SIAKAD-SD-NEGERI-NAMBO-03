@@ -13,7 +13,11 @@ import {
   TeacherReportCard,
   ManualAgeRecap,
   SyncAuditLog,
-  SchoolRole
+  SchoolRole,
+  LearningObjectiveTP,
+  ProtaRecord,
+  PromesRecord,
+  DeepLearningModule
 } from '../types';
 import {
   initialSchoolProfile,
@@ -30,6 +34,12 @@ import {
   initialManualAgeRecaps,
   initialSyncLogs
 } from '../data/initialData';
+import {
+  initialTujuanPembelajaran,
+  initialProtaRecords,
+  initialPromesRecords,
+  initialDeepLearningModules
+} from '../data/curriculumData';
 import { downloadMasterExcelArchive } from '../utils/excelUtils';
 
 interface DuplicateAlertModalData {
@@ -150,6 +160,19 @@ interface SchoolContextType {
   deleteSyncLog: (id: string) => void;
   clearAllSyncLogs: () => void;
 
+  // Curriculum & Deep Learning (Perangkat Ajar Mendalam)
+  tujuanList: LearningObjectiveTP[];
+  addTujuanPembelajaran: (tp: Omit<LearningObjectiveTP, 'id'>) => void;
+  updateTujuanPembelajaran: (id: string, updated: Partial<LearningObjectiveTP>) => void;
+  deleteTujuanPembelajaran: (id: string) => void;
+  protaList: ProtaRecord[];
+  saveProtaRecord: (record: ProtaRecord) => void;
+  promesList: PromesRecord[];
+  savePromesRecord: (record: PromesRecord) => void;
+  modulAjarList: DeepLearningModule[];
+  saveModulAjar: (modul: DeepLearningModule) => void;
+  deleteModulAjar: (id: string) => void;
+
   // General App Helpers
   resetAllToDefaults: () => void;
 }
@@ -161,7 +184,21 @@ const STORAGE_KEY_PREFIX = 'sdn_nambo03_siakad_';
 export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [schoolProfile, setSchoolProfile] = useState<SchoolProfile>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}profile`);
-    return saved ? JSON.parse(saved) : initialSchoolProfile;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...initialSchoolProfile,
+          ...parsed,
+          nss: parsed.nss || initialSchoolProfile.nss,
+          email: parsed.email && parsed.email !== 'kssdnegerinambo03@gmail.com' ? parsed.email : initialSchoolProfile.email,
+          alamat: parsed.alamat && parsed.alamat.includes('Bantarjati') ? parsed.alamat : initialSchoolProfile.alamat
+        };
+      } catch {
+        return initialSchoolProfile;
+      }
+    }
+    return initialSchoolProfile;
   });
 
   const [classes, setClasses] = useState<ClassGroup[]>(() => {
@@ -222,6 +259,37 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [syncLogs, setSyncLogs] = useState<SyncAuditLog[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}sync_logs`);
     return saved ? JSON.parse(saved) : initialSyncLogs;
+  });
+
+  // Curriculum & Deep Learning States
+  const [tujuanList, setTujuanList] = useState<LearningObjectiveTP[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}tujuan_pembelajaran`);
+    if (saved) {
+      try {
+        const parsed: LearningObjectiveTP[] = JSON.parse(saved);
+        const existingIds = new Set(parsed.map(t => t.id));
+        const missingFromInitial = initialTujuanPembelajaran.filter(t => !existingIds.has(t.id));
+        return [...parsed, ...missingFromInitial];
+      } catch {
+        return initialTujuanPembelajaran;
+      }
+    }
+    return initialTujuanPembelajaran;
+  });
+
+  const [protaList, setProtaList] = useState<ProtaRecord[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}prota_records`);
+    return saved ? JSON.parse(saved) : initialProtaRecords;
+  });
+
+  const [promesList, setPromesList] = useState<PromesRecord[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}promes_records`);
+    return saved ? JSON.parse(saved) : initialPromesRecords;
+  });
+
+  const [modulAjarList, setModulAjarList] = useState<DeepLearningModule[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}modul_ajar_dl`);
+    return saved ? JSON.parse(saved) : initialDeepLearningModules;
   });
 
   const [currentActiveUser, setCurrentActiveUser] = useState<{ name: string; role: SchoolRole; label: string }>(() => {
@@ -288,6 +356,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem(`${STORAGE_KEY_PREFIX}manual_age_recaps`, JSON.stringify(manualAgeRecaps));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}sync_logs`, JSON.stringify(syncLogs));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}current_user`, JSON.stringify(currentActiveUser));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}tujuan_pembelajaran`, JSON.stringify(tujuanList));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}prota_records`, JSON.stringify(protaList));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}promes_records`, JSON.stringify(promesList));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}modul_ajar_dl`, JSON.stringify(modulAjarList));
   }, [
     schoolProfile,
     classes,
@@ -302,7 +374,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     teacherReportCards,
     manualAgeRecaps,
     syncLogs,
-    currentActiveUser
+    currentActiveUser,
+    tujuanList,
+    protaList,
+    promesList,
+    modulAjarList
   ]);
 
   // Initial load from central server + background polling for collaborative sync
@@ -332,6 +408,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
               if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
               if (d.syncLogs && Array.isArray(d.syncLogs)) setSyncLogs(d.syncLogs);
+              if (d.tujuanList && Array.isArray(d.tujuanList)) setTujuanList(d.tujuanList);
+              if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
+              if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
+              if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
               lastServerUpdateRef.current = d.serverUpdatedAt || null;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
@@ -352,7 +432,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               attendanceRecords,
               teacherReportCards,
               manualAgeRecaps,
-              syncLogs
+              syncLogs,
+              tujuanList,
+              protaList,
+              promesList,
+              modulAjarList
             };
             await fetch('/api/school-data/sync', {
               method: 'POST',
@@ -398,6 +482,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
               if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
               if (d.syncLogs && Array.isArray(d.syncLogs)) setSyncLogs(d.syncLogs);
+              if (d.tujuanList && Array.isArray(d.tujuanList)) setTujuanList(d.tujuanList);
+              if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
+              if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
+              if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
               lastServerUpdateRef.current = d.serverUpdatedAt;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
@@ -443,7 +531,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           attendanceRecords,
           teacherReportCards,
           manualAgeRecaps,
-          syncLogs
+          syncLogs,
+          tujuanList,
+          protaList,
+          promesList,
+          modulAjarList
         };
         const res = await fetch('/api/school-data/sync', {
           method: 'POST',
@@ -478,7 +570,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     attendanceRecords,
     teacherReportCards,
     manualAgeRecaps,
-    syncLogs
+    syncLogs,
+    tujuanList,
+    protaList,
+    promesList,
+    modulAjarList
   ]);
 
   const addSyncLog = (log: Omit<SyncAuditLog, 'id' | 'timestamp' | 'statusSinkron'>) => {
@@ -559,7 +655,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         attendanceRecords,
         teacherReportCards,
         manualAgeRecaps,
-        syncLogs
+        syncLogs,
+        tujuanList,
+        protaList,
+        promesList,
+        modulAjarList
       };
 
       // 1. Post local changes to server
@@ -589,6 +689,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (d.teacherReportCards && Array.isArray(d.teacherReportCards)) setTeacherReportCards(d.teacherReportCards);
           if (d.manualAgeRecaps && Array.isArray(d.manualAgeRecaps)) setManualAgeRecaps(d.manualAgeRecaps);
           if (d.syncLogs && Array.isArray(d.syncLogs)) setSyncLogs(d.syncLogs);
+          if (d.tujuanList && Array.isArray(d.tujuanList)) setTujuanList(d.tujuanList);
+          if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
+          if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
+          if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
           lastServerUpdateRef.current = d.serverUpdatedAt;
           setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
           setSyncStatus('synced');
@@ -625,6 +729,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       teacherReportCards,
       manualAgeRecaps,
       syncLogs,
+      tujuanList,
+      protaList,
+      promesList,
+      modulAjarList,
       exportedAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -669,6 +777,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (parsed.teacherReportCards && Array.isArray(parsed.teacherReportCards)) setTeacherReportCards(parsed.teacherReportCards);
           if (parsed.manualAgeRecaps && Array.isArray(parsed.manualAgeRecaps)) setManualAgeRecaps(parsed.manualAgeRecaps);
           if (parsed.syncLogs && Array.isArray(parsed.syncLogs)) setSyncLogs(parsed.syncLogs);
+          if (parsed.tujuanList && Array.isArray(parsed.tujuanList)) setTujuanList(parsed.tujuanList);
+          if (parsed.protaList && Array.isArray(parsed.protaList)) setProtaList(parsed.protaList);
+          if (parsed.promesList && Array.isArray(parsed.promesList)) setPromesList(parsed.promesList);
+          if (parsed.modulAjarList && Array.isArray(parsed.modulAjarList)) setModulAjarList(parsed.modulAjarList);
 
           // Sync to server immediately
           await fetch('/api/school-data/sync', {
@@ -1562,9 +1674,148 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setAttendanceRecords(initialAttendanceRecords);
       setTeacherReportCards(initialTeacherReportCards);
       setManualAgeRecaps(initialManualAgeRecaps);
+      setTujuanList(initialTujuanPembelajaran);
+      setProtaList(initialProtaRecords);
+      setPromesList(initialPromesRecords);
+      setModulAjarList(initialDeepLearningModules);
       localStorage.clear();
       fetch('/api/school-data/reset', { method: 'POST' }).catch(() => {});
       alert('Data berhasil direset ke pengaturan awal SD Negeri Nambo 03.');
+    }
+  };
+
+  // =====================
+  // CURRICULUM & DEEP LEARNING (PERANGKAT AJAR MENDALAM)
+  // =====================
+  const addTujuanPembelajaran = (tp: Omit<LearningObjectiveTP, 'id'>) => {
+    const newTP: LearningObjectiveTP = {
+      ...tp,
+      id: `tp-${Date.now()}`
+    };
+    setTujuanList(prev => [...prev, newTP]);
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: `Perangkat Ajar (${tp.mataPelajaran})`,
+      jenisAksi: 'Tambah',
+      judul: `Tambah TP ${tp.kodeTP}`,
+      rincianPerubahan: `Menambahkan Tujuan Pembelajaran baru: "${tp.tujuanDeskripsi.slice(0, 80)}..." untuk ${tp.kelasTarget}`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const updateTujuanPembelajaran = (id: string, updated: Partial<LearningObjectiveTP>) => {
+    setTujuanList(prev => prev.map(item => item.id === id ? { ...item, ...updated } : item));
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: `Perangkat Ajar`,
+      jenisAksi: 'Ubah',
+      judul: `Perbarui TP ${updated.kodeTP || id}`,
+      rincianPerubahan: `Menyesuaikan deskripsi/indikator capaian TP`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const deleteTujuanPembelajaran = (id: string) => {
+    const existing = tujuanList.find(t => t.id === id);
+    setTujuanList(prev => prev.filter(t => t.id !== id));
+    markLocalChange();
+    if (existing) {
+      addSyncLog({
+        wargaSekolah: currentActiveUser.name,
+        peran: currentActiveUser.role,
+        lingkup: `Perangkat Ajar`,
+        jenisAksi: 'Hapus',
+        judul: `Hapus TP ${existing.kodeTP}`,
+        rincianPerubahan: `Menghapus Tujuan Pembelajaran ${existing.kodeTP} (${existing.mataPelajaran})`,
+        diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+      });
+    }
+  };
+
+  const saveProtaRecord = (record: ProtaRecord) => {
+    setProtaList(prev => {
+      const idx = prev.findIndex(p => p.id === record.id || (p.kelasId === record.kelasId && p.mataPelajaran === record.mataPelajaran && p.tahunAjaran === record.tahunAjaran));
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = { ...record, updatedAt: new Date().toISOString() };
+        return updated;
+      }
+      return [...prev, { ...record, updatedAt: new Date().toISOString() }];
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: `Program Tahunan (Prota)`,
+      jenisAksi: 'Ubah',
+      judul: `Simpan Prota ${record.mataPelajaran}`,
+      rincianPerubahan: `Menyimpan alokasi Prota TA ${record.tahunAjaran} Kelas ID ${record.kelasId} (Total ${record.totalJPEfektif} JP)`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const savePromesRecord = (record: PromesRecord) => {
+    setPromesList(prev => {
+      const idx = prev.findIndex(p => p.id === record.id || (p.kelasId === record.kelasId && p.mataPelajaran === record.mataPelajaran && p.semester === record.semester && p.tahunAjaran === record.tahunAjaran));
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = { ...record, updatedAt: new Date().toISOString() };
+        return updated;
+      }
+      return [...prev, { ...record, updatedAt: new Date().toISOString() }];
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: `Program Semester (Promes)`,
+      jenisAksi: 'Ubah',
+      judul: `Simpan Promes ${record.mataPelajaran} (${record.semester})`,
+      rincianPerubahan: `Menyimpan distribusi mingguan Promes ${record.mataPelajaran} Semester ${record.semester}`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const saveModulAjar = (modul: DeepLearningModule) => {
+    setModulAjarList(prev => {
+      const idx = prev.findIndex(m => m.id === modul.id || m.kodeModul === modul.kodeModul);
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = { ...modul, updatedAt: new Date().toISOString() };
+        return updated;
+      }
+      return [...prev, { ...modul, updatedAt: new Date().toISOString() }];
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: `Modul Ajar Deep Learning`,
+      jenisAksi: 'Ubah',
+      judul: `Simpan Modul Ajar: ${modul.kodeModul}`,
+      rincianPerubahan: `Menyimpan Modul Ajar Pembelajaran Mendalam Mapel ${modul.mataPelajaran} (${modul.kelasNama}) lengkap dengan 4 pilar olah, rubrik 4 level & LKPD`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const deleteModulAjar = (id: string) => {
+    const existing = modulAjarList.find(m => m.id === id);
+    setModulAjarList(prev => prev.filter(m => m.id !== id));
+    markLocalChange();
+    if (existing) {
+      addSyncLog({
+        wargaSekolah: currentActiveUser.name,
+        peran: currentActiveUser.role,
+        lingkup: `Modul Ajar Deep Learning`,
+        jenisAksi: 'Hapus',
+        judul: `Hapus Modul Ajar: ${existing.kodeModul}`,
+        rincianPerubahan: `Menghapus modul ajar ${existing.kodeModul} (${existing.mataPelajaran})`,
+        diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+      });
     }
   };
 
@@ -1653,7 +1904,18 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         verifySyncLogByKepsek,
         verifyAllSyncLogsByKepsek,
         deleteSyncLog,
-        clearAllSyncLogs
+        clearAllSyncLogs,
+        tujuanList,
+        addTujuanPembelajaran,
+        updateTujuanPembelajaran,
+        deleteTujuanPembelajaran,
+        protaList,
+        saveProtaRecord,
+        promesList,
+        savePromesRecord,
+        modulAjarList,
+        saveModulAjar,
+        deleteModulAjar
       }}
     >
       {children}

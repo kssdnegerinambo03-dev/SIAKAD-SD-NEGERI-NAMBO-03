@@ -163,6 +163,7 @@ export interface AttendanceRecord {
 export interface SchoolProfile {
   namaSekolah: string;
   npsn: string;
+  nss?: string;
   kepalaSekolah: string;
   nipKepalaSekolah: string;
   alamat: string;
@@ -238,3 +239,158 @@ export interface SyncAuditLog {
   catatanKepsek?: string;
   waktuVerifikasi?: string;
 }
+
+// ==========================================
+// KURIKULUM MERDEKA & PEMBELAJARAN MENDALAM
+// (DEEP LEARNING TA 2026-2027 KEMENDIKBUD)
+// ==========================================
+
+export type CurriculumFase = 'Fase A' | 'Fase B' | 'Fase C';
+
+export interface LearningOutcomeCP {
+  id: string;
+  fase: CurriculumFase;
+  kelas: string[]; // e.g. ['Kelas 1', 'Kelas 2']
+  mataPelajaran: string;
+  elemen: string;
+  deskripsiCP: string;
+}
+
+export interface LearningObjectiveTP {
+  id: string;
+  cpId: string;
+  kodeTP: string; // e.g. 'TP-KA.1.1'
+  mataPelajaran: string;
+  fase: CurriculumFase;
+  kelasTarget: string; // e.g. 'Kelas 1'
+  semester: 'Ganjil' | 'Genap';
+  materiPokok: string;
+  tujuanDeskripsi: string;
+  alokasiJP: number;
+  dimensiProfilLulusan: string[];
+  indikatorKetercapaian: string[];
+  urutanATP: number;
+}
+
+export interface ProtaItem {
+  id: string;
+  kodeTP: string;
+  materiPokok: string;
+  semester: 'Ganjil' | 'Genap';
+  alokasiJP: number;
+  perkiraanBulan: string; // e.g. 'Juli - Agustus'
+}
+
+export interface ProtaRecord {
+  id: string;
+  kelasId: string;
+  mataPelajaran: string;
+  tahunAjaran: string; // '2026-2027'
+  guruPengampu: string;
+  totalJPEfektif: number;
+  items: ProtaItem[];
+  catatan?: string;
+  updatedAt: string;
+}
+
+export interface PromesItem {
+  id: string;
+  kodeTP: string;
+  materiPokok: string;
+  alokasiJP: number;
+  // Distribution of JP by Month and Week: key format "M1_W1" to "M6_W5"
+  distribusiMingguan: Record<string, number>;
+}
+
+export interface PromesRecord {
+  id: string;
+  kelasId: string;
+  mataPelajaran: string;
+  tahunAjaran: string; // '2026-2027'
+  semester: 'Ganjil' | 'Genap';
+  guruPengampu: string;
+  totalJPSemester: number;
+  items: PromesItem[];
+  agendaKhusus?: Record<string, string>; // e.g. STS, SAS, Libur Semester
+  catatan?: string;
+  updatedAt: string;
+}
+
+export interface AssessmentRubricLevel {
+  aspek: string;
+  perluBimbingan: string; // 0 - 69
+  cukup: string; // 70 - 79
+  baik: string; // 80 - 89
+  sangatBaik: string; // 90 - 100
+}
+
+export interface DeepLearningModule {
+  id: string;
+  tpId: string;
+  kodeModul: string;
+  mataPelajaran: string;
+  kelasId: string;
+  kelasNama: string;
+  fase: CurriculumFase;
+  alokasiWaktu: string; // e.g. '2 JP (2 x 35 Menit)'
+  pertemuanKe: number;
+  tahunAjaran: string;
+  semester: 'Ganjil' | 'Genap';
+  tanggalAjar?: string;
+
+  // I. Identifikasi
+  guruPenyusun: string;
+  nipGuruPenyusun: string;
+  kepalaSekolah: string;
+  nipKepalaSekolah: string;
+  kesiapanBelajarMurid: string;
+  dimensiProfilLulusan: string[];
+  prinsipDeepLearning: {
+    mindful: string; // Berkesadaran
+    meaningful: string; // Bermakna
+    joyful: string; // Menggembirakan
+    olahDimensi: string[]; // ['Olahpikir', 'Olahhati', 'Olahrasa', 'Olahraga']
+  };
+
+  // II. Desain Pembelajaran
+  desainPembelajaran: {
+    tujuanSpesifik: string;
+    praktikPedagogis: string; // Problem Based Learning, Unplugged Coding, dsb.
+    lingkunganBelajar: string;
+    kemitraan: string;
+    pemanfaatanDigitalAI: string;
+  };
+
+  // III. Pengalaman Belajar (Siklus Memahami, Mengaplikasi, Merefleksi)
+  pengalamanBelajar: {
+    kegiatanAwal: {
+      alokasiMenit: number;
+      langkah: string[];
+      pertanyaanPemantik: string[];
+    };
+    kegiatanInti: {
+      alokasiMenit: number;
+      memahami: string[]; // Mindful & Bermakna
+      mengaplikasi: string[]; // Joyful & Bermakna (coding/praktik)
+      merefleksi: string[]; // Mindful & Joyful
+    };
+    kegiatanPenutup: {
+      alokasiMenit: number;
+      langkah: string[];
+      tindakLanjut: string;
+    };
+  };
+
+  // IV. Asesmen & Bahan Ajar Autentik
+  asesmenAutentik: {
+    formatifAwal: string;
+    formatifProses: string;
+    sumatif: string;
+    rubrik: AssessmentRubricLevel[];
+    bahanAjarRingkas: string;
+    lembarKerjaSiswa: string;
+  };
+
+  updatedAt: string;
+}
+

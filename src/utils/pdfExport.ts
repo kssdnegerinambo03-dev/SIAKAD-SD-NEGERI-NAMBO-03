@@ -205,29 +205,34 @@ export function printOfficialDocument(options: PrintReportOptions) {
   </style>
 </head>
 <body>
-  <!-- KOP SURAT RESMI -->
-  <table class="header-table">
+  <!-- KOP SURAT RESMI PEMERINTAH KABUPATEN BOGOR & SD NEGERI NAMBO 03 -->
+  <table class="header-table" style="width: 100%; border-collapse: collapse;">
     <tr>
-      <td class="logo-cell">
-        <svg viewBox="0 0 200 200" class="logo-img" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="100" cy="100" r="94" fill="#0B2F64" stroke="#EAB308" stroke-width="6"/>
-          <path d="M 100 40 L 148 68 L 132 136 L 100 156 L 68 136 L 52 68 Z" fill="#D97706" stroke="#FACC15" stroke-width="4"/>
-          <path d="M 100 46 L 142 71 L 128 131 L 100 149 L 72 131 L 58 71 Z" fill="#0284C7" stroke="#FFFFFF" stroke-width="1.5"/>
-          <path d="M 78 116 C 88 112 96 112 100 118 C 104 112 112 112 122 116 L 122 130 C 112 126 104 126 100 131 C 96 126 88 126 78 130 Z" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-          <path d="M 100 68 C 94 77 91 85 95 94 C 97 99 100 101 100 101 C 100 101 103 99 105 94 C 109 85 106 77 100 68 Z" fill="#EF4444"/>
-          <text x="100" y="180" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">SDN NAMBO 03</text>
-        </svg>
+      <td style="width: 85px; text-align: center; vertical-align: middle;">
+        <img src="/logo_kab_bogor.png" alt="Lambang Kabupaten Bogor" style="width: 75px; height: 95px; object-fit: contain;" />
       </td>
-      <td class="instansi-cell">
-        <div class="instansi-1">PEMERINTAH KABUPATEN BOGOR</div>
-        <div class="instansi-2">DINAS PENDIDIKAN</div>
-        <div class="sekolah-name">${schoolProfile.namaSekolah.toUpperCase()}</div>
-        <div class="instansi-address">${schoolProfile.alamat}</div>
-        <div class="instansi-meta">NPSN: <strong>${schoolProfile.npsn}</strong> | Kode Pos: ${schoolProfile.kodePos} | Email: ${schoolProfile.email}</div>
+      <td class="instansi-cell" style="text-align: center; vertical-align: middle; padding: 0 10px;">
+        <div style="font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">PEMERINTAH KABUPATEN BOGOR</div>
+        <div style="font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">DINAS PENDIDIKAN</div>
+        <div style="font-size: 18pt; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 2px 0;">SD NEGERI NAMBO 03</div>
+        <div style="font-size: 14pt; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase;">KECAMATAN KLAPANUNGGAL</div>
+        <div style="font-size: 9.5pt; margin-top: 2px;">Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati</div>
+        <div style="font-size: 9.5pt;">Kecamatan Klapanunggal Kabupaten Bogor 16871</div>
+        <div style="font-size: 9.5pt;">Email: sdnnambo03bantarjati@gmail.com</div>
+        <table style="width: 100%; margin-top: 3px; border-top: 1px solid #000000; font-size: 9.5pt; font-weight: bold;">
+          <tr>
+            <td style="text-align: left; padding: 2px 4px; border: none;">NPSN : ${schoolProfile.npsn || '20200352'}</td>
+            <td style="text-align: right; padding: 2px 4px; border: none;">NSS : ${schoolProfile.nss || '101020232021'}</td>
+          </tr>
+        </table>
+      </td>
+      <td style="width: 85px; text-align: center; vertical-align: middle;">
+        <img src="/logo_nambo_03.jpg" alt="Lambang Resmi SD Negeri Nambo 03" style="width: 75px; height: 75px; object-fit: contain;" />
       </td>
     </tr>
   </table>
-  <hr class="double-line" />
+  <div style="width: 100%; border-top: 3px solid #000000; margin-top: 2px;"></div>
+  <div style="width: 100%; border-top: 1px solid #000000; margin-top: 2px; margin-bottom: 16px;"></div>
 
   <!-- DOKUMEN JUDUL -->
   <div class="doc-meta">

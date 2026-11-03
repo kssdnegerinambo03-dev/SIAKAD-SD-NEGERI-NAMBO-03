@@ -126,6 +126,16 @@ export const SchoolSettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onCl
             </div>
 
             <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">NSS (Nomor Statistik Sekolah)</label>
+              <input
+                type="text"
+                value={formData.nss || '101020232021'}
+                onChange={e => setFormData({ ...formData, nss: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 font-mono font-bold"
+              />
+            </div>
+
+            <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">Nama Kepala Sekolah</label>
               <input
                 type="text"

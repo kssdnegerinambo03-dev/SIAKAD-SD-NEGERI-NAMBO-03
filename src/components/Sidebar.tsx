@@ -14,13 +14,14 @@ import {
   Share2,
   Server,
   LogOut,
-  UserCheck
+  UserCheck,
+  BookOpenCheck
 } from 'lucide-react';
 import { OfficialLogo } from './OfficialLogo';
 import { useSchool } from '../context/SchoolContext';
 import { AuthSession } from './LoginScreen';
 
-export type ActiveTab = 'dashboard' | 'input-data' | 'manajemen-kelas' | 'kepegawaian' | 'absensi-umur' | 'sinkronisasi';
+export type ActiveTab = 'dashboard' | 'input-data' | 'manajemen-kelas' | 'kepegawaian' | 'absensi-umur' | 'sinkronisasi' | 'perangkat-ajar';
 
 interface SidebarProps {
   activeTab: ActiveTab;
@@ -82,6 +83,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: `${totalGuru} GTK`
     },
     {
+      id: 'perangkat-ajar' as ActiveTab,
+      label: 'Perangkat Ajar Mendalam',
+      sublabel: 'Prota, Promes, Koding & Modul',
+      icon: BookOpenCheck,
+      badge: 'Deep Learning'
+    },
+    {
       id: 'absensi-umur' as ActiveTab,
       label: 'Absensi & Rekap Umur',
       sublabel: 'Harian TA 2026-2027 & Usia',
@@ -139,21 +147,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        {/* School Info Pill */}
-        <div className="px-4 py-3 bg-slate-800/40 border-b border-slate-800/60 flex items-center justify-between text-xs text-slate-300">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="font-medium">TA {schoolProfile.tahunAjaran}</span>
+        {/* School Info Pill & Prominent Share Button */}
+        <div className="p-3 bg-slate-800/40 border-b border-slate-800/60 space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-300 px-1">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="font-medium">TA {schoolProfile.tahunAjaran}</span>
+            </div>
+            <span className="text-[11px] bg-blue-900/40 text-blue-300 px-2 py-0.5 rounded-full border border-blue-700/40 font-mono">
+              Sem. {schoolProfile.semester}
+            </span>
           </div>
-          <span className="text-[11px] bg-blue-900/40 text-blue-300 px-2 py-0.5 rounded-full border border-blue-700/40 font-mono">
-            Sem. {schoolProfile.semester}
-          </span>
+
+          {/* Prominent Bagikan Aplikasi Button (Accessible to all users) */}
+          <button
+            onClick={onOpenShare}
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-xl transition-all shadow-md shadow-emerald-900/30 cursor-pointer group active:scale-98"
+          >
+            <Share2 className="w-3.5 h-3.5 text-white group-hover:scale-110 transition-transform" />
+            <span>Bagikan Aplikasi & Data</span>
+          </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-700">
-          <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            Navigasi Utama
+        {/* Navigation Links - Unobstructed and Full Height */}
+        <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1 scrollbar-thin scrollbar-thumb-slate-700">
+          <div className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Navigasi Utama ({menuItems.length} Modul)
           </div>
 
           {menuItems.map(item => {
@@ -164,28 +183,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleSelectTab(item.id)}
-                className={`w-full text-left flex items-center gap-3 px-3.5 py-3 rounded-xl font-medium transition-all group relative ${
+                className={`w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-medium transition-all group relative ${
                   isActive
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-900/30'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-900/30'
                     : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
                 }`}
               >
                 <div
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-1.5 rounded-lg transition-colors ${
                     isActive
                       ? 'bg-white/20 text-white'
                       : 'bg-slate-800 text-slate-400 group-hover:text-emerald-400 group-hover:bg-slate-700'
                   }`}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate leading-tight flex items-center justify-between">
+                  <div className="text-xs font-bold truncate leading-tight flex items-center justify-between">
                     <span>{item.label}</span>
                   </div>
                   <div
-                    className={`text-[11px] truncate mt-0.5 ${
+                    className={`text-[10px] truncate mt-0.5 ${
                       isActive ? 'text-emerald-100' : 'text-slate-400'
                     }`}
                   >
@@ -195,7 +214,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {item.badge && (
                   <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
                       isActive
                         ? 'bg-white/25 text-white'
                         : 'bg-slate-800 text-slate-400 border border-slate-700'
@@ -209,85 +228,56 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
 
-        {/* User Identity & Institutional Section */}
-        <div className="p-4 border-t border-slate-800/80 bg-slate-900/70 space-y-3">
-          {/* Dynamic Active Logged-in Teacher / User Profile */}
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-2xl p-3 border border-emerald-500/40 shadow-inner space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-400">
-                <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Pengguna Aktif</span>
-              </div>
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Terverifikasi</span>
-              </span>
-            </div>
-
-            <div className="space-y-0.5">
-              <div
-                className="text-xs font-extrabold text-white truncate"
-                title={currentSession?.user.name || schoolProfile.kepalaSekolah}
-              >
-                {currentSession?.user.name || schoolProfile.kepalaSekolah}
-              </div>
-              <div className="text-[11px] font-semibold text-emerald-200 truncate">
-                {currentSession?.user.jabatan || 'Pendidik & Tenaga Kependidikan'}
-              </div>
-              <div className="text-[10px] font-mono text-slate-400 truncate flex items-center justify-between pt-0.5">
-                <span>NIP: {currentSession?.user.nip && currentSession?.user.nip !== '-' ? currentSession.user.nip : 'Honorer/PTK'}</span>
-                {currentSession?.user.statusKepegawaian && (
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                    {currentSession.user.statusKepegawaian}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Institutional Headmaster Info (if not already logged in as Headmaster) */}
-          {currentSession?.user.role !== 'Kepala Sekolah' && (
-            <div className="bg-slate-950/40 rounded-xl px-2.5 py-1.5 border border-slate-800/70 text-[10px] flex items-center justify-between text-slate-400">
-              <span className="truncate">Kepsek: <strong className="text-slate-200">{schoolProfile.kepalaSekolah}</strong></span>
-              <span className="text-amber-400 font-bold shrink-0 ml-1">PNS</span>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="space-y-2">
-            <button
-              onClick={onOpenShare}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-emerald-300 hover:text-white bg-emerald-950/60 hover:bg-emerald-900/80 rounded-xl transition-colors border border-emerald-600/50 shadow-xs cursor-pointer"
-            >
-              <Share2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Bagikan Aplikasi & Data</span>
-            </button>
-
+        {/* Compact, Non-Obstructing User Footer */}
+        <div className="p-3 border-t border-slate-800/80 bg-slate-950/80 space-y-2">
+          {/* Quick Tools Row */}
+          <div className="grid grid-cols-2 gap-1.5">
             <button
               onClick={onOpenDatabaseSync}
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-blue-300 hover:text-white bg-blue-900/40 hover:bg-blue-900/60 rounded-xl transition-colors border border-blue-700/50 shadow-xs cursor-pointer"
+              className="flex items-center justify-center gap-1.5 py-1.5 px-2 text-[10px] font-bold text-blue-300 hover:text-white bg-blue-950/50 hover:bg-blue-900/70 rounded-lg transition-colors border border-blue-800/40 cursor-pointer"
+              title="Database & Sinkronisasi 1 TA"
             >
-              <Database className="w-3.5 h-3.5 text-blue-400" />
-              <span>Database & Arsip 1 TA</span>
+              <Database className="w-3 h-3 text-blue-400" />
+              <span className="truncate">Database & Arsip</span>
             </button>
 
             <button
               onClick={onOpenSettings}
-              className="w-full flex items-center justify-center gap-2 py-1.5 px-3 text-xs font-medium text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-xl transition-colors border border-slate-700/50 cursor-pointer"
+              className="flex items-center justify-center gap-1.5 py-1.5 px-2 text-[10px] font-bold text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 rounded-lg transition-colors border border-slate-700/50 cursor-pointer"
+              title="Profil Sekolah & Logo"
             >
-              <Settings className="w-3.5 h-3.5" />
-              <span>Profil Sekolah & Logo</span>
+              <Settings className="w-3 h-3 text-slate-400" />
+              <span className="truncate">Profil Sekolah</span>
             </button>
+          </div>
 
-            {/* Logout / Switch Account Button */}
+          {/* Compact User Identity Pill */}
+          <div className="bg-slate-900/90 rounded-xl p-2 border border-slate-800 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-emerald-600/30 border border-emerald-500/40 text-emerald-400 font-extrabold text-xs flex items-center justify-center shrink-0">
+                {(currentSession?.user.name || schoolProfile.kepalaSekolah).charAt(0)}
+              </div>
+              <div className="min-w-0">
+                <div
+                  className="text-xs font-bold text-white truncate"
+                  title={currentSession?.user.name || schoolProfile.kepalaSekolah}
+                >
+                  {currentSession?.user.name || schoolProfile.kepalaSekolah}
+                </div>
+                <div className="text-[10px] text-emerald-400 truncate flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="truncate">{currentSession?.user.jabatan || 'Guru SDN Nambo 03'}</span>
+                </div>
+              </div>
+            </div>
+
             {onLogout && (
               <button
                 onClick={onLogout}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold text-rose-300 hover:text-white bg-rose-950/50 hover:bg-rose-900/80 rounded-xl transition-all border border-rose-800/60 shadow-xs cursor-pointer active:scale-98"
-                title="Hapus sesi login dan kembali ke Halaman Akses/Login awal"
+                className="p-1.5 text-rose-400 hover:text-white hover:bg-rose-900/60 rounded-lg transition-colors border border-rose-900/40 shrink-0 cursor-pointer"
+                title="Keluar / Ganti Akun"
               >
-                <LogOut className="w-3.5 h-3.5 text-rose-400" />
-                <span>Keluar / Ganti Akun</span>
+                <LogOut className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
