@@ -324,6 +324,35 @@ export interface AssessmentRubricLevel {
   sangatBaik: string; // 90 - 100
 }
 
+export interface IndividualQuestion {
+  nomor: number;
+  bentuk: 'Pilihan Ganda' | 'Uraian Singkat' | 'HOTS';
+  pertanyaan: string;
+  pilihan?: string[];
+  kunciJawaban: string;
+  bobotSkor: number;
+}
+
+export interface GroupChallenge {
+  judulTantangan: string;
+  petunjukKelompok: string;
+  skenarioKasus: string;
+  tugasKolaboratif: string[];
+  kriteriaPenilaian: Array<{ aspek: string; bobot: string; deskripsi: string }>;
+}
+
+export interface StructuredLKPD {
+  judulLKPD: string;
+  identitasKelompok?: boolean;
+  petunjukPengerjaan: string[];
+  tujuanAktivitas: string;
+  alatDanBahan: string[];
+  langkahEksplorasi: string[];
+  tabelAktivitasKerja?: string;
+  pertanyaanDiskusiReflektif: string[];
+  refleksiDiri: string;
+}
+
 export interface DeepLearningModule {
   id: string;
   tpId: string;
@@ -381,7 +410,7 @@ export interface DeepLearningModule {
     };
   };
 
-  // IV. Asesmen & Bahan Ajar Autentik
+  // IV. Asesmen & Bahan Ajar Autentik (Lengkap dengan Instrumen, Soal Individu, Kelompok & LKPD)
   asesmenAutentik: {
     formatifAwal: string;
     formatifProses: string;
@@ -389,8 +418,25 @@ export interface DeepLearningModule {
     rubrik: AssessmentRubricLevel[];
     bahanAjarRingkas: string;
     lembarKerjaSiswa: string;
+
+    // Instrumen Penilaian Lengkap Kurikulum Merdeka Mendalam
+    bentukJenis?: {
+      diagnostikAwal: string;
+      formatifProses: string;
+      sumatifAkhir: string;
+      teknikInstrumen: string[];
+    };
+    soalIndividu?: {
+      petunjuk: string;
+      daftarSoal: IndividualQuestion[];
+      totalSkor: number;
+    };
+    soalKelompok?: GroupChallenge;
+    lkpdLengkap?: StructuredLKPD;
   };
 
   updatedAt: string;
 }
+
+export type UserPasswordMap = Record<string, string>;
 

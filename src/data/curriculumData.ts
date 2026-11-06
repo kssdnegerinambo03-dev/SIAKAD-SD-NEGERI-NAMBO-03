@@ -1875,7 +1875,110 @@ TANTANGAN MISI ROBOT SAHABAT!
 
 REFLEKSI PERASAANKU HARI INI:
 Bagaimana perasaanmu belajar memprogram teman hari ini?
-[ ] Sangat Gembira  [ ] Gembira  [ ] Perlu Latihan Lagi`
+[ ] Sangat Gembira  [ ] Gembira  [ ] Perlu Latihan Lagi`,
+
+      // Instrumen Penilaian Lengkap Kurikulum Merdeka Mendalam
+      bentukJenis: {
+        diagnostikAwal: 'Asesmen diagnostik non-kognitif & kognitif: Mengidentifikasi kesiapan motorik serta pemahaman arah orientasi spasial (kanan, kiri, maju, mundur).',
+        formatifProses: 'Asesmen formatif berkelanjutan: Observasi keterlibatan aktif, cek kelancaran simulasi unplugged kartu logika berpasangan, dan bimbingan langsung (scaffolding).',
+        sumatifAkhir: 'Asesmen sumatif lingkup materi: Tes tertulis pemahaman pola urutan kartu (Pilihan Ganda & Uraian HOTS) dan unjuk kerja simulasi labirin logika.',
+        teknikInstrumen: [
+          'Teknik Observasi: Lembar Pengamatan Sikap Gotong Royong dan Bernalar Kritis',
+          'Teknik Tes Kinerja: Praktik Simulasi Unplugged "Robot Sahabat" di Labirin Lantai 4x4',
+          'Teknik Tes Tertulis: Lembar Soal Evaluasi Individu (5 Butir Soal Terstruktur)',
+          'Teknik Portofolio: Hasil Pengerjaan LKPD Terstruktur dan Jurnal Refleksi Mandiri'
+        ]
+      },
+      soalIndividu: {
+        petunjuk: 'Jawablah pertanyaan di bawah ini dengan teliti, cermat, dan mandiri!',
+        daftarSoal: [
+          {
+            nomor: 1,
+            bentuk: 'Pilihan Ganda',
+            pertanyaan: 'Urutan langkah-langkah yang teratur dan jelas untuk menyelesaikan suatu tugas disebut...',
+            pilihan: ['A. Algoritma / Perintah Runtut', 'B. Mencontek', 'C. Lompat Tali', 'D. Melamun'],
+            kunciJawaban: 'A. Algoritma / Perintah Runtut',
+            bobotSkor: 15
+          },
+          {
+            nomor: 2,
+            bentuk: 'Pilihan Ganda',
+            pertanyaan: 'Jika Robot Sahabat ingin melangkah 1 kotak lurus ke depan, kartu perintah yang harus ditunjukkan adalah...',
+            pilihan: ['A. Panah Belok Kiri', 'B. Panah Maju Ke Depan (↑)', 'C. Panah Mundur', 'D. Panah Berhenti'],
+            kunciJawaban: 'B. Panah Maju Ke Depan (↑)',
+            bobotSkor: 15
+          },
+          {
+            nomor: 3,
+            bentuk: 'Pilihan Ganda',
+            pertanyaan: 'Di depan Robot Sahabat terdapat balok batu rintangan. Tindakan yang paling tepat agar tidak menabrak rintangan adalah...',
+            pilihan: ['A. Menabraknya terus', 'B. Memutar arah / belok lalu maju ke jalan aman', 'C. Duduk menangis', 'D. Mematikan robot'],
+            kunciJawaban: 'B. Memutar arah / belok lalu maju ke jalan aman',
+            bobotSkor: 20
+          },
+          {
+            nomor: 4,
+            bentuk: 'Uraian Singkat',
+            pertanyaan: 'Tuliskan secara runtut 3 langkah yang kamu lakukan saat hendak berangkat ke sekolah di pagi hari!',
+            kunciJawaban: 'Mandi/mencuci muka -> Mengenakan seragam sekolah yang rapi -> Sarapan pagi dan berpamitan kepada orang tua.',
+            bobotSkor: 25
+          },
+          {
+            nomor: 5,
+            bentuk: 'HOTS',
+            pertanyaan: 'Budi menyusun kartu: [MAJU] -> [MAJU] -> [BELOK KANAN] -> [MAJU]. Ternyata temannya malah menabrak kursi di sebelah kanan. Apa yang harus diperbaiki Budi dan bagaimana sikapnya yang baik?',
+            kunciJawaban: 'Budi harus memeriksa kembali arah belokan (mungkin harus belok kiri atau melangkah mundur) dan memperbaikinya dengan tenang (debugging), serta mendengarkan masukan rekannya dengan sopan.',
+            bobotSkor: 25
+          }
+        ],
+        totalSkor: 100
+      },
+      soalKelompok: {
+        judulTantangan: 'Proyek Kolaborasi Kelompok: Misi Penyelamatan Bintang Emas di Labirin Sekolah',
+        petunjukKelompok: 'Bentuk tim beranggotakan 3-4 murid. Bagilah peran: 1 orang Arsitek Kode (Penyusun Kartu), 1 orang Navigator (Pemberi Aba-aba), dan 1-2 orang Robot Penjelajah.',
+        skenarioKasus: 'Robot Penjelajah harus membawa persediaan air dari Pos A menuju Tenda Relawan di Pos B. Namun, terdapat 2 petak rintangan lumpur di tengah jalur yang tidak boleh dilalui.',
+        tugasKolaboratif: [
+          'Amati peta lantai 4x4 dan diskusikan jalur alternatif yang paling aman dan tercepat.',
+          'Susun 5 kartu perintah arah secara berurutan di papan perencana kelompok.',
+          'Uji coba algoritma bersama: Arsitek membacakan kartu, Robot melangkah sesuai aba-aba Navigator.',
+          'Lakukan evaluasi bersama tim: Apakah ada langkah yang salah? Catat dan diskusikan cara perbaikannya!'
+        ],
+        kriteriaPenilaian: [
+          { aspek: 'Kekompakan & Pembagian Peran', bobot: '30%', deskripsi: 'Seluruh anggota kelompok aktif terlibat, saling menghargai pendapat, dan tidak berebut giliran.' },
+          { aspek: 'Ketepatan Alur Perintah (Bebas Tabrakan)', bobot: '40%', deskripsi: 'Robot berhasil mencapai tujuan tanpa menginjak petak rintangan lumpur.' },
+          { aspek: 'Kreativitas & Kemampuan Debugging', bobot: '30%', deskripsi: 'Mampu menemukan jalur efisien dan cepat memperbaiki urutan kartu saat terjadi kesalahan.' }
+        ]
+      },
+      lkpdLengkap: {
+        judulLKPD: 'LEMBAR KERJA PESERTA DIDIK (LKPD) DEEP LEARNING: KODING UNPLUGGED KELAS 1',
+        identitasKelompok: true,
+        tujuanAktivitas: 'Peserta didik dapat memahami konsep urutan instruksi (algoritma), menyusun rute langkah berkesadaran tanpa layar, dan merefleksikan kerja sama gotong royong.',
+        alatDanBahan: [
+          'Kartu Panah Arah (Maju Hijau, Belok Kanan Kuning, Belok Kiri Biru)',
+          'Papan Petak Labirin 4x4 meter di lantai kelas',
+          'Miniatur Bintang Emas dan Balok Halangan',
+          'Alat tulis dan pensil warna'
+        ],
+        petunjukPengerjaan: [
+          'Berdoalah sebelum memulai kegiatan bersama teman sekelompokmu.',
+          'Tuliskan nama anggota kelompok pada kolom identitas di atas.',
+          'Ikuti arahan guru dalam menyusun kartu instruksi panah secara tertib.',
+          'Diskusikan setiap keputusan arah dengan ramah dan dengarkan pendapat teman.'
+        ],
+        langkahEksplorasi: [
+          'Langkah 1: Letakkan miniatur Robot Sahabat pada kotak awal (START).',
+          'Langkah 2: Amati posisi Kotak Bintang (FINISH) dan rintangan balok kayu.',
+          'Langkah 3: Rencanakan rute terpendek dan susun 4 kartu panah secara mendatar di meja kerjamu.',
+          'Langkah 4: Jalankan Robot Sahabat langkah demi langkah sesuai urutan kartu yang telah disusun.'
+        ],
+        tabelAktivitasKerja: 'Tabel Checklist Uji Coba Jalur Labirin:\n- Uji Coba 1: Apakah robot berhasil melewati rintangan? [Ya / Belum]\n- Uji Coba 2: Berapa jumlah kartu instruksi yang dibutuhkan? [.... Kartu]\n- Uji Coba 3: Apakah ada perintah yang perlu diganti? [Tuliskan bila ada]',
+        pertanyaanDiskusiReflektif: [
+          'Apa yang terjadi jika ada satu kartu instruksi yang terbalik urutannya?',
+          'Bagaimana perasaan kelompokmu ketika berhasil memandu robot sampai ke bintang emas?',
+          'Apa manfaat bersikap sabar dan mendengarkan teman saat menyusun kode bersama?'
+        ],
+        refleksiDiri: 'Beri tanda centang (√) pada gambar emoji yang mewakili perasaan belajarmu hari ini: [ ] Luar Biasa Gembira  [ ] Gembira  [ ] Ingin Mencoba Lagi Besok'
+      }
     },
 
     updatedAt: new Date().toISOString()

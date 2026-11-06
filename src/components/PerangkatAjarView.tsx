@@ -27,7 +27,15 @@ import {
   FileSpreadsheet,
   FileCode,
   HelpCircle,
-  X
+  X,
+  Route,
+  ListOrdered,
+  CheckCircle2,
+  ArrowLeft,
+  Workflow,
+  Users,
+  Award,
+  ClipboardCheck
 } from 'lucide-react';
 import { useSchool } from '../context/SchoolContext';
 import {
@@ -56,7 +64,13 @@ import {
   parseCurriculumExcel
 } from '../utils/curriculumExportUtils';
 
-type SubTab = 'modul-ajar' | 'analisis-cp-tp' | 'prota-promes';
+type SubTab =
+  | 'capaian-pembelajaran'
+  | 'alur-tujuan-pembelajaran'
+  | 'tujuan-pembelajaran'
+  | 'modul-ajar'
+  | 'promes'
+  | 'prota';
 
 export const PerangkatAjarView: React.FC = () => {
   const {
@@ -78,8 +92,8 @@ export const PerangkatAjarView: React.FC = () => {
     addSyncLog
   } = useSchool();
 
-  // Selection states
-  const [selectedSubTab, setSelectedSubTab] = useState<SubTab>('modul-ajar');
+  // Selection states (Sequential pedagogical workflow starts from Capaian Pembelajaran)
+  const [selectedSubTab, setSelectedSubTab] = useState<SubTab>('capaian-pembelajaran');
   const [selectedKelasId, setSelectedKelasId] = useState<string>('c-1a');
   const [selectedMapel, setSelectedMapel] = useState<string>('Koding & Kecerdasan Artifisial');
   const [selectedSemester, setSelectedSemester] = useState<'Ganjil' | 'Genap'>('Ganjil');
@@ -434,7 +448,83 @@ export const PerangkatAjarView: React.FC = () => {
             }
           ],
           bahanAjarRingkas: `RINGKASAN BAHAN AJAR GURU & MURID\nSD NEGERI NAMBO 03\nMata Pelajaran: ${selectedMapel} | Kelas: ${currentKelasLabel}\n\n1. Konsep Utama:\nPembelajaran terpadu berkesadaran, bermakna, dan menyenangkan.\n2. Ringkasan Materi:\nPenjelasan materi terstruktur untuk pendampingan belajar di kelas dan rumah.`,
-          lembarKerjaSiswa: `LEMBAR KERJA PESERTA DIDIK (LKPD)\nNama: ____________________ Kelas: ${currentKelasLabel}\nMata Pelajaran: ${selectedMapel}\n\nPetunjuk:\n1. Diskusikan bersama kelompokmu!\n2. Selesaikan tantangan langkah demi langkah!\n[ Ruang Jawaban ]`
+          lembarKerjaSiswa: `LEMBAR KERJA PESERTA DIDIK (LKPD)\nNama: ____________________ Kelas: ${currentKelasLabel}\nMata Pelajaran: ${selectedMapel}\n\nPetunjuk:\n1. Diskusikan bersama kelompokmu!\n2. Selesaikan tantangan langkah demi langkah!\n[ Ruang Jawaban ]`,
+          bentukJenis: {
+            diagnostikAwal: 'Asesmen diagnostik non-kognitif & kognitif kesiapan belajar.',
+            formatifProses: 'Observasi keaktifan diskusi dan kerja sama kelompok.',
+            sumatifAkhir: 'Tes tertulis (Pilihan Ganda & HOTS) serta unjuk pemahaman autentik.',
+            teknikInstrumen: [
+              'Teknik Observasi Sikap Profil Lulusan & BerAKHLAK',
+              'Teknik Praktik / Kinerja Pemecahan Masalah',
+              'Teknik Tes Tertulis Evaluasi Mandiri',
+              'Teknik Portofolio LKPD Terstruktur'
+            ]
+          },
+          soalIndividu: {
+            petunjuk: 'Jawablah pertanyaan berikut dengan teliti, cermat, dan mandiri!',
+            daftarSoal: [
+              {
+                nomor: 1,
+                bentuk: 'Pilihan Ganda',
+                pertanyaan: 'Manfaat utama penerapan materi ini dalam kehidupan sehari-hari adalah...',
+                pilihan: ['A. Mempermudah pemecahan masalah secara teratur', 'B. Menjadi sombong', 'C. Menghindari belajar', 'D. Tidak tahu apa-apa'],
+                kunciJawaban: 'A. Mempermudah pemecahan masalah secara teratur',
+                bobotSkor: 20
+              },
+              {
+                nomor: 2,
+                bentuk: 'Uraian Singkat',
+                pertanyaan: 'Tuliskan pemahamanmu tentang materi pokok yang telah dipelajari!',
+                kunciJawaban: 'Penerapan konsep secara runtut dan terarah.',
+                bobotSkor: 40
+              },
+              {
+                nomor: 3,
+                bentuk: 'HOTS',
+                pertanyaan: 'Bagaimana cara kamu membantu teman yang kesulitan memahami materi ini?',
+                kunciJawaban: 'Membantunya dengan sabar, empati, dan penjelasan runtut.',
+                bobotSkor: 40
+              }
+            ],
+            totalSkor: 100
+          },
+          soalKelompok: {
+            judulTantangan: 'Proyek Kolaborasi Kelompok: Pemecahan Masalah Kontekstual',
+            petunjukKelompok: 'Bekerja samalah dalam kelompok 3-4 murid dan bagi peran secara adil.',
+            skenarioKasus: 'Selesaikan studi kasus yang disajikan dengan menerapkan konsep materi secara kreatif.',
+            tugasKolaboratif: [
+              'Diskusikan ide solusi pemecahan masalah.',
+              'Tuangkan rancangan pada lembar kerja tim.',
+              'Presentasikan hasil di hadapan kelas.'
+            ],
+            kriteriaPenilaian: [
+              { aspek: 'Kekompakan & Pembagian Peran', bobot: '30%', deskripsi: 'Seluruh anggota aktif dan saling menghargai.' },
+              { aspek: 'Ketepatan Solusi', bobot: '40%', deskripsi: 'Solusi runtut dan tepat konsep.' },
+              { aspek: 'Presentasi & Komunikasi', bobot: '30%', deskripsi: 'Penyampaian percaya diri dan jelas.' }
+            ]
+          },
+          lkpdLengkap: {
+            judulLKPD: `LEMBAR KERJA PESERTA DIDIK (LKPD) TERSTRUKTUR: ${selectedMapel.toUpperCase()}`,
+            identitasKelompok: true,
+            tujuanAktivitas: 'Peserta didik memahami konsep secara bermakna dan berkesadaran penuh.',
+            alatDanBahan: ['Buku sumber belajar', 'Alat tulis', 'Lembar kerja aktivitas'],
+            petunjukPengerjaan: [
+              'Berdoalah sebelum memulai kegiatan bersama.',
+              'Tuliskan identitas kelompok dan anggota.',
+              'Diskusikan dan selesaikan tantangan bersama teman.'
+            ],
+            langkahEksplorasi: [
+              'Langkah 1: Amati permasalahan yang diberikan guru.',
+              'Langkah 2: Rencanakan langkah-langkah solusi.',
+              'Langkah 3: Uji coba solusi dan catat hasilnya.'
+            ],
+            tabelAktivitasKerja: 'Tabel Checklist: [ ] Mengamati [ ] Mengerjakan [ ] Merefleksikan',
+            pertanyaanDiskusiReflektif: [
+              'Apa hal yang paling menarik dari pelajaran hari ini?',
+              'Bagaimana kelompokmu menyelesaikan kendala?'
+            ],
+            refleksiDiri: 'Perasaanku hari ini: [ ] Sangat Bahagia  [ ] Bahagia  [ ] Perlu Latihan Lagi'
+          }
         },
 
         updatedAt: new Date().toISOString()
@@ -572,7 +662,96 @@ export const PerangkatAjarView: React.FC = () => {
           }
         ],
         bahanAjarRingkas: `RINGKASAN BAHAN AJAR GURU & MURID\nSD NEGERI NAMBO 03 KLAPANUNGGAL\nMATA PELAJARAN: ${selectedMapel} | KELAS: ${currentKelasLabel}\nMATERI: ${tp.materiPokok}\n\n1. KONSEP DASAR:\n${tp.tujuanDeskripsi}\n\n2. POIN PENTING PEMBELAJARAN:\n- Menghubungkan logika berpikir runtut dan pemecahan masalah dengan kehidupan sehari-hari.\n- Mengutamakan kerja sama, kejujuran, dan rasa ingin tahu yang tinggi.\n- Setiap murid berhak belajar dengan gembira, saling menghargai, dan tidak takut membuat kesalahan.`,
-        lembarKerjaSiswa: `LEMBAR KERJA PESERTA DIDIK (LKPD) PEMBELAJARAN MENDALAM\nSD NEGERI NAMBO 03\nNama Peserta Didik : ________________________\nKelas / No. Absen  : ${currentKelasLabel} / ______\nMata Pelajaran     : ${selectedMapel}\nMateri Pokok       : ${tp.materiPokok}\n\nTUGAS / AKTIVITAS KELOMPOK:\n1. Bacalah petunjuk bersama teman kelompokmu dengan teliti!\n2. Selesaikan tantangan pemecahan masalah di bawah ini secara bersama-sama!\n3. Tuliskan atau gambarkan langkah penyelesaianmu di kolom jawaban berikut:\n[ Kotak Jawaban / Gambar Solusi ]\n\nREFLEKSI DIRI HARI INI:\n- Hal paling seru yang kupelajari hari ini adalah: _______________________\n- Perasaanku saat belajar bersama teman: [ ] Sangat Senang  [ ] Senang  [ ] Butuh Bimbingan`
+        lembarKerjaSiswa: `LEMBAR KERJA PESERTA DIDIK (LKPD) PEMBELAJARAN MENDALAM\nSD NEGERI NAMBO 03\nNama Peserta Didik : ________________________\nKelas / No. Absen  : ${currentKelasLabel} / ______\nMata Pelajaran     : ${selectedMapel}\nMateri Pokok       : ${tp.materiPokok}\n\nTUGAS / AKTIVITAS KELOMPOK:\n1. Bacalah petunjuk bersama teman kelompokmu dengan teliti!\n2. Selesaikan tantangan pemecahan masalah di bawah ini secara bersama-sama!\n3. Tuliskan atau gambarkan langkah penyelesaianmu di kolom jawaban berikut:\n[ Kotak Jawaban / Gambar Solusi ]\n\nREFLEKSI DIRI HARI INI:\n- Hal paling seru yang kupelajari hari ini adalah: _______________________\n- Perasaanku saat belajar bersama teman: [ ] Sangat Senang  [ ] Senang  [ ] Butuh Bimbingan`,
+
+        bentukJenis: {
+          diagnostikAwal: `Asesmen diagnostik: Mengidentifikasi pemahaman awal dan kesiapan belajar murid mengenai ${tp.materiPokok}.`,
+          formatifProses: 'Asesmen formatif: Observasi keaktifan diskusi, kemampuan pemecahan masalah, dan kerja sama gotong royong.',
+          sumatifAkhir: `Asesmen sumatif: Tes tertulis (Pilihan Ganda & HOTS) serta unjuk pemahaman autentik ketercapaian ${tp.kodeTP}.`,
+          teknikInstrumen: [
+            'Teknik Observasi: Rubrik Sikap Bernalar Kritis & Bergotong Royong',
+            `Teknik Praktik / Kinerja: Demonstrasi & Pemecahan Masalah Materi ${tp.materiPokok}`,
+            'Teknik Tes Tertulis: Lembar Soal Evaluasi Individu (5 Butir Soal Terstruktur)',
+            'Teknik Portofolio: Hasil Pengerjaan LKPD Terstruktur & Refleksi Mandiri'
+          ]
+        },
+        soalIndividu: {
+          petunjuk: 'Jawablah pertanyaan berikut dengan cermat, teliti, dan mandiri!',
+          daftarSoal: [
+            {
+              nomor: 1,
+              bentuk: 'Pilihan Ganda',
+              pertanyaan: `Manfaat utama memahami ${tp.materiPokok} dalam kehidupan sehari-hari adalah...`,
+              pilihan: ['A. Mempermudah pemecahan masalah secara teratur', 'B. Menjadi sombong', 'C. Menghindari belajar', 'D. Tidak tahu apa-apa'],
+              kunciJawaban: 'A. Mempermudah pemecahan masalah secara teratur',
+              bobotSkor: 20
+            },
+            {
+              nomor: 2,
+              bentuk: 'Pilihan Ganda',
+              pertanyaan: `Langkah awal yang paling tepat ketika menghadapi persoalan ${tp.materiPokok} adalah...`,
+              pilihan: ['A. Mengamati dan memahami informasi yang ada', 'B. Langsung menebak', 'C. Menyerah', 'D. Mengabaikan masalah'],
+              kunciJawaban: 'A. Mengamati dan memahami informasi yang ada',
+              bobotSkor: 20
+            },
+            {
+              nomor: 3,
+              bentuk: 'Uraian Singkat',
+              pertanyaan: `Jelaskan secara ringkas menurut pemahamanmu apa yang dimaksud dengan ${tp.materiPokok}!`,
+              kunciJawaban: `${tp.tujuanDeskripsi}`,
+              bobotSkor: 30
+            },
+            {
+              nomor: 4,
+              bentuk: 'HOTS',
+              pertanyaan: `Jika dalam kelompokmu terdapat teman yang belum memahami langkah pengerjaan ${tp.materiPokok}, bagaimana cara terbaikmu membantunya dengan sikap berkesadaran?`,
+              kunciJawaban: 'Mengajaknya berdiskusi dengan sabar, menjelaskan langkah demi langkah secara runtut, dan memberikannya kesempatan mencoba sendiri dengan penuh empati.',
+              bobotSkor: 30
+            }
+          ],
+          totalSkor: 100
+        },
+        soalKelompok: {
+          judulTantangan: `Proyek Kolaborasi Kelompok: Eksplorasi Kreatif ${tp.materiPokok}`,
+          petunjukKelompok: 'Bentuklah kelompok 3-4 peserta didik. Bagilah peran: Ketua Tim, Pencatat/Notulis, dan Penyaji.',
+          skenarioKasus: `Kelompok ditantang untuk merancang solusi kontekstual penerapan ${tp.materiPokok} di lingkungan sekolah atau rumah.`,
+          tugasKolaboratif: [
+            'Diskusikan konsep pokok dan kumpulkan ide pemecahan masalah dari seluruh anggota tim.',
+            'Susun langkah solusi secara sistematis dan tuangkan ke dalam lembar kerja kelompok.',
+            'Presentasikan hasil diskusi secara bergantian dengan santun dan percaya diri.',
+            'Berikan tanggapan positif atas hasil karya kelompok lain.'
+          ],
+          kriteriaPenilaian: [
+            { aspek: 'Kekompakan & Pembagian Peran', bobot: '30%', deskripsi: 'Seluruh anggota terlibat aktif dan saling menghargai pendapat.' },
+            { aspek: 'Ketepatan Konsep & Solusi', bobot: '40%', deskripsi: 'Solusi yang diajukan tepat dan sesuai dengan indikator pembelajaran.' },
+            { aspek: 'Kreativitas & Komunikasi Presentasi', bobot: '30%', deskripsi: 'Penyampaian jelas, percaya diri, dan responsif terhadap masukan.' }
+          ]
+        },
+        lkpdLengkap: {
+          judulLKPD: `LEMBAR KERJA PESERTA DIDIK (LKPD) DEEP LEARNING: ${tp.materiPokok.toUpperCase()}`,
+          identitasKelompok: true,
+          tujuanAktivitas: tp.tujuanDeskripsi,
+          alatDanBahan: ['Buku sumber belajar siswa', 'Alat tulis dan lembar kerja', 'Media kartu petunjuk / peraga'],
+          petunjukPengerjaan: [
+            'Berdoa sebelum memulai kegiatan bersama tim.',
+            'Tuliskan identitas kelompok dan anggota pada bagian atas.',
+            'Ikuti langkah demi langkah dengan teliti dan gotong royong.',
+            'Tanyakan kepada guru bila ada langkah yang belum dipahami.'
+          ],
+          langkahEksplorasi: [
+            'Langkah 1: Baca dan pahami konsep masalah yang disajikan guru.',
+            'Langkah 2: Diskusikan bersama rekan sekelompok mengenai alternatif solusi terbaik.',
+            'Langkah 3: Tuliskan kesepakatan langkah pemecahan pada tabel kerja.',
+            'Langkah 4: Lakukan uji coba bersama dan simpulkan hasil belajarmu.'
+          ],
+          tabelAktivitasKerja: `Tabel Checklist Aktivitas Kelompok:\n1. Tahap Memahami Konsep: [ Terlaksana / Bimbingan ]\n2. Tahap Diskusi & Praktik: [ Terlaksana / Bimbingan ]\n3. Tahap Presentasi & Refleksi: [ Terlaksana / Bimbingan ]`,
+          pertanyaanDiskusiReflektif: [
+            'Apa hal terpenting yang kalian pelajari hari ini?',
+            'Apa tantangan tersulit yang berhasil kalian selesaikan bersama teman?',
+            'Bagaimana cara kalian saling membantu selama kegiatan berlangsung?'
+          ],
+          refleksiDiri: 'Beri tanda centang (√) perasaanmu belajar hari ini: [ ] Sangat Bahagia & Paham  [ ] Bahagia  [ ] Butuh Latihan Tambahan'
+        }
       },
 
       updatedAt: new Date().toISOString()
@@ -1141,56 +1320,650 @@ export const PerangkatAjarView: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Sub-Tab Navigation Bar (Clear, unobstructed, high-contrast) */}
-      <div className="bg-white rounded-2xl p-2 border border-slate-200/90 shadow-sm flex flex-wrap gap-2 sticky top-16 z-20 backdrop-blur-md bg-white/95">
-        <button
-          onClick={() => setSelectedSubTab('modul-ajar')}
-          className={`flex-1 min-w-[200px] flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            selectedSubTab === 'modul-ajar'
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/20'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <BookOpenCheck className="w-4 h-4 shrink-0" />
-          <span>Modul Ajar Deep Learning (RPP)</span>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full ${selectedSubTab === 'modul-ajar' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'}`}>
-            {filteredModules.length} Modul
+      {/* 3. Pedagogical Workflow Stepper Bar (Langkah 1 s.d. 6 Berurutan) */}
+      <div className="bg-white rounded-2xl p-2.5 border border-slate-200/90 shadow-sm sticky top-16 z-20 backdrop-blur-md bg-white/95 space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+            <Workflow className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Alur Urutan Penyusunan Perangkat Pembelajaran:</span>
+          </div>
+          <span className="text-[10px] bg-emerald-50 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">
+            6 Tahapan Pedagogis Terpadu
           </span>
-        </button>
+        </div>
 
-        <button
-          onClick={() => setSelectedSubTab('analisis-cp-tp')}
-          className={`flex-1 min-w-[200px] flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            selectedSubTab === 'analisis-cp-tp'
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/20'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <GraduationCap className="w-4 h-4 shrink-0" />
-          <span>Analisis CP, ATP & TP</span>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full ${selectedSubTab === 'analisis-cp-tp' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'}`}>
-            {activeTPList.length} TP
-          </span>
-        </button>
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2">
+          {/* Step 1: CP */}
+          <button
+            onClick={() => setSelectedSubTab('capaian-pembelajaran')}
+            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'capaian-pembelajaran'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+              selectedSubTab === 'capaian-pembelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              1
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold leading-tight truncate">1. Capaian (CP)</div>
+              <div className={`text-[10px] truncate ${selectedSubTab === 'capaian-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {activeCP.length} Elemen BSKAP
+              </div>
+            </div>
+          </button>
 
-        <button
-          onClick={() => setSelectedSubTab('prota-promes')}
-          className={`flex-1 min-w-[200px] flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            selectedSubTab === 'prota-promes'
-              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/20'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <Calendar className="w-4 h-4 shrink-0" />
-          <span>Program Tahunan & Semester (Prota & Promes)</span>
-          <span className={`text-[10px] px-2 py-0.5 rounded-full ${selectedSubTab === 'prota-promes' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'}`}>
-            TA 2026-2027
-          </span>
-        </button>
+          {/* Step 2: ATP */}
+          <button
+            onClick={() => setSelectedSubTab('alur-tujuan-pembelajaran')}
+            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'alur-tujuan-pembelajaran'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+              selectedSubTab === 'alur-tujuan-pembelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              2
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold leading-tight truncate">2. Alur Tujuan (ATP)</div>
+              <div className={`text-[10px] truncate ${selectedSubTab === 'alur-tujuan-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {activeTPList.length} Trajektori Alur
+              </div>
+            </div>
+          </button>
+
+          {/* Step 3: TP */}
+          <button
+            onClick={() => setSelectedSubTab('tujuan-pembelajaran')}
+            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'tujuan-pembelajaran'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+              selectedSubTab === 'tujuan-pembelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              3
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold leading-tight truncate">3. Tujuan Belajar (TP)</div>
+              <div className={`text-[10px] truncate ${selectedSubTab === 'tujuan-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {activeTPList.length} TP Terstruktur
+              </div>
+            </div>
+          </button>
+
+          {/* Step 4: Modul Ajar */}
+          <button
+            onClick={() => setSelectedSubTab('modul-ajar')}
+            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'modul-ajar'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+              selectedSubTab === 'modul-ajar' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              4
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold leading-tight truncate">4. Modul Ajar (RPP)</div>
+              <div className={`text-[10px] truncate ${selectedSubTab === 'modul-ajar' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {filteredModules.length} Modul DL
+              </div>
+            </div>
+          </button>
+
+          {/* Step 5: Promes */}
+          <button
+            onClick={() => setSelectedSubTab('promes')}
+            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'promes'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+              selectedSubTab === 'promes' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              5
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold leading-tight truncate">5. Promes</div>
+              <div className={`text-[10px] truncate ${selectedSubTab === 'promes' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {currentPromes?.totalJPSemester || 0} JP Semester
+              </div>
+            </div>
+          </button>
+
+          {/* Step 6: Prota */}
+          <button
+            onClick={() => setSelectedSubTab('prota')}
+            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'prota'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+              selectedSubTab === 'prota' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              6
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold leading-tight truncate">6. Prota</div>
+              <div className={`text-[10px] truncate ${selectedSubTab === 'prota' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {currentProta?.totalJPEfektif || 0} JP Setahun
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* SUB-TAB 1: MODUL AJAR PEMBELAJARAN MENDALAM (DEEP LEARNING RPP RESMI) */}
+      {/* LANGKAH 1: CAPAIAN PEMBELAJARAN (CP) SESUAI BSKAP 046/H/KR/2025 */}
+      {/* ========================================================================= */}
+      {selectedSubTab === 'capaian-pembelajaran' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            {/* Header info */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-3 bg-emerald-100 text-emerald-800 rounded-2xl shrink-0">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                      Langkah 1 dari 6
+                    </span>
+                    <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                      {currentFase} • {currentKelasLabel}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-xl">
+                    Capaian Pembelajaran (CP) Resmi Kurikulum Merdeka
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Berdasarkan Keputusan Kepala BSKAP Kemendikbudristek No. 046/H/KR/2025 & Dokumen Analisis CP SD Negeri Nambo 03
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const allCPText = activeCP.map(c => `[Elemen: ${c.elemen}]\n${c.deskripsiCP}`).join('\n\n');
+                    navigator.clipboard.writeText(allCPText);
+                    setCopiedId('all-cp');
+                    setTimeout(() => setCopiedId(null), 2000);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                  title="Salin seluruh teks Capaian Pembelajaran mata pelajaran ini"
+                >
+                  {copiedId === 'all-cp' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedId === 'all-cp' ? 'Tersalin!' : 'Salin Teks CP'}</span>
+                </button>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                  title="Cetak Dokumen Capaian Pembelajaran Resmi"
+                >
+                  <Printer className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Cetak CP</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Sub-header info panel */}
+            <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-2xl p-5 border border-emerald-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider block">
+                  Mata Pelajaran & Jenjang
+                </span>
+                <div className="text-lg font-black">{selectedMapel}</div>
+                <div className="text-xs text-slate-300">
+                  Fokus Penguatan: Penalaran Kritis, Karakter Berkesadaran, serta Koding & Kecerdasan Artifisial Sekolah Dasar
+                </div>
+              </div>
+              <div className="text-right shrink-0 bg-slate-950/60 p-3 rounded-xl border border-emerald-500/30">
+                <div className="text-[10px] text-slate-400 uppercase font-bold">Total Elemen CP</div>
+                <div className="text-xl font-extrabold text-amber-300">{activeCP.length} Elemen Resmi</div>
+              </div>
+            </div>
+
+            {/* Grid of Elemen CP */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeCP.map((cp, idx) => (
+                <div
+                  key={cp.id}
+                  className="bg-slate-50 hover:bg-emerald-50/30 p-5 rounded-2xl border border-slate-200 hover:border-emerald-300 transition-all space-y-3 shadow-xs"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span className="text-xs font-extrabold text-emerald-900 bg-emerald-100/90 px-3 py-1 rounded-lg border border-emerald-300">
+                        Elemen: {cp.elemen}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono font-bold">
+                      {cp.kelas.join(', ')}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-800 leading-relaxed text-justify">
+                    {cp.deskripsiCP}
+                  </p>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200/80 text-[11px]">
+                    <span className="text-slate-500 font-medium">SK BSKAP 046/H/KR/2025</span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(cp.deskripsiCP);
+                        setCopiedId(cp.id);
+                        setTimeout(() => setCopiedId(null), 2000);
+                      }}
+                      className="text-emerald-700 hover:text-emerald-900 font-bold flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedId === cp.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedId === cp.id ? 'Tersalin' : 'Salin Elemen'}</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {activeCP.length === 0 && (
+                <div className="col-span-2 p-8 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-300 space-y-2">
+                  <p>Capaian Pembelajaran untuk {selectedMapel} ({currentFase}) siap ditelaah.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Stepper Navigation Footer Banner */}
+            <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-0.5 text-center sm:text-left">
+                <div className="text-xs font-extrabold text-emerald-950 flex items-center justify-center sm:justify-start gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>Tahap 1 Capaian Pembelajaran Selesai Ditelaah</span>
+                </div>
+                <p className="text-[11px] text-emerald-800">
+                  Lanjutkan penurunan kompetensi CP menjadi Alur Tujuan Pembelajaran (ATP) berurutan.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelectedSubTab('alur-tujuan-pembelajaran')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Lanjut ke Langkah 2: Alur Tujuan Pembelajaran (ATP)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* LANGKAH 2: ALUR TUJUAN PEMBELAJARAN (ATP) */}
+      {/* ========================================================================= */}
+      {selectedSubTab === 'alur-tujuan-pembelajaran' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            {/* Header info */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-3 bg-blue-100 text-blue-800 rounded-2xl shrink-0">
+                  <Route className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="bg-blue-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                      Langkah 2 dari 6
+                    </span>
+                    <span className="bg-blue-50 text-blue-800 border border-blue-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                      Trajektori {currentFase} • {currentKelasLabel}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-xl">
+                    Alur Tujuan Pembelajaran (ATP)
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Pemetaan rangkaian alur pencapaian kompetensi secara terstruktur dari awal fase sampai akhir fase
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDownloadExcelWorkbook}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>Download Excel ATP (.xlsx)</span>
+                </button>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                  title="Cetak Dokumen ATP Resmi"
+                >
+                  <Printer className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Cetak ATP</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Visual Trajectory Progression Bar */}
+            <div className="bg-slate-900 text-white rounded-2xl p-5 border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Visual Alur Trajektori Kompetensi ({activeTPList.length} Tahapan)</span>
+                </div>
+                <span className="text-[10px] bg-slate-800 px-2.5 py-1 rounded-md text-slate-300 font-mono">
+                  {currentFase} • {selectedMapel}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2">
+                {activeTPList.map((tp, idx) => (
+                  <div
+                    key={tp.id}
+                    className="bg-slate-800/90 hover:bg-slate-800 border border-slate-700 p-2.5 rounded-xl space-y-1 relative"
+                  >
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="font-extrabold text-amber-300">Tahap {idx + 1}</span>
+                      <span className="text-slate-400 font-mono">{tp.alokasiJP} JP</span>
+                    </div>
+                    <div className="text-xs font-bold text-white truncate" title={tp.materiPokok}>
+                      {tp.materiPokok}
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-mono truncate">
+                      {tp.kodeTP}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tabel Rinci Alur Tujuan Pembelajaran (ATP) */}
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+              <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                  Matriks Pemetaan Alur Tujuan Pembelajaran (ATP) Terpadu
+                </div>
+                <div className="text-xs text-slate-600 font-semibold">
+                  Mata Pelajaran: <span className="text-emerald-800 font-bold">{selectedMapel}</span>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-left border-collapse min-w-[850px]">
+                  <thead>
+                    <tr className="bg-slate-800 text-white">
+                      <th className="p-3 font-bold w-14 text-center border-r border-slate-700">Urutan</th>
+                      <th className="p-3 font-bold w-24 border-r border-slate-700">Kode TP</th>
+                      <th className="p-3 font-bold w-48 border-r border-slate-700">Materi Pokok</th>
+                      <th className="p-3 font-bold border-r border-slate-700">Deskripsi Alur Tujuan Pembelajaran (ATP)</th>
+                      <th className="p-3 font-bold w-16 text-center border-r border-slate-700">JP</th>
+                      <th className="p-3 font-bold w-20 text-center border-r border-slate-700">Sem.</th>
+                      <th className="p-3 font-bold w-48">8 Dimensi Profil Lulusan</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {activeTPList.map((tp, idx) => (
+                      <tr key={tp.id} className="hover:bg-slate-50/80">
+                        <td className="p-3 text-center font-black text-slate-700 border-r border-slate-200 bg-slate-50">
+                          {idx + 1}
+                        </td>
+                        <td className="p-3 font-mono font-bold text-emerald-800 border-r border-slate-200">
+                          {tp.kodeTP}
+                        </td>
+                        <td className="p-3 font-bold text-slate-900 border-r border-slate-200">
+                          {tp.materiPokok}
+                        </td>
+                        <td className="p-3 text-slate-700 leading-relaxed border-r border-slate-200">
+                          {tp.tujuanDeskripsi}
+                        </td>
+                        <td className="p-3 text-center font-black text-slate-900 border-r border-slate-200 bg-slate-50">
+                          {tp.alokasiJP}
+                        </td>
+                        <td className="p-3 text-center border-r border-slate-200">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${tp.semester === 'Ganjil' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}`}>
+                            {tp.semester}
+                          </span>
+                        </td>
+                        <td className="p-3">
+                          <div className="flex flex-wrap gap-1">
+                            {tp.dimensiProfilLulusan.map(dim => (
+                              <span key={dim} className="text-[9px] font-semibold bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded-md border border-emerald-200">
+                                {dim}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {activeTPList.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="p-8 text-center text-xs text-slate-500">
+                          Belum ada data ATP untuk kelas dan mata pelajaran ini. Silakan input TP di langkah selanjutnya.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Stepper Navigation Footer Banner */}
+            <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <button
+                onClick={() => setSelectedSubTab('capaian-pembelajaran')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Kembali ke Langkah 1: CP</span>
+              </button>
+
+              <button
+                onClick={() => setSelectedSubTab('tujuan-pembelajaran')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Lanjut ke Langkah 3: Tujuan Pembelajaran (TP)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* LANGKAH 3: TUJUAN PEMBELAJARAN (TP) */}
+      {/* ========================================================================= */}
+      {selectedSubTab === 'tujuan-pembelajaran' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            {/* Header info */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-3 bg-amber-100 text-amber-800 rounded-2xl shrink-0">
+                  <ListOrdered className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="bg-amber-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                      Langkah 3 dari 6
+                    </span>
+                    <span className="bg-amber-50 text-amber-800 border border-amber-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                      Operasional • {currentKelasLabel}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-xl">
+                    Tujuan Pembelajaran (TP) Operasional
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Daftar TP terstruktur lengkap dengan alokasi JP, Dimensi Profil Lulusan, dan Indikator Ketercapaian
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => handleOpenTPModal()}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah TP Baru Manual</span>
+                </button>
+
+                <button
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Import TP</span>
+                </button>
+              </div>
+            </div>
+
+            {/* List of TP Cards */}
+            <div className="divide-y divide-slate-200">
+              {activeTPList.map((tp, idx) => (
+                <div key={tp.id} className="py-4 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span className="font-extrabold text-emerald-800 text-xs sm:text-sm font-mono bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-300">
+                        {tp.kodeTP}
+                      </span>
+                      <span className="text-xs font-bold text-slate-900">
+                        {tp.materiPokok}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                        Sem. {tp.semester}
+                      </span>
+                      <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                        {tp.alokasiJP} JP
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-700 leading-relaxed pl-8">
+                    {tp.tujuanDeskripsi}
+                  </p>
+
+                  {/* Dimensi Profil Lulusan & Indikator */}
+                  <div className="pl-8 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-slate-400">Profil Lulusan:</span>
+                    {tp.dimensiProfilLulusan.map(dim => (
+                      <span key={dim} className="text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md border border-slate-200">
+                        {dim}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="pl-8 bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+                    <strong className="text-slate-800 block text-[10px] uppercase tracking-wider">
+                      Indikator Ketercapaian Tujuan Pembelajaran:
+                    </strong>
+                    {tp.indikatorKetercapaian.map((ind, i) => (
+                      <div key={i} className="flex items-start gap-1.5">
+                        <span className="text-emerald-600 font-bold">✓</span>
+                        <span>{ind}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons for this TP */}
+                  <div className="pl-8 flex flex-wrap items-center justify-between gap-2 pt-1">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          handleGenerateModulFromTP(tp);
+                          setSelectedSubTab('modul-ajar');
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-300 transition-colors cursor-pointer"
+                        title="Langsung hasilkan Modul Ajar Deep Learning dari TP ini"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>⚡ Buat Modul Ajar dari TP Ini</span>
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => handleOpenTPModal(tp)}
+                        className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                        title="Edit TP"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Hapus ${tp.kodeTP}?`)) {
+                            deleteTujuanPembelajaran(tp.id);
+                          }
+                        }}
+                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        title="Hapus TP"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {activeTPList.length === 0 && (
+                <div className="py-8 text-center text-xs text-slate-500">
+                  Belum ada Tujuan Pembelajaran yang terdaftar untuk {selectedMapel} ({currentFase}).
+                  Klik "Tambah TP Baru Manual" di atas untuk menambahkan.
+                </div>
+              )}
+            </div>
+
+            {/* Stepper Navigation Footer Banner */}
+            <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <button
+                onClick={() => setSelectedSubTab('alur-tujuan-pembelajaran')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Kembali ke Langkah 2: ATP</span>
+              </button>
+
+              <button
+                onClick={() => setSelectedSubTab('modul-ajar')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Lanjut ke Langkah 4: Modul Ajar Deep Learning</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* LANGKAH 4: MODUL AJAR PEMBELAJARAN MENDALAM (DEEP LEARNING RPP) */}
+      {/* ========================================================================= */}
       {/* ========================================================================= */}
       {selectedSubTab === 'modul-ajar' && (
         <div className="space-y-6">
@@ -1602,35 +2375,120 @@ export const PerangkatAjarView: React.FC = () => {
                 </section>
 
                 {/* 4. ASESMEN AUTENTIK, RUBRIK PENILAIAN & BAHAN AJAR */}
-                <section className="space-y-4">
+                <section className="space-y-6">
                   <div className="flex items-center gap-2.5 pb-2 border-b-2 border-purple-500">
                     <span className="w-7 h-7 rounded-lg bg-purple-600 text-white font-black text-sm flex items-center justify-center">
                       IV
                     </span>
-                    <h2 className="text-base sm:text-lg font-black text-slate-900">
-                      ASESMEN AUTENTIK & RUBRIK PENILAIAN BERTINGKAT
-                    </h2>
+                    <div>
+                      <h2 className="text-base sm:text-lg font-black text-slate-900">
+                        ASESMEN AUTENTIK, INSTRUMEN SOAL & LKPD LENGKAP
+                      </h2>
+                      <p className="text-xs text-slate-500 font-medium">
+                        Instrumen Evaluasi Menyeluruh Kurikulum Merdeka Mendalam (Deep Learning) TA 2026-2027
+                      </p>
+                    </div>
                   </div>
 
+                  {/* 1. Ringkasan Tiga Jenis Asesmen Pokok */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                    <div className="bg-purple-50/50 p-4 rounded-2xl border border-purple-200 space-y-1">
-                      <strong className="text-purple-900 block">Asesmen Formatif Awal:</strong>
+                    <div className="bg-purple-50/70 p-4 rounded-2xl border border-purple-200 space-y-1">
+                      <strong className="text-purple-900 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-purple-600 shrink-0" />
+                        <span>Asesmen Formatif Awal (Diagnostik):</span>
+                      </strong>
                       <p className="text-slate-700 leading-relaxed">{activeModul.asesmenAutentik.formatifAwal}</p>
                     </div>
-                    <div className="bg-purple-50/50 p-4 rounded-2xl border border-purple-200 space-y-1">
-                      <strong className="text-purple-900 block">Asesmen Formatif Proses:</strong>
+                    <div className="bg-purple-50/70 p-4 rounded-2xl border border-purple-200 space-y-1">
+                      <strong className="text-purple-900 flex items-center gap-1.5">
+                        <Workflow className="w-4 h-4 text-purple-600 shrink-0" />
+                        <span>Asesmen Formatif Proses (Berkelanjutan):</span>
+                      </strong>
                       <p className="text-slate-700 leading-relaxed">{activeModul.asesmenAutentik.formatifProses}</p>
                     </div>
-                    <div className="bg-purple-50/50 p-4 rounded-2xl border border-purple-200 space-y-1">
-                      <strong className="text-purple-900 block">Asesmen Sumatif:</strong>
+                    <div className="bg-purple-50/70 p-4 rounded-2xl border border-purple-200 space-y-1">
+                      <strong className="text-purple-900 flex items-center gap-1.5">
+                        <Award className="w-4 h-4 text-purple-600 shrink-0" />
+                        <span>Asesmen Sumatif Lingkup Materi:</span>
+                      </strong>
                       <p className="text-slate-700 leading-relaxed">{activeModul.asesmenAutentik.sumatif}</p>
                     </div>
                   </div>
 
-                  {/* Rubrik Penilaian Table */}
+                  {/* 2. Bentuk & Jenis Instrumen Penilaian */}
+                  {activeModul.asesmenAutentik.bentukJenis && (
+                    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs space-y-3 p-4 sm:p-5">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">
+                            <Layers className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                              Bentuk & Jenis Instrumen Penilaian
+                            </h3>
+                            <p className="text-[11px] text-slate-500">
+                              Kombinasi asesmen kognitif, afektif, dan psikomotorik peserta didik
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-slate-100 border-b border-slate-200 text-slate-700">
+                              <th className="p-3 font-bold w-1/4">Kategori Asesmen</th>
+                              <th className="p-3 font-bold w-1/2">Fokus & Deskripsi Instrumen</th>
+                              <th className="p-3 font-bold w-1/4">Bentuk & Teknik</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            <tr>
+                              <td className="p-3 font-bold text-purple-900 align-top">Asesmen Diagnostik Awal</td>
+                              <td className="p-3 text-slate-700 align-top">{activeModul.asesmenAutentik.bentukJenis.diagnostikAwal}</td>
+                              <td className="p-3 text-slate-600 align-top">Tanya Jawab & Pengamatan Awal</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 font-bold text-blue-900 align-top">Asesmen Formatif Proses</td>
+                              <td className="p-3 text-slate-700 align-top">{activeModul.asesmenAutentik.bentukJenis.formatifProses}</td>
+                              <td className="p-3 text-slate-600 align-top">Checklist Sikap & Kinerja Unplugged</td>
+                            </tr>
+                            <tr>
+                              <td className="p-3 font-bold text-emerald-900 align-top">Asesmen Sumatif Akhir</td>
+                              <td className="p-3 text-slate-700 align-top">{activeModul.asesmenAutentik.bentukJenis.sumatifAkhir}</td>
+                              <td className="p-3 text-slate-600 align-top">Tes Tertulis & Unjuk Kerja Proyek</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {activeModul.asesmenAutentik.bentukJenis.teknikInstrumen && (
+                        <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs space-y-1.5">
+                          <strong className="text-slate-800 block text-[11px] uppercase tracking-wider">
+                            Teknik Penilaian yang Digunakan:
+                          </strong>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {activeModul.asesmenAutentik.bentukJenis.teknikInstrumen.map((tek, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-[11px] text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span>{tek}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* 3. Rubrik Penilaian Table KKTP */}
                   <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-                    <div className="bg-slate-800 text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider">
-                      Rubrik Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)
+                    <div className="bg-slate-800 text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <ClipboardCheck className="w-4 h-4 text-emerald-400" />
+                        Rubrik Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)
+                      </span>
+                      <span className="text-[10px] text-emerald-300 font-normal">Kriteria 4 Level Ketercapaian</span>
                     </div>
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs border-collapse">
@@ -1658,7 +2516,285 @@ export const PerangkatAjarView: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Bahan Ajar Ringkas & LKPD */}
+                  {/* 4. Instrumen Soal & Asesmen Individu */}
+                  {activeModul.asesmenAutentik.soalIndividu && (
+                    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs space-y-4 p-4 sm:p-5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <ListOrdered className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                              Instrumen Soal & Asesmen Mandiri Peserta Didik
+                            </h3>
+                            <p className="text-[11px] text-slate-500">
+                              Pilihan Ganda & Uraian HOTS beserta Kunci Jawaban dan Bobot Skor
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                            Total Skor: {activeModul.asesmenAutentik.soalIndividu.totalSkor || 100}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 italic">
+                        <strong>Petunjuk Pengerjaan:</strong> {activeModul.asesmenAutentik.soalIndividu.petunjuk}
+                      </div>
+
+                      <div className="space-y-3">
+                        {activeModul.asesmenAutentik.soalIndividu.daftarSoal.map(soal => (
+                          <div key={soal.nomor} className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2 text-xs">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                                  {soal.nomor}
+                                </span>
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                  soal.bentuk === 'Pilihan Ganda'
+                                    ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                                    : soal.bentuk === 'HOTS'
+                                    ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                                    : 'bg-amber-100 text-amber-700 border border-amber-200'
+                                }`}>
+                                  {soal.bentuk}
+                                </span>
+                              </div>
+                              <span className="text-[11px] font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                                Bobot: {soal.bobotSkor} Poin
+                              </span>
+                            </div>
+
+                            <p className="font-semibold text-slate-900 leading-relaxed pl-8">
+                              {soal.pertanyaan}
+                            </p>
+
+                            {soal.pilihan && soal.pilihan.length > 0 && (
+                              <div className="pl-8 grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                                {soal.pilihan.map((pil, idx) => (
+                                  <div key={idx} className="bg-white p-2 rounded-lg border border-slate-200 text-[11px] text-slate-700">
+                                    {pil}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            <div className="pl-8 pt-1">
+                              <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-900 flex items-start gap-1.5">
+                                <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <strong className="text-emerald-950">Kunci Jawaban & Panduan Penskoran:</strong> {soal.kunciJawaban}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 5. Instrumen Tantangan & Penilaian Proyek Kelompok */}
+                  {activeModul.asesmenAutentik.soalKelompok && (
+                    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs space-y-4 p-4 sm:p-5">
+                      <div className="flex items-center gap-2 pb-3 border-b border-slate-200">
+                        <div className="p-1.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-200">
+                          <Users className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                            Instrumen Tantangan & Penilaian Kelompok (Gotong Royong)
+                          </h3>
+                          <p className="text-[11px] text-slate-500">
+                            Studi kasus kolaboratif dan rubrik penilaian dinamika tim
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-teal-50/60 rounded-xl p-4 border border-teal-200 space-y-2 text-xs">
+                        <h4 className="font-bold text-teal-950 text-sm">
+                          {activeModul.asesmenAutentik.soalKelompok.judulTantangan}
+                        </h4>
+                        <p className="text-teal-900 leading-relaxed">
+                          <strong>Petunjuk Tim:</strong> {activeModul.asesmenAutentik.soalKelompok.petunjukKelompok}
+                        </p>
+                        <div className="p-3 bg-white rounded-lg border border-teal-200/80 text-slate-700 space-y-1">
+                          <strong className="text-slate-900 block text-xs">Skenario Misi Kelompok:</strong>
+                          <p className="leading-relaxed">{activeModul.asesmenAutentik.soalKelompok.skenarioKasus}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        <strong className="text-slate-800 block text-xs font-bold">
+                          Rincian Tugas Kolaboratif:
+                        </strong>
+                        <div className="space-y-1.5">
+                          {activeModul.asesmenAutentik.soalKelompok.tugasKolaboratif.map((tugas, idx) => (
+                            <div key={idx} className="flex items-start gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200 text-slate-700">
+                              <span className="w-4 h-4 rounded-full bg-teal-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                {idx + 1}
+                              </span>
+                              <span>{tugas}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        <strong className="text-slate-800 block text-xs font-bold">
+                          Rubrik Penilaian Kinerja Tim:
+                        </strong>
+                        <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                          <table className="w-full text-left text-xs border-collapse">
+                            <thead>
+                              <tr className="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                <th className="p-2.5 font-bold w-1/3">Aspek Penilaian</th>
+                                <th className="p-2.5 font-bold w-1/6 text-center">Bobot</th>
+                                <th className="p-2.5 font-bold w-1/2">Kriteria Penilaian</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                              {activeModul.asesmenAutentik.soalKelompok.kriteriaPenilaian.map((k, idx) => (
+                                <tr key={idx} className="hover:bg-slate-50">
+                                  <td className="p-2.5 font-semibold text-slate-900">{k.aspek}</td>
+                                  <td className="p-2.5 font-bold text-center text-teal-700">{k.bobot}</td>
+                                  <td className="p-2.5 text-slate-600">{k.deskripsi}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 6. Lembar Kerja Peserta Didik (LKPD) Lengkap Terstruktur */}
+                  {activeModul.asesmenAutentik.lkpdLengkap && (
+                    <div className="bg-emerald-50/40 rounded-3xl border-2 border-emerald-500/40 p-5 sm:p-6 space-y-4 shadow-sm relative">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-300/60 pb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-xl bg-emerald-600 text-white shadow-xs">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+                              Lembar Kerja Peserta Didik (LKPD) Terstruktur
+                            </span>
+                            <h3 className="text-sm sm:text-base font-black text-emerald-950 mt-1">
+                              {activeModul.asesmenAutentik.lkpdLengkap.judulLKPD}
+                            </h3>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handleCopy(
+                            JSON.stringify(activeModul.asesmenAutentik.lkpdLengkap, null, 2),
+                            'lkpd-lengkap'
+                          )}
+                          className="px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                        >
+                          {copiedId === 'lkpd-lengkap' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedId === 'lkpd-lengkap' ? 'LKPD Disalin' : 'Salin Teks LKPD'}</span>
+                        </button>
+                      </div>
+
+                      {/* Info Bar LKPD */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs bg-white p-3 rounded-2xl border border-emerald-200">
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Satuan Pendidikan:</span>
+                          <strong className="text-slate-800 text-[11px]">SDN Nambo 03</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Kelas & Fase:</span>
+                          <strong className="text-slate-800 text-[11px]">{activeModul.kelasNama} ({activeModul.fase})</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Mata Pelajaran:</span>
+                          <strong className="text-slate-800 text-[11px] truncate block">{activeModul.mataPelajaran}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Alokasi Waktu:</span>
+                          <strong className="text-slate-800 text-[11px]">{activeModul.alokasiWaktu}</strong>
+                        </div>
+                      </div>
+
+                      {/* Tujuan & Alat Bahan */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div className="bg-white p-3.5 rounded-2xl border border-emerald-200 space-y-1">
+                          <strong className="text-emerald-900 block text-xs">Tujuan Aktivitas Pembelajaran:</strong>
+                          <p className="text-slate-700 leading-relaxed">{activeModul.asesmenAutentik.lkpdLengkap.tujuanAktivitas}</p>
+                        </div>
+                        <div className="bg-white p-3.5 rounded-2xl border border-emerald-200 space-y-1">
+                          <strong className="text-emerald-900 block text-xs">Alat & Bahan Praktik:</strong>
+                          <div className="space-y-1">
+                            {activeModul.asesmenAutentik.lkpdLengkap.alatDanBahan.map((ab, idx) => (
+                              <div key={idx} className="flex items-center gap-1.5 text-slate-700">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>{ab}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Petunjuk & Langkah Kerja */}
+                      <div className="bg-white p-4 rounded-2xl border border-emerald-200 space-y-3 text-xs">
+                        <div>
+                          <strong className="text-slate-900 block mb-1">Petunjuk Pengerjaan:</strong>
+                          <div className="space-y-1 pl-1">
+                            {activeModul.asesmenAutentik.lkpdLengkap.petunjukPengerjaan.map((pet, idx) => (
+                              <div key={idx} className="flex items-start gap-2 text-slate-700">
+                                <span className="font-bold text-emerald-700">{idx + 1}.</span>
+                                <span>{pet}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="border-t border-slate-100 pt-3">
+                          <strong className="text-slate-900 block mb-1">Langkah Eksplorasi Peserta Didik:</strong>
+                          <div className="space-y-1.5 pl-1">
+                            {activeModul.asesmenAutentik.lkpdLengkap.langkahEksplorasi.map((langkah, idx) => (
+                              <div key={idx} className="flex items-start gap-2 text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                                <span className="font-bold text-emerald-800">{idx + 1}.</span>
+                                <span>{langkah}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {activeModul.asesmenAutentik.lkpdLengkap.tabelAktivitasKerja && (
+                          <div className="border-t border-slate-100 pt-3">
+                            <strong className="text-slate-900 block mb-1">Tabel Catatan / Format Aktivitas:</strong>
+                            <pre className="text-[11px] font-mono text-slate-800 bg-slate-50 p-3 rounded-xl border border-slate-200 whitespace-pre-wrap">
+                              {activeModul.asesmenAutentik.lkpdLengkap.tabelAktivitasKerja}
+                            </pre>
+                          </div>
+                        )}
+
+                        <div className="border-t border-slate-100 pt-3">
+                          <strong className="text-slate-900 block mb-1">Pertanyaan Diskusi & Refleksi Bersama:</strong>
+                          <div className="space-y-1 pl-1">
+                            {activeModul.asesmenAutentik.lkpdLengkap.pertanyaanDiskusiReflektif.map((pert, idx) => (
+                              <div key={idx} className="flex items-start gap-2 text-slate-700">
+                                <span className="font-bold text-purple-700">{idx + 1}.</span>
+                                <span>{pert}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-950">
+                          <strong className="block text-xs mb-0.5">Refleksi Diri Murid:</strong>
+                          <p>{activeModul.asesmenAutentik.lkpdLengkap.refleksiDiri}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 7. Bahan Ajar Ringkas & LKPD Harian */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
                       <div className="flex items-center justify-between">
@@ -1683,7 +2819,7 @@ export const PerangkatAjarView: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <strong className="text-xs text-slate-900 flex items-center gap-1.5">
                           <FileText className="w-4 h-4 text-blue-600" />
-                          <span>Lembar Kerja Peserta Didik (LKPD Harian)</span>
+                          <span>Lembar Kerja Siswa (Versi Singkat)</span>
                         </strong>
                         <button
                           onClick={() => handleCopy(activeModul.asesmenAutentik.lembarKerjaSiswa, 'lkpd')}
@@ -1753,225 +2889,72 @@ export const PerangkatAjarView: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Stepper Navigation Footer Banner for Modul Ajar */}
+          <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button
+              onClick={() => setSelectedSubTab('tujuan-pembelajaran')}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Kembali ke Langkah 3: TP</span>
+            </button>
+
+            <button
+              onClick={() => setSelectedSubTab('promes')}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+            >
+              <span>Lanjut ke Langkah 5: Program Semester (Promes)</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* SUB-TAB 2: ANALISIS CP, ATP, & TUJUAN PEMBELAJARAN (TP) */}
+      {/* LANGKAH 5: PROGRAM SEMESTER (PROMES) */}
       {/* ========================================================================= */}
-      {selectedSubTab === 'analisis-cp-tp' && (
+      {selectedSubTab === 'promes' && (
         <div className="space-y-6">
-          {/* Official Capaian Pembelajaran (CP) SK BSKAP 046/H/KR/2025 Cards */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
-                  <GraduationCap className="w-5 h-5" />
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-3 bg-purple-100 text-purple-800 rounded-2xl shrink-0">
+                  <Calendar className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
-                    Capaian Pembelajaran (CP) Resmi - {currentFase}
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="bg-purple-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                      Langkah 5 dari 6
+                    </span>
+                    <span className="bg-purple-50 text-purple-800 border border-purple-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                      Semester {selectedSemester} • TA {schoolProfile.tahunAjaran}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-xl">
+                    Program Semester (Promes) - {currentKelasLabel}
                   </h3>
-                  <p className="text-[11px] text-slate-500">
-                    Berdasarkan Keputusan Kepala BSKAP No. 046/H/KR/2025 • {selectedMapel}
+                  <p className="text-xs text-slate-500">
+                    Distribusi alokasi jam tatap muka mingguan per bulan dan kalender agenda khusus
                   </p>
                 </div>
-              </div>
-
-              <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-bold px-3 py-1 rounded-full">
-                {currentFase}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {activeCP.map(cp => (
-                <div
-                  key={cp.id}
-                  className="bg-gradient-to-br from-slate-50 to-emerald-50/40 p-4 rounded-2xl border border-emerald-200/80 space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-2.5 py-0.5 rounded-lg border border-emerald-300">
-                      Elemen: {cp.elemen}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {cp.kelas.join(', ')}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-700 leading-relaxed">
-                    {cp.deskripsiCP}
-                  </p>
-                </div>
-              ))}
-
-              {activeCP.length === 0 && (
-                <div className="col-span-2 p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-                  Capaian Pembelajaran untuk kombinasi {selectedMapel} dan {currentFase} tersedia secara umum.
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Table of Alur Tujuan Pembelajaran (ATP) & Tujuan Pembelajaran (TP) */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
-              <div>
-                <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
-                  Alur Tujuan Pembelajaran (ATP) & Tujuan Pembelajaran (TP)
-                </h3>
-                <p className="text-[11px] text-slate-500">
-                  Daftar TP terstruktur lengkap dengan alokasi JP, Dimensi Profil Lulusan, dan Indikator
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleOpenTPModal()}
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Tambah TP Baru Manual</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="divide-y divide-slate-200">
-              {activeTPList.map((tp, idx) => (
-                <div key={tp.id} className="py-4 space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                        {idx + 1}
-                      </span>
-                      <span className="font-extrabold text-emerald-800 text-xs sm:text-sm font-mono bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-300">
-                        {tp.kodeTP}
-                      </span>
-                      <span className="text-xs font-bold text-slate-900">
-                        {tp.materiPokok}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                        Sem. {tp.semester}
-                      </span>
-                      <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                        {tp.alokasiJP} JP
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-slate-700 leading-relaxed pl-8">
-                    {tp.tujuanDeskripsi}
-                  </p>
-
-                  {/* Dimensi Profil Lulusan & Indikator */}
-                  <div className="pl-8 flex flex-wrap items-center gap-1.5">
-                    <span className="text-[10px] font-bold text-slate-400">Profil Lulusan:</span>
-                    {tp.dimensiProfilLulusan.map(dim => (
-                      <span key={dim} className="text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md border border-slate-200">
-                        {dim}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="pl-8 bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
-                    <strong className="text-slate-800 block text-[10px] uppercase tracking-wider">
-                      Indikator Ketercapaian Tujuan Pembelajaran:
-                    </strong>
-                    {tp.indikatorKetercapaian.map((ind, i) => (
-                      <div key={i} className="flex items-start gap-1.5">
-                        <span className="text-emerald-600 font-bold">✓</span>
-                        <span>{ind}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Action Buttons for this TP */}
-                  <div className="pl-8 flex flex-wrap items-center justify-between gap-2 pt-1">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleGenerateModulFromTP(tp)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-300 transition-colors cursor-pointer"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Buat Modul Ajar dari TP Ini</span>
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => handleOpenTPModal(tp)}
-                        className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                        title="Edit TP"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (window.confirm(`Hapus ${tp.kodeTP}?`)) {
-                            deleteTujuanPembelajaran(tp.id);
-                          }
-                        }}
-                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                        title="Hapus TP"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {activeTPList.length === 0 && (
-                <div className="py-8 text-center text-xs text-slate-500">
-                  Belum ada Tujuan Pembelajaran yang terdaftar untuk {selectedMapel} ({currentFase}).
-                  Klik "Tambah TP Baru Manual" di atas untuk menambahkan.
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* SUB-TAB 3: PROGRAM TAHUNAN (PROTA) & PROGRAM SEMESTER (PROMES) */}
-      {/* ========================================================================= */}
-      {selectedSubTab === 'prota-promes' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-              <div>
-                <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
-                  Program Tahunan (Prota) & Program Semester (Promes) TA {schoolProfile.tahunAjaran}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Rencana alokasi jam pelajaran mingguan dan semesteran SD Negeri Nambo 03
-                </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
                 <button
-                  onClick={handleDownloadExcelWorkbook}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
-                >
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Download Excel (.xlsx)</span>
-                </button>
-
-                <button
-                  onClick={handleGenerateProta}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
-                >
-                  <RefreshCW className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Sinkronkan Prota dari TP</span>
-                </button>
-
-                <button
                   onClick={handleGeneratePromes}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
                 >
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>Generate Promes {selectedSemester}</span>
+                  <RefreshCW className="w-3.5 h-3.5 text-white" />
+                  <span>Generate Promes dari TP</span>
+                </button>
+
+                <button
+                  onClick={handleOpenPromesRowModal}
+                  className="flex items-center gap-1 px-3 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 rounded-xl text-xs font-bold border border-purple-300 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Baris Promes</span>
                 </button>
 
                 <button
@@ -1979,226 +2962,117 @@ export const PerangkatAjarView: React.FC = () => {
                   className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Cetak Dokumen</span>
+                  <span>Cetak Promes</span>
                 </button>
               </div>
             </div>
 
-            {/* A. PROGRAM SEMESTER (PROMES) MATRIX TABULAR */}
-            <div className="space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
-                  <h4 className="font-extrabold text-slate-900 text-sm">
-                    Matriks Program Semester ({selectedSemester}) - {currentKelasLabel}
-                  </h4>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="text-slate-600">
-                    Total Alokasi: <strong className="text-emerald-700">{currentPromes?.totalJPSemester || 0} JP</strong>
-                  </span>
-                  <button
-                    onClick={handleOpenPromesRowModal}
-                    className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg font-bold border border-emerald-300 cursor-pointer"
-                  >
-                    <Plus className="w-3 h-3" />
-                    <span>Tambah Baris Promes Manual</span>
-                  </button>
-                </div>
-              </div>
-
-              {currentPromes ? (
-                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-xs text-left border-collapse min-w-[800px]">
-                      <thead>
-                        <tr className="bg-slate-800 text-white">
-                          <th className="p-3 font-bold border-r border-slate-700 w-12 text-center" rowSpan={2}>No</th>
-                          <th className="p-3 font-bold border-r border-slate-700 w-24" rowSpan={2}>Kode TP</th>
-                          <th className="p-3 font-bold border-r border-slate-700 min-w-[200px]" rowSpan={2}>Materi Pokok / Agenda</th>
-                          <th className="p-3 font-bold border-r border-slate-700 w-16 text-center" rowSpan={2}>JP</th>
-                          {monthsForSemester.map(m => (
-                            <th key={m.key} className="p-2 font-bold text-center border-r border-slate-700" colSpan={5}>
-                              {m.label}
-                            </th>
-                          ))}
-                          <th className="p-3 font-bold text-center w-12" rowSpan={2}>Aksi</th>
-                        </tr>
-                        <tr className="bg-slate-700 text-slate-200 text-[10px]">
-                          {monthsForSemester.map(m => (
-                            <React.Fragment key={m.key}>
-                              {[1, 2, 3, 4, 5].map(w => (
-                                <th key={`${m.key}_W${w}`} className="p-1 text-center border-r border-slate-600 w-6">
-                                  {w}
-                                </th>
-                              ))}
-                            </React.Fragment>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-200">
-                        {currentPromes.items.map((item, idx) => (
-                          <tr key={item.id} className="hover:bg-slate-50">
-                            <td className="p-2.5 text-center font-bold text-slate-600 border-r border-slate-200">{idx + 1}</td>
-                            <td className="p-2.5 font-mono font-bold text-emerald-800 border-r border-slate-200">{item.kodeTP}</td>
-                            <td className="p-2.5 font-medium text-slate-900 border-r border-slate-200">{item.materiPokok}</td>
-                            <td className="p-2.5 text-center font-extrabold text-slate-800 border-r border-slate-200 bg-slate-50">{item.alokasiJP}</td>
-                            {monthsForSemester.map(m => (
-                              <React.Fragment key={m.key}>
-                                {[1, 2, 3, 4, 5].map(w => {
-                                  const cellKey = `${m.key}_W${w}`;
-                                  const val = item.distribusiMingguan[cellKey] || 0;
-                                  return (
-                                    <td key={cellKey} className="p-1 text-center border-r border-slate-200">
-                                      <input
-                                        type="number"
-                                        min="0"
-                                        max="8"
-                                        value={val || ''}
-                                        onChange={e => handleUpdatePromesCell(item.id, cellKey, Number(e.target.value) || 0)}
-                                        className={`w-7 text-center rounded-sm py-0.5 text-xs font-bold border ${
-                                          val > 0
-                                            ? 'bg-emerald-100 text-emerald-800 border-emerald-400'
-                                            : 'border-transparent text-slate-400 hover:border-slate-300'
-                                        }`}
-                                      />
-                                    </td>
-                                  );
-                                })}
-                              </React.Fragment>
-                            ))}
-                            <td className="p-2 text-center">
-                              <button
-                                onClick={() => handleDeletePromesRow(item.id)}
-                                className="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-sm transition-colors cursor-pointer"
-                                title="Hapus Baris Promes"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Agenda Khusus Info */}
-                  {currentPromes.agendaKhusus && (
-                    <div className="bg-slate-50 p-4 border-t border-slate-200 text-xs space-y-1.5">
-                      <strong className="text-slate-800 block text-[11px] uppercase tracking-wider">
-                        Catatan Kegiatan Khusus / Non-KBM Semester {selectedSemester}:
-                      </strong>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
-                        {Object.entries(currentPromes.agendaKhusus).map(([k, v]) => (
-                          <div key={k} className="bg-white p-2 rounded-lg border border-slate-200">
-                            <span className="text-slate-400 font-mono text-[10px] block">{k}</span>
-                            <span className="text-slate-700 font-semibold text-[11px]">{v}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="p-8 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-300 space-y-2">
-                  <p>Belum ada data Program Semester {selectedSemester} untuk {currentKelasLabel} - {selectedMapel}.</p>
-                  <button
-                    onClick={handleGeneratePromes}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold cursor-pointer hover:bg-emerald-700 transition-colors"
-                  >
-                    Generate Promes Otomatis
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* B. PROGRAM TAHUNAN (PROTA) SUMMARY */}
-            <div className="space-y-3 pt-6 border-t border-slate-200">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                  <h4 className="font-extrabold text-slate-900 text-sm">
-                    Ringkasan Program Tahunan (Prota) TA {schoolProfile.tahunAjaran}
-                  </h4>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="text-slate-600">
-                    Total JP Efektif: <strong className="text-blue-700">{currentProta?.totalJPEfektif || 0} JP</strong>
-                  </span>
-                  <button
-                    onClick={() => handleOpenProtaRowModal()}
-                    className="flex items-center gap-1 px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg font-bold border border-blue-300 cursor-pointer"
-                  >
-                    <Plus className="w-3 h-3" />
-                    <span>Tambah Baris Prota Manual</span>
-                  </button>
-                </div>
-              </div>
-
-              {currentProta ? (
-                <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-                  <table className="w-full text-xs text-left border-collapse">
+            {/* Matriks Mingguan Promes */}
+            {currentPromes ? (
+              <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs text-left border-collapse min-w-[850px]">
                     <thead>
-                      <tr className="bg-slate-100 border-b border-slate-200 text-slate-700">
-                        <th className="p-3 font-bold w-12 text-center">No</th>
-                        <th className="p-3 font-bold w-24">Kode TP</th>
-                        <th className="p-3 font-bold">Materi Pokok / Lingkup Materi</th>
-                        <th className="p-3 font-bold w-24 text-center">Semester</th>
-                        <th className="p-3 font-bold w-20 text-center">Alokasi JP</th>
-                        <th className="p-3 font-bold w-36">Perkiraan Bulan</th>
-                        <th className="p-3 font-bold w-16 text-center">Aksi</th>
+                      <tr className="bg-slate-800 text-white">
+                        <th className="p-3 font-bold border-r border-slate-700 w-12 text-center" rowSpan={2}>No</th>
+                        <th className="p-3 font-bold border-r border-slate-700 w-24" rowSpan={2}>Kode TP</th>
+                        <th className="p-3 font-bold border-r border-slate-700 min-w-[200px]" rowSpan={2}>Materi Pokok / Agenda</th>
+                        <th className="p-3 font-bold border-r border-slate-700 w-16 text-center" rowSpan={2}>JP</th>
+                        {monthsForSemester.map(m => (
+                          <th key={m.key} className="p-2 font-bold text-center border-r border-slate-700" colSpan={5}>
+                            {m.label}
+                          </th>
+                        ))}
+                        <th className="p-3 font-bold text-center w-12" rowSpan={2}>Aksi</th>
+                      </tr>
+                      <tr className="bg-slate-700 text-slate-200 text-[10px]">
+                        {monthsForSemester.map(m => (
+                          <React.Fragment key={m.key}>
+                            {[1, 2, 3, 4, 5].map(w => (
+                              <th key={`${m.key}_W${w}`} className="p-1 text-center border-r border-slate-600 w-6">
+                                {w}
+                              </th>
+                            ))}
+                          </React.Fragment>
+                        ))}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
-                      {currentProta.items.map((p, idx) => (
-                        <tr key={p.id} className="hover:bg-slate-50">
-                          <td className="p-3 text-center font-bold text-slate-600">{idx + 1}</td>
-                          <td className="p-3 font-mono font-bold text-emerald-800">{p.kodeTP}</td>
-                          <td className="p-3 font-semibold text-slate-900">{p.materiPokok}</td>
-                          <td className="p-3 text-center">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${p.semester === 'Ganjil' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}`}>
-                              {p.semester}
-                            </span>
-                          </td>
-                          <td className="p-3 text-center font-extrabold text-slate-800">{p.alokasiJP} JP</td>
-                          <td className="p-3 text-slate-600">{p.perkiraanBulan}</td>
-                          <td className="p-3 text-center">
-                            <div className="flex items-center justify-center gap-1">
-                              <button
-                                onClick={() => handleOpenProtaRowModal(p.id)}
-                                className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-sm transition-colors cursor-pointer"
-                                title="Edit Baris Prota"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteProtaRow(p.id)}
-                                className="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-sm transition-colors cursor-pointer"
-                                title="Hapus Baris Prota"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
+                      {currentPromes.items.map((item, idx) => (
+                        <tr key={item.id} className="hover:bg-slate-50">
+                          <td className="p-2.5 text-center font-bold text-slate-600 border-r border-slate-200">{idx + 1}</td>
+                          <td className="p-2.5 font-mono font-bold text-emerald-800 border-r border-slate-200">{item.kodeTP}</td>
+                          <td className="p-2.5 font-medium text-slate-900 border-r border-slate-200">{item.materiPokok}</td>
+                          <td className="p-2.5 text-center font-extrabold text-slate-800 border-r border-slate-200 bg-slate-50">{item.alokasiJP}</td>
+                          {monthsForSemester.map(m => (
+                            <React.Fragment key={m.key}>
+                              {[1, 2, 3, 4, 5].map(w => {
+                                const cellKey = `${m.key}_W${w}`;
+                                const val = item.distribusiMingguan[cellKey] || 0;
+                                return (
+                                  <td key={cellKey} className="p-1 text-center border-r border-slate-200">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      max="8"
+                                      value={val || ''}
+                                      onChange={e => handleUpdatePromesCell(item.id, cellKey, Number(e.target.value) || 0)}
+                                      className={`w-7 text-center rounded-sm py-0.5 text-xs font-bold border ${
+                                        val > 0
+                                          ? 'bg-emerald-100 text-emerald-800 border-emerald-400'
+                                          : 'border-transparent text-slate-400 hover:border-slate-300'
+                                      }`}
+                                    />
+                                  </td>
+                                );
+                              })}
+                            </React.Fragment>
+                          ))}
+                          <td className="p-2 text-center">
+                            <button
+                              onClick={() => handleDeletePromesRow(item.id)}
+                              className="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-sm transition-colors cursor-pointer"
+                              title="Hapus Baris Promes"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              ) : (
-                <div className="p-8 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-300 space-y-2">
-                  <p>Belum ada data Program Tahunan (Prota) tersimpan.</p>
-                  <button
-                    onClick={handleGenerateProta}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold cursor-pointer hover:bg-blue-700 transition-colors"
-                  >
-                    Sinkronkan Prota Sekarang
-                  </button>
-                </div>
-              )}
-            </div>
 
-            {/* Official Signatures for Prota / Promes */}
+                {/* Agenda Khusus Info */}
+                {currentPromes.agendaKhusus && (
+                  <div className="bg-slate-50 p-4 border-t border-slate-200 text-xs space-y-1.5">
+                    <strong className="text-slate-800 block text-[11px] uppercase tracking-wider">
+                      Catatan Kegiatan Khusus / Non-KBM Semester {selectedSemester}:
+                    </strong>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+                      {Object.entries(currentPromes.agendaKhusus).map(([k, v]) => (
+                        <div key={k} className="bg-white p-2 rounded-lg border border-slate-200">
+                          <span className="text-slate-400 font-mono text-[10px] block">{k}</span>
+                          <span className="text-slate-700 font-semibold text-[11px]">{v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-300 space-y-2">
+                <p>Belum ada data Program Semester {selectedSemester} untuk {currentKelasLabel} - {selectedMapel}.</p>
+                <button
+                  onClick={handleGeneratePromes}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-bold cursor-pointer hover:bg-emerald-700 transition-colors"
+                >
+                  Generate Promes Otomatis
+                </button>
+              </div>
+            )}
+
+            {/* Official Signatures */}
             <div className="pt-8 border-t border-slate-300 grid grid-cols-2 text-center text-xs text-slate-800">
               <div className="space-y-1">
                 <div>Mengetahui,</div>
@@ -2216,11 +3090,215 @@ export const PerangkatAjarView: React.FC = () => {
                 <div className="text-[11px] text-slate-600">NIP. {defaultTeacherNIP}</div>
               </div>
             </div>
+
+            {/* Stepper Navigation Footer Banner */}
+            <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <button
+                onClick={() => setSelectedSubTab('modul-ajar')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Kembali ke Langkah 4: Modul Ajar</span>
+              </button>
+
+              <button
+                onClick={() => setSelectedSubTab('prota')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Lanjut ke Langkah 6: Program Tahunan (Prota)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* ========================================================================= */}
+      {/* LANGKAH 6: PROGRAM TAHUNAN (PROTA) */}
+      {/* ========================================================================= */}
+      {selectedSubTab === 'prota' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-3 bg-indigo-100 text-indigo-800 rounded-2xl shrink-0">
+                  <Calendar className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="bg-indigo-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                      Langkah 6 dari 6 (Final)
+                    </span>
+                    <span className="bg-indigo-50 text-indigo-800 border border-indigo-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                      Rekap Tahunan • TA {schoolProfile.tahunAjaran}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-xl">
+                    Program Tahunan (Prota) - {currentKelasLabel}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Rekapitulasi alokasi jam pelajaran efektif dan beban belajar selama 1 tahun ajaran penuh (Ganjil & Genap)
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={handleDownloadExcelWorkbook}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>Unduh Master Excel (.xlsx)</span>
+                </button>
+
+                <button
+                  onClick={handleGenerateProta}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                >
+                  <RefreshCW className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Sinkronkan Prota dari TP</span>
+                </button>
+
+                <button
+                  onClick={() => handleOpenProtaRowModal()}
+                  className="flex items-center gap-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-xl text-xs font-bold border border-blue-300 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Baris Prota</span>
+                </button>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Cetak Prota</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Total JP info banner */}
+            <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-5 rounded-2xl flex items-center justify-between">
+              <div>
+                <span className="text-[11px] font-bold text-blue-300 uppercase tracking-wider block">Total Jam Pelajaran Efektif Setahun</span>
+                <div className="text-2xl font-black text-amber-300">{currentProta?.totalJPEfektif || 0} JP</div>
+              </div>
+              <div className="text-right text-xs text-slate-300">
+                SD Negeri Nambo 03 • Klapanunggal<br />
+                Tahun Ajaran {schoolProfile.tahunAjaran}
+              </div>
+            </div>
+
+            {/* Table Prota */}
+            {currentProta ? (
+              <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                <table className="w-full text-xs text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-100 border-b border-slate-200 text-slate-700">
+                      <th className="p-3 font-bold w-12 text-center">No</th>
+                      <th className="p-3 font-bold w-24">Kode TP</th>
+                      <th className="p-3 font-bold">Materi Pokok / Lingkup Materi</th>
+                      <th className="p-3 font-bold w-24 text-center">Semester</th>
+                      <th className="p-3 font-bold w-20 text-center">Alokasi JP</th>
+                      <th className="p-3 font-bold w-36">Perkiraan Bulan</th>
+                      <th className="p-3 font-bold w-16 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {currentProta.items.map((p, idx) => (
+                      <tr key={p.id} className="hover:bg-slate-50">
+                        <td className="p-3 text-center font-bold text-slate-600">{idx + 1}</td>
+                        <td className="p-3 font-mono font-bold text-emerald-800">{p.kodeTP}</td>
+                        <td className="p-3 font-semibold text-slate-900">{p.materiPokok}</td>
+                        <td className="p-3 text-center">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${p.semester === 'Ganjil' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}`}>
+                            {p.semester}
+                          </span>
+                        </td>
+                        <td className="p-3 text-center font-extrabold text-slate-800">{p.alokasiJP} JP</td>
+                        <td className="p-3 text-slate-600">{p.perkiraanBulan}</td>
+                        <td className="p-3 text-center">
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => handleOpenProtaRowModal(p.id)}
+                              className="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-sm transition-colors cursor-pointer"
+                              title="Edit Baris Prota"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProtaRow(p.id)}
+                              className="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-sm transition-colors cursor-pointer"
+                              title="Hapus Baris Prota"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-300 space-y-2">
+                <p>Belum ada data Program Tahunan (Prota) tersimpan.</p>
+                <button
+                  onClick={handleGenerateProta}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold cursor-pointer hover:bg-blue-700 transition-colors"
+                >
+                  Sinkronkan Prota Sekarang
+                </button>
+              </div>
+            )}
+
+            {/* Official Signatures */}
+            <div className="pt-8 border-t border-slate-300 grid grid-cols-2 text-center text-xs text-slate-800">
+              <div className="space-y-1">
+                <div>Mengetahui,</div>
+                <div className="font-bold">Kepala Sekolah SD Negeri Nambo 03</div>
+                <div className="h-16"></div>
+                <div className="font-black underline">{schoolProfile.kepalaSekolah}</div>
+                <div className="text-[11px] text-slate-600">NIP. {schoolProfile.nipKepalaSekolah}</div>
+              </div>
+
+              <div className="space-y-1">
+                <div>Klapanunggal, Juli 2026</div>
+                <div className="font-bold">Guru Kelas / Mata Pelajaran</div>
+                <div className="h-16"></div>
+                <div className="font-black underline">{defaultTeacherName}</div>
+                <div className="text-[11px] text-slate-600">NIP. {defaultTeacherNIP}</div>
+              </div>
+            </div>
+
+            {/* Stepper Navigation Footer Banner */}
+            <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <button
+                onClick={() => setSelectedSubTab('promes')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Kembali ke Langkah 5: Promes</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <div className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>Seluruh 6 Perangkat Pembelajaran Telah Lengkap!</span>
+                </div>
+                <button
+                  onClick={handleDownloadExcelWorkbook}
+                  className="px-4 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>Download Master Excel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* MODAL 1: TAMBAH / EDIT TUJUAN PEMBELAJARAN (TP) */}
       {/* ========================================================================= */}
       {isTPModalOpen && (

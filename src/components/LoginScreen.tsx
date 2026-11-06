@@ -15,7 +15,9 @@ import {
   Sparkles,
   Award,
   ChevronDown,
-  Info
+  Info,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 export interface AuthSession {
@@ -40,12 +42,14 @@ interface LoginScreenProps {
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
-  const { schoolProfile, teachers, staff, setCurrentActiveUser } = useSchool();
+  const { schoolProfile, teachers, staff, setCurrentActiveUser, verifyUserPassword } = useSchool();
 
   const [npsnInput, setNpsnInput] = useState('20200352');
   const [selectedPersonnelId, setSelectedPersonnelId] = useState<string>('');
   const [customNameInput, setCustomNameInput] = useState<string>('');
   const [useManualInput, setUseManualInput] = useState<boolean>(false);
+  const [passwordInput, setPasswordInput] = useState<string>('20200352');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -138,6 +142,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         useManualInput
           ? `Nama atau NIP "${customNameInput}" tidak terdaftar di database resmi SDN Nambo 03. Silakan pilih dari daftar atau gunakan nama yang sesuai SK.`
           : 'Silakan pilih Nama Guru / Tenaga Pendidik yang terdaftar untuk melanjutkan.'
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    // 3. Validate Password (default is school NPSN 20200352)
+    const isPasswordValid = verifyUserPassword(matchedPersonnel.id, passwordInput);
+    if (!isPasswordValid) {
+      setErrorMessage(
+        'Password salah! Password sementara pertama kali membuka aplikasi adalah NPSN sekolah (20200352). Jika Anda sudah pernah mengganti password, silakan gunakan password baru Anda.'
       );
       setIsSubmitting(false);
       return;
@@ -322,7 +336,43 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
               )}
             </div>
 
-            {/* Error Feedback Alert */}
+            {/* Field 3: Password Akun */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                  <Lock className="w-4 h-4 text-amber-400" />
+                  Password Akun
+                </label>
+                <span className="text-[10px] text-amber-300 font-medium">
+                  Awal: NPSN ({schoolProfile.npsn})
+                </span>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={passwordInput}
+                  onChange={e => {
+                    setPasswordInput(e.target.value);
+                    setErrorMessage(null);
+                  }}
+                  placeholder="Masukkan password akun (awal: 20200352)"
+                  className="w-full bg-slate-950/80 border border-slate-700 focus:border-amber-400 rounded-xl px-4 py-3 text-sm font-medium text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-amber-400/40 transition-all pr-12 font-mono"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer p-1"
+                  aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-1">
+                Password sementara pertama kali membuka aplikasi adalah <strong className="text-amber-300 font-mono">20200352</strong>. Anda dapat mengubahnya setelah masuk.
+              </p>
+            </div>
+
             {errorMessage && (
               <div className="p-3 bg-rose-950/80 border border-rose-500/50 rounded-xl flex items-start gap-2.5 text-xs text-rose-200 animate-in fade-in duration-200">
                 <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />

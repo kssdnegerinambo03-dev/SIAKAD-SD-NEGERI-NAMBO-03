@@ -13,7 +13,8 @@ import {
   RefreshCw,
   CloudCheck,
   LogOut,
-  UserCheck
+  UserCheck,
+  KeyRound
 } from 'lucide-react';
 import { useSchool } from '../context/SchoolContext';
 import { OfficialLogo } from './OfficialLogo';
@@ -26,6 +27,7 @@ interface NavbarProps {
   onOpenShare: () => void;
   currentSession?: AuthSession | null;
   onLogout?: () => void;
+  onOpenChangePassword?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -34,7 +36,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenDatabaseSync,
   onOpenShare,
   currentSession,
-  onLogout
+  onLogout,
+  onOpenChangePassword
 }) => {
   const { schoolProfile, resetAllToDefaults, forceSyncNow, syncStatus, lastSyncTime } = useSchool();
   const [isSaving, setIsSaving] = useState(false);
@@ -150,16 +153,29 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                 </div>
 
-                {onLogout && (
-                  <button
-                    onClick={onLogout}
-                    className="p-2 rounded-xl text-rose-600 hover:text-white hover:bg-rose-600 transition-colors border border-rose-200 hover:border-rose-600 cursor-pointer"
-                    title="Keluar / Ganti Akun"
-                    aria-label="Keluar / Ganti Akun"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                )}
+                <div className="flex items-center gap-1">
+                  {onOpenChangePassword && (
+                    <button
+                      onClick={onOpenChangePassword}
+                      className="p-2 rounded-xl text-amber-600 hover:text-white hover:bg-amber-600 transition-colors border border-amber-200 hover:border-amber-600 cursor-pointer"
+                      title="Ganti Password Akun"
+                      aria-label="Ganti Password Akun"
+                    >
+                      <KeyRound className="w-4 h-4" />
+                    </button>
+                  )}
+
+                  {onLogout && (
+                    <button
+                      onClick={onLogout}
+                      className="p-2 rounded-xl text-rose-600 hover:text-white hover:bg-rose-600 transition-colors border border-rose-200 hover:border-rose-600 cursor-pointer"
+                      title="Keluar / Ganti Akun"
+                      aria-label="Keluar / Ganti Akun"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>

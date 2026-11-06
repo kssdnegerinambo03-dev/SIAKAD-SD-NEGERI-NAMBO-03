@@ -52,34 +52,31 @@ export const OfficialKopSurat: React.FC<OfficialKopSuratProps> = ({
 
         {/* Teks Kop Tengah */}
         <div className="flex-1 text-center font-serif leading-tight px-1">
-          <div className="text-sm sm:text-base font-bold tracking-wider text-slate-900 uppercase">
+          <div className="text-base sm:text-lg font-bold tracking-normal text-slate-900 uppercase">
             PEMERINTAH KABUPATEN BOGOR
           </div>
-          <div className="text-sm sm:text-base font-bold tracking-wider text-slate-900 uppercase">
+          <div className="text-base sm:text-lg font-bold tracking-normal text-slate-900 uppercase">
             DINAS PENDIDIKAN
           </div>
-          <div className="text-lg sm:text-2xl font-black tracking-tight text-slate-950 uppercase mt-0.5">
+          <div className="text-xl sm:text-2xl font-black tracking-wide text-slate-950 uppercase my-0.5">
             SD NEGERI NAMBO 03
           </div>
-          <div className="text-sm sm:text-lg font-black tracking-wide text-slate-950 uppercase">
-            KECAMATAN KLAPANUNGGAL
-          </div>
-          <div className="text-[11px] sm:text-xs font-normal text-slate-800 mt-1">
+          <div className="text-xs sm:text-sm font-normal text-slate-900">
             Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati
           </div>
-          <div className="text-[11px] sm:text-xs font-normal text-slate-800">
+          <div className="text-xs sm:text-sm font-normal text-slate-900">
             Kecamatan Klapanunggal Kabupaten Bogor 16871
           </div>
-          <div className="text-[11px] sm:text-xs font-normal text-slate-800">
-            Email: <span className="text-blue-900 underline font-mono">{email}</span>
+          <div className="text-xs sm:text-sm font-normal text-slate-900">
+            Email.sdnnambo03bantarjati@gmail.com
           </div>
 
-          <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-900 pt-1 px-4 sm:px-8 border-t border-slate-200/60 mt-1">
-            <div>
-              <span className="font-mono">NPSN : {npsn}</span>
+          <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-slate-900 pt-1 px-2 sm:px-6 mt-1">
+            <div className="underline underline-offset-2">
+              NPSN : {npsn}
             </div>
             <div>
-              <span className="font-mono">NSS : {nss}</span>
+              NSS : {nss}
             </div>
           </div>
         </div>

@@ -196,16 +196,15 @@ export async function downloadModulAjarWord(modul: DeepLearningModule, schoolPro
         <img src="${logoBogorDataUrl}" alt="Lambang Kabupaten Bogor" width="75" height="90" style="display: block; margin: auto;" />
       </td>
       <td class="kop-text" style="text-align: center; vertical-align: middle; padding: 0 10px;">
-        <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">PEMERINTAH KABUPATEN BOGOR</div>
-        <div style="font-size: 11pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">DINAS PENDIDIKAN</div>
-        <div style="font-size: 16pt; font-weight: 900; color: #000000; margin: 2px 0; text-transform: uppercase;">SD NEGERI NAMBO 03</div>
-        <div style="font-size: 13pt; font-weight: 900; color: #000000; text-transform: uppercase;">KECAMATAN KLAPANUNGGAL</div>
-        <div style="font-size: 9.5pt; margin-top: 3px;">Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati</div>
-        <div style="font-size: 9.5pt;">Kecamatan Klapanunggal Kabupaten Bogor 16871</div>
-        <div style="font-size: 9.5pt;">Email.sdnnambo03bantarjati@gmail.com</div>
-        <table style="width: 100%; margin-top: 4px; border-top: 1px solid #000000; font-size: 9.5pt; font-weight: bold;">
+        <div style="font-size: 12pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'Times New Roman', serif;">PEMERINTAH KABUPATEN BOGOR</div>
+        <div style="font-size: 12pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'Times New Roman', serif;">DINAS PENDIDIKAN</div>
+        <div style="font-size: 16pt; font-weight: 900; color: #000000; margin: 2px 0; text-transform: uppercase; font-family: 'Times New Roman', serif;">SD NEGERI NAMBO 03</div>
+        <div style="font-size: 10pt; font-family: 'Times New Roman', serif;">Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati</div>
+        <div style="font-size: 10pt; font-family: 'Times New Roman', serif;">Kecamatan Klapanunggal Kabupaten Bogor 16871</div>
+        <div style="font-size: 10pt; font-family: 'Times New Roman', serif;">Email.sdnnambo03bantarjati@gmail.com</div>
+        <table style="width: 100%; margin-top: 4px; font-size: 9.5pt; font-family: 'Times New Roman', serif;">
           <tr>
-            <td style="text-align: left; padding: 2px 4px; border: none;">NPSN : ${schoolProfile.npsn || '20200352'}</td>
+            <td style="text-align: left; padding: 2px 4px; border: none; text-decoration: underline;">NPSN : ${schoolProfile.npsn || '20200352'}</td>
             <td style="text-align: right; padding: 2px 4px; border: none;">NSS : ${schoolProfile.nss || '101020232021'}</td>
           </tr>
         </table>
@@ -308,13 +307,47 @@ export async function downloadModulAjarWord(modul: DeepLearningModule, schoolPro
   </ul>
   <p style="margin-left: 20px;"><strong>Tindak Lanjut & Pembiasaan Rumah:</strong> ${modul.pengalamanBelajar.kegiatanPenutup.tindakLanjut}</p>
 
-  <!-- 4. ASESMEN AUTENTIK & BAHAN AJAR -->
-  <div class="section-title">IV. ASESMEN AUTENTIK & RUBRIK PENILAIAN BERTINGKAT</div>
-  <p><strong>A. Asesmen Formatif Awal:</strong> ${modul.asesmenAutentik.formatifAwal}</p>
+  <!-- 4. ASESMEN AUTENTIK & INSTRUMEN PENILAIAN LENGKAP -->
+  <div class="section-title">IV. ASESMEN AUTENTIK, INSTRUMEN SOAL & LKPD LENGKAP</div>
+  <p><strong>A. Asesmen Formatif Awal (Diagnostik):</strong> ${modul.asesmenAutentik.formatifAwal}</p>
   <p><strong>B. Asesmen Formatif Proses:</strong> ${modul.asesmenAutentik.formatifProses}</p>
   <p><strong>C. Asesmen Sumatif Akhir:</strong> ${modul.asesmenAutentik.sumatif}</p>
 
-  <p class="subsection-title">D. Rubrik Kriteria Ketercapaian Tujuan Pembelajaran (KKTP):</p>
+  ${modul.asesmenAutentik.bentukJenis ? `
+  <p class="subsection-title">D. Bentuk & Jenis Instrumen Penilaian:</p>
+  <table class="rubrik" style="margin-bottom: 12px;">
+    <thead>
+      <tr>
+        <th style="width: 25%;">Kategori Asesmen</th>
+        <th style="width: 45%;">Deskripsi & Fokus Penilaian</th>
+        <th style="width: 30%;">Bentuk & Teknik Instrumen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Asesmen Diagnostik Awal</strong></td>
+        <td>${modul.asesmenAutentik.bentukJenis.diagnostikAwal}</td>
+        <td>Tanya Jawab Lisan & Observasi Kesiapan</td>
+      </tr>
+      <tr>
+        <td><strong>Asesmen Formatif Proses</strong></td>
+        <td>${modul.asesmenAutentik.bentukJenis.formatifProses}</td>
+        <td>Checklist Observasi Sikap & Lembar Kinerja Unplugged</td>
+      </tr>
+      <tr>
+        <td><strong>Asesmen Sumatif Lingkup Materi</strong></td>
+        <td>${modul.asesmenAutentik.bentukJenis.sumatifAkhir}</td>
+        <td>Tes Tertulis (PG & Uraian) serta Unjuk Kerja Proyek</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size: 9.5pt; margin-bottom: 8px;"><strong>Teknik Penilaian yang Diterapkan:</strong></p>
+  <ul>
+    ${(modul.asesmenAutentik.bentukJenis.teknikInstrumen || []).map(t => `<li style="font-size: 9.5pt;">${t}</li>`).join('')}
+  </ul>
+  ` : ''}
+
+  <p class="subsection-title">E. Rubrik Kriteria Ketercapaian Tujuan Pembelajaran (KKTP):</p>
   <table class="rubrik">
     <thead>
       <tr>
@@ -338,10 +371,117 @@ export async function downloadModulAjarWord(modul: DeepLearningModule, schoolPro
     </tbody>
   </table>
 
-  <p class="subsection-title">E. Bahan Ajar Ringkas Guru & Peserta Didik:</p>
+  ${modul.asesmenAutentik.soalIndividu ? `
+  <p class="subsection-title">F. Instrumen Soal & Asesmen Individu (Total Bobot Skor: ${modul.asesmenAutentik.soalIndividu.totalSkor || 100}):</p>
+  <p style="font-size: 9.5pt; font-style: italic; margin-bottom: 6px;">Petunjuk: ${modul.asesmenAutentik.soalIndividu.petunjuk}</p>
+  <table class="rubrik" style="margin-bottom: 12px;">
+    <thead>
+      <tr>
+        <th style="width: 6%;">No</th>
+        <th style="width: 16%;">Bentuk Soal</th>
+        <th style="width: 48%;">Butir Pertanyaan & Pilihan</th>
+        <th style="width: 20%;">Kunci Jawaban</th>
+        <th style="width: 10%;">Skor</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${modul.asesmenAutentik.soalIndividu.daftarSoal.map(s => `
+        <tr>
+          <td style="text-align: center;"><strong>${s.nomor}</strong></td>
+          <td style="text-align: center;"><span style="background-color: #E5E7EB; padding: 2px 5px; font-size: 8.5pt;">${s.bentuk}</span></td>
+          <td>
+            <strong>${s.pertanyaan}</strong>
+            ${s.pilihan && s.pilihan.length > 0 ? `
+              <div style="margin-top: 4px; font-size: 9pt;">
+                ${s.pilihan.map(p => `<div>${p}</div>`).join('')}
+              </div>
+            ` : ''}
+          </td>
+          <td><span style="font-weight: bold; color: #047857;">${s.kunciJawaban}</span></td>
+          <td style="text-align: center;"><strong>${s.bobotSkor}</strong></td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+  ` : ''}
+
+  ${modul.asesmenAutentik.soalKelompok ? `
+  <p class="subsection-title">G. Instrumen Tantangan & Penilaian Proyek Kelompok:</p>
+  <div style="border: 1px solid #9CA3AF; padding: 8px 10px; background-color: #F3F4F6; margin-bottom: 8px;">
+    <p><strong>Judul Proyek:</strong> ${modul.asesmenAutentik.soalKelompok.judulTantangan}</p>
+    <p><strong>Petunjuk Kelompok:</strong> ${modul.asesmenAutentik.soalKelompok.petunjukKelompok}</p>
+    <p><strong>Skenario Kasus / Misi:</strong> ${modul.asesmenAutentik.soalKelompok.skenarioKasus}</p>
+    <p><strong>Tugas Kolaboratif:</strong></p>
+    <ul>
+      ${modul.asesmenAutentik.soalKelompok.tugasKolaboratif.map(t => `<li>${t}</li>`).join('')}
+    </ul>
+    <p style="margin-top: 6px;"><strong>Kriteria Penilaian Kerja Kelompok:</strong></p>
+    <table class="rubrik">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Aspek Penilaian</th>
+          <th style="width: 15%;">Bobot</th>
+          <th style="width: 55%;">Deskripsi Kriteria</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${modul.asesmenAutentik.soalKelompok.kriteriaPenilaian.map(k => `
+          <tr>
+            <td><strong>${k.aspek}</strong></td>
+            <td style="text-align: center;"><strong>${k.bobot}</strong></td>
+            <td>${k.deskripsi}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+  ` : ''}
+
+  ${modul.asesmenAutentik.lkpdLengkap ? `
+  <p class="subsection-title">H. Lembar Kerja Peserta Didik (LKPD) Lengkap Terstruktur:</p>
+  <div style="border: 2px dashed #059669; padding: 10px 12px; background-color: #ECFDF5; margin-bottom: 12px;">
+    <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 8px; color: #065F46;">
+      ${modul.asesmenAutentik.lkpdLengkap.judulLKPD}
+    </div>
+    <table style="width: 100%; font-size: 9.5pt; margin-bottom: 8px;">
+      <tr>
+        <td style="width: 50%;">Kelompok / Kelas: ........................ / ${modul.kelasNama}</td>
+        <td style="width: 50%;">Nama Anggota: .................................................</td>
+      </tr>
+      <tr>
+        <td>Mata Pelajaran: ${modul.mataPelajaran}</td>
+        <td>Hari / Tanggal: .................................................</td>
+      </tr>
+    </table>
+    <p><strong>Tujuan Aktivitas:</strong> ${modul.asesmenAutentik.lkpdLengkap.tujuanAktivitas}</p>
+    <p><strong>Alat & Bahan yang Digunakan:</strong></p>
+    <ul>
+      ${modul.asesmenAutentik.lkpdLengkap.alatDanBahan.map(ab => `<li>${ab}</li>`).join('')}
+    </ul>
+    <p><strong>Petunjuk Pengerjaan:</strong></p>
+    <ol>
+      ${modul.asesmenAutentik.lkpdLengkap.petunjukPengerjaan.map(p => `<li>${p}</li>`).join('')}
+    </ol>
+    <p><strong>Langkah Eksplorasi:</strong></p>
+    <ol>
+      ${modul.asesmenAutentik.lkpdLengkap.langkahEksplorasi.map(l => `<li>${l}</li>`).join('')}
+    </ol>
+    ${modul.asesmenAutentik.lkpdLengkap.tabelAktivitasKerja ? `
+      <p><strong>Format Catatan / Checklist Uji Coba:</strong></p>
+      <div class="box-content">${modul.asesmenAutentik.lkpdLengkap.tabelAktivitasKerja}</div>
+    ` : ''}
+    <p><strong>Pertanyaan Diskusi & Refleksi Kelompok:</strong></p>
+    <ol>
+      ${modul.asesmenAutentik.lkpdLengkap.pertanyaanDiskusiReflektif.map(pd => `<li>${pd}</li>`).join('')}
+    </ol>
+    <p><strong>Refleksi Diri:</strong> ${modul.asesmenAutentik.lkpdLengkap.refleksiDiri}</p>
+  </div>
+  ` : ''}
+
+  <p class="subsection-title">I. Bahan Ajar Ringkas Guru & Peserta Didik:</p>
   <div class="box-content">${modul.asesmenAutentik.bahanAjarRingkas}</div>
 
-  <p class="subsection-title">F. Lembar Kerja Peserta Didik (LKPD Harian):</p>
+  <p class="subsection-title">J. Lembar Kerja Peserta Didik (LKPD Harian / Ringkas):</p>
   <div class="box-content">${modul.asesmenAutentik.lembarKerjaSiswa}</div>
 
   <!-- TANDA TANGAN VALIDASI -->

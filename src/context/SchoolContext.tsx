@@ -173,6 +173,11 @@ interface SchoolContextType {
   saveModulAjar: (modul: DeepLearningModule) => void;
   deleteModulAjar: (id: string) => void;
 
+  // User Credentials & Password Management
+  userPasswords: Record<string, string>;
+  verifyUserPassword: (userId: string, passwordAttempt: string) => boolean;
+  changeUserPassword: (userId: string, oldPass: string, newPass: string) => { success: boolean; message: string };
+
   // General App Helpers
   resetAllToDefaults: () => void;
 }
@@ -303,6 +308,11 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         };
   });
 
+  const [userPasswords, setUserPasswords] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}user_passwords`);
+    return saved ? JSON.parse(saved) : {};
+  });
+
   // Duplicate NISN Alert Modal state
   const [duplicateAlert, setDuplicateAlert] = useState<DuplicateAlertModalData>({
     isOpen: false,
@@ -360,6 +370,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem(`${STORAGE_KEY_PREFIX}prota_records`, JSON.stringify(protaList));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}promes_records`, JSON.stringify(promesList));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}modul_ajar_dl`, JSON.stringify(modulAjarList));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}user_passwords`, JSON.stringify(userPasswords));
   }, [
     schoolProfile,
     classes,
@@ -378,7 +389,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     tujuanList,
     protaList,
     promesList,
-    modulAjarList
+    modulAjarList,
+    userPasswords
   ]);
 
   // Initial load from central server + background polling for collaborative sync
@@ -412,6 +424,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
               if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
               if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
+              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
+              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
               lastServerUpdateRef.current = d.serverUpdatedAt || null;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
@@ -436,7 +450,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               tujuanList,
               protaList,
               promesList,
-              modulAjarList
+              modulAjarList,
+              userPasswords
             };
             await fetch('/api/school-data/sync', {
               method: 'POST',
@@ -486,6 +501,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
               if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
               if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
+              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
+              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
               lastServerUpdateRef.current = d.serverUpdatedAt;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
               setSyncStatus('synced');
@@ -535,7 +552,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           tujuanList,
           protaList,
           promesList,
-          modulAjarList
+          modulAjarList,
+          userPasswords
         };
         const res = await fetch('/api/school-data/sync', {
           method: 'POST',
@@ -574,7 +592,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     tujuanList,
     protaList,
     promesList,
-    modulAjarList
+    modulAjarList,
+    userPasswords
   ]);
 
   const addSyncLog = (log: Omit<SyncAuditLog, 'id' | 'timestamp' | 'statusSinkron'>) => {
@@ -659,7 +678,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         tujuanList,
         protaList,
         promesList,
-        modulAjarList
+        modulAjarList,
+        userPasswords
       };
 
       // 1. Post local changes to server
@@ -693,6 +713,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
           if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
           if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
+              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
+              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
           lastServerUpdateRef.current = d.serverUpdatedAt;
           setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
           setSyncStatus('synced');
@@ -781,6 +803,7 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (parsed.protaList && Array.isArray(parsed.protaList)) setProtaList(parsed.protaList);
           if (parsed.promesList && Array.isArray(parsed.promesList)) setPromesList(parsed.promesList);
           if (parsed.modulAjarList && Array.isArray(parsed.modulAjarList)) setModulAjarList(parsed.modulAjarList);
+          if (parsed.userPasswords && typeof parsed.userPasswords === 'object') setUserPasswords(parsed.userPasswords);
 
           // Sync to server immediately
           await fetch('/api/school-data/sync', {
@@ -1660,6 +1683,54 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // =====================
   // RESET DEFAULTS
   // =====================
+  const verifyUserPassword = (userId: string, passwordAttempt: string): boolean => {
+    const cleanAttempt = (passwordAttempt || '').trim();
+    const defaultPass = schoolProfile.npsn || '20200352';
+    const stored = userPasswords[userId] || userPasswords[userId.toLowerCase()] || defaultPass;
+    return cleanAttempt === stored;
+  };
+
+  const changeUserPassword = (
+    userId: string,
+    oldPass: string,
+    newPass: string
+  ): { success: boolean; message: string } => {
+    if (!verifyUserPassword(userId, oldPass)) {
+      return {
+        success: false,
+        message: 'Password saat ini / password lama salah! Gunakan NPSN sekolah (20200352) jika belum pernah diubah.'
+      };
+    }
+    const cleanNew = (newPass || '').trim();
+    if (cleanNew.length < 4) {
+      return { success: false, message: 'Password baru minimal harus 4 karakter.' };
+    }
+    const currentPass = userPasswords[userId] || schoolProfile.npsn || '20200352';
+    if (cleanNew === currentPass) {
+      return { success: false, message: 'Password baru tidak boleh sama dengan password saat ini.' };
+    }
+
+    const updated = {
+      ...userPasswords,
+      [userId]: cleanNew
+    };
+    setUserPasswords(updated);
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}user_passwords`, JSON.stringify(updated));
+    markLocalChange();
+
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: 'Akun & Keamanan',
+      jenisAksi: 'Ubah',
+      judul: 'Pembaruan Password Akun',
+      rincianPerubahan: `Berhasil mengubah password akun untuk ${currentActiveUser.name}.`,
+      diverifikasiKepsek: true
+    });
+
+    return { success: true, message: 'Password berhasil diperbarui dan tersimpan!' };
+  };
+
   const resetAllToDefaults = () => {
     if (window.confirm('Apakah Anda yakin ingin mengatur ulang data ke data default bawaan SD Negeri Nambo 03? Semua perubahan akan dikembalikan ke data awal.')) {
       setSchoolProfile(initialSchoolProfile);
@@ -1915,7 +1986,10 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         savePromesRecord,
         modulAjarList,
         saveModulAjar,
-        deleteModulAjar
+        deleteModulAjar,
+        userPasswords,
+        verifyUserPassword,
+        changeUserPassword
       }}
     >
       {children}

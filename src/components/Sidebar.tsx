@@ -15,7 +15,8 @@ import {
   Server,
   LogOut,
   UserCheck,
-  BookOpenCheck
+  BookOpenCheck,
+  KeyRound
 } from 'lucide-react';
 import { OfficialLogo } from './OfficialLogo';
 import { useSchool } from '../context/SchoolContext';
@@ -33,6 +34,7 @@ interface SidebarProps {
   onOpenShare: () => void;
   currentSession?: AuthSession | null;
   onLogout?: () => void;
+  onOpenChangePassword?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -44,7 +46,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenDatabaseSync,
   onOpenShare,
   currentSession,
-  onLogout
+  onLogout,
+  onOpenChangePassword
 }) => {
   const { schoolProfile, students, teachers, classes, syncLogs } = useSchool();
 
@@ -271,15 +274,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
 
-            {onLogout && (
-              <button
-                onClick={onLogout}
-                className="p-1.5 text-rose-400 hover:text-white hover:bg-rose-900/60 rounded-lg transition-colors border border-rose-900/40 shrink-0 cursor-pointer"
-                title="Keluar / Ganti Akun"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            )}
+            <div className="flex items-center gap-1 shrink-0">
+              {onOpenChangePassword && (
+                <button
+                  onClick={onOpenChangePassword}
+                  className="p-1.5 text-amber-400 hover:text-white hover:bg-amber-900/60 rounded-lg transition-colors border border-amber-900/40 cursor-pointer"
+                  title="Ganti Password Akun"
+                  aria-label="Ganti Password Akun"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                </button>
+              )}
+
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="p-1.5 text-rose-400 hover:text-white hover:bg-rose-900/60 rounded-lg transition-colors border border-rose-900/40 cursor-pointer"
+                  title="Keluar / Ganti Akun"
+                  aria-label="Keluar / Ganti Akun"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </aside>

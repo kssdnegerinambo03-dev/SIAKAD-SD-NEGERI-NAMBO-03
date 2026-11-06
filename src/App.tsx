@@ -15,6 +15,7 @@ import { SyncMonitoringView } from './components/SyncMonitoringView';
 import { PerangkatAjarView } from './components/PerangkatAjarView';
 import { OfficialLogo } from './components/OfficialLogo';
 import { LoginScreen, AuthSession, AUTH_STORAGE_KEY } from './components/LoginScreen';
+import { ChangePasswordModal } from './components/ChangePasswordModal';
 import {
   LayoutDashboard,
   UserPlus,
@@ -46,6 +47,7 @@ const MainAppContent: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDatabaseSyncOpen, setIsDatabaseSyncOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const { schoolProfile } = useSchool();
 
   const handleLogout = () => {
@@ -76,6 +78,7 @@ const MainAppContent: React.FC = () => {
         onOpenShare={() => setIsShareOpen(true)}
         currentSession={session}
         onLogout={handleLogout}
+        onOpenChangePassword={() => setIsChangePasswordOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -88,6 +91,7 @@ const MainAppContent: React.FC = () => {
           onOpenShare={() => setIsShareOpen(true)}
           currentSession={session}
           onLogout={handleLogout}
+          onOpenChangePassword={() => setIsChangePasswordOpen(true)}
         />
 
         {/* View Content */}
@@ -214,6 +218,11 @@ const MainAppContent: React.FC = () => {
       <ShareLinkModal
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
+      />
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+        currentSession={session}
       />
     </div>
   );

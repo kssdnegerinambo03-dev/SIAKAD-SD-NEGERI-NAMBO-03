@@ -211,17 +211,16 @@ export function printOfficialDocument(options: PrintReportOptions) {
       <td style="width: 85px; text-align: center; vertical-align: middle;">
         <img src="/logo_kab_bogor.png" alt="Lambang Kabupaten Bogor" style="width: 75px; height: 95px; object-fit: contain;" />
       </td>
-      <td class="instansi-cell" style="text-align: center; vertical-align: middle; padding: 0 10px;">
+      <td class="instansi-cell" style="text-align: center; vertical-align: middle; padding: 0 10px; font-family: 'Times New Roman', serif;">
         <div style="font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">PEMERINTAH KABUPATEN BOGOR</div>
         <div style="font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">DINAS PENDIDIKAN</div>
         <div style="font-size: 18pt; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 2px 0;">SD NEGERI NAMBO 03</div>
-        <div style="font-size: 14pt; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase;">KECAMATAN KLAPANUNGGAL</div>
-        <div style="font-size: 9.5pt; margin-top: 2px;">Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati</div>
-        <div style="font-size: 9.5pt;">Kecamatan Klapanunggal Kabupaten Bogor 16871</div>
-        <div style="font-size: 9.5pt;">Email: sdnnambo03bantarjati@gmail.com</div>
-        <table style="width: 100%; margin-top: 3px; border-top: 1px solid #000000; font-size: 9.5pt; font-weight: bold;">
+        <div style="font-size: 10pt; margin-top: 2px;">Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati</div>
+        <div style="font-size: 10pt;">Kecamatan Klapanunggal Kabupaten Bogor 16871</div>
+        <div style="font-size: 10pt;">Email.sdnnambo03bantarjati@gmail.com</div>
+        <table style="width: 100%; margin-top: 3px; font-size: 9.5pt;">
           <tr>
-            <td style="text-align: left; padding: 2px 4px; border: none;">NPSN : ${schoolProfile.npsn || '20200352'}</td>
+            <td style="text-align: left; padding: 2px 4px; border: none; text-decoration: underline;">NPSN : ${schoolProfile.npsn || '20200352'}</td>
             <td style="text-align: right; padding: 2px 4px; border: none;">NSS : ${schoolProfile.nss || '101020232021'}</td>
           </tr>
         </table>
