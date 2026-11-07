@@ -17,7 +17,9 @@ import {
   LearningObjectiveTP,
   ProtaRecord,
   PromesRecord,
-  DeepLearningModule
+  DeepLearningModule,
+  AnalisisHariEfektifRecord,
+  JadwalPelajaranRecord
 } from '../types';
 import {
   initialSchoolProfile,
@@ -38,7 +40,9 @@ import {
   initialTujuanPembelajaran,
   initialProtaRecords,
   initialPromesRecords,
-  initialDeepLearningModules
+  initialDeepLearningModules,
+  initialAnalisisHariEfektif,
+  initialJadwalPelajaran
 } from '../data/curriculumData';
 import { downloadMasterExcelArchive } from '../utils/excelUtils';
 
@@ -173,6 +177,18 @@ interface SchoolContextType {
   saveModulAjar: (modul: DeepLearningModule) => void;
   deleteModulAjar: (id: string) => void;
 
+  // Analisis Hari Efektif
+  analisisHariEfektifList: AnalisisHariEfektifRecord[];
+  saveAnalisisHariEfektif: (record: AnalisisHariEfektifRecord) => void;
+  deleteAnalisisHariEfektif: (id: string) => void;
+  importAnalisisHariEfektif: (records: AnalisisHariEfektifRecord[]) => void;
+
+  // Jadwal Pelajaran
+  jadwalPelajaranList: JadwalPelajaranRecord[];
+  saveJadwalPelajaran: (record: JadwalPelajaranRecord) => void;
+  deleteJadwalPelajaran: (id: string) => void;
+  importJadwalPelajaran: (records: JadwalPelajaranRecord[]) => void;
+
   // User Credentials & Password Management
   userPasswords: Record<string, string>;
   verifyUserPassword: (userId: string, passwordAttempt: string) => boolean;
@@ -208,17 +224,41 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const [classes, setClasses] = useState<ClassGroup[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}classes`);
-    return saved ? JSON.parse(saved) : initialClasses;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.some(c => c.id === 'c-1a' && c.waliKelasId === 't-1')) {
+          return parsed;
+        }
+      } catch (e) {}
+    }
+    return initialClasses;
   });
 
   const [teachers, setTeachers] = useState<Teacher[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}teachers`);
-    return saved ? JSON.parse(saved) : initialTeachers;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === 14 && parsed.some(t => t.nama.toLowerCase().includes('pertiwi'))) {
+          return parsed;
+        }
+      } catch (e) {}
+    }
+    return initialTeachers;
   });
 
   const [staff, setStaff] = useState<Staff[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}staff`);
-    return saved ? JSON.parse(saved) : initialStaff;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === 3 && parsed.some(s => s.nama.includes('Agustini Yusnalillah'))) {
+          return parsed;
+        }
+      } catch (e) {}
+    }
+    return initialStaff;
   });
 
   const [students, setStudents] = useState<Student[]>(() => {
@@ -297,6 +337,16 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return saved ? JSON.parse(saved) : initialDeepLearningModules;
   });
 
+  const [analisisHariEfektifList, setAnalisisHariEfektifList] = useState<AnalisisHariEfektifRecord[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}hari_efektif`);
+    return saved ? JSON.parse(saved) : initialAnalisisHariEfektif;
+  });
+
+  const [jadwalPelajaranList, setJadwalPelajaranList] = useState<JadwalPelajaranRecord[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}jadwal_pelajaran`);
+    return saved ? JSON.parse(saved) : initialJadwalPelajaran;
+  });
+
   const [currentActiveUser, setCurrentActiveUser] = useState<{ name: string; role: SchoolRole; label: string }>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}current_user`);
     return saved
@@ -370,6 +420,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem(`${STORAGE_KEY_PREFIX}prota_records`, JSON.stringify(protaList));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}promes_records`, JSON.stringify(promesList));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}modul_ajar_dl`, JSON.stringify(modulAjarList));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}hari_efektif`, JSON.stringify(analisisHariEfektifList));
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}jadwal_pelajaran`, JSON.stringify(jadwalPelajaranList));
     localStorage.setItem(`${STORAGE_KEY_PREFIX}user_passwords`, JSON.stringify(userPasswords));
   }, [
     schoolProfile,
@@ -390,6 +442,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     protaList,
     promesList,
     modulAjarList,
+    analisisHariEfektifList,
+    jadwalPelajaranList,
     userPasswords
   ]);
 
@@ -424,7 +478,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
               if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
               if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
-              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
+              if (d.analisisHariEfektifList && Array.isArray(d.analisisHariEfektifList)) setAnalisisHariEfektifList(d.analisisHariEfektifList);
+              if (d.jadwalPelajaranList && Array.isArray(d.jadwalPelajaranList)) setJadwalPelajaranList(d.jadwalPelajaranList);
               if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
               lastServerUpdateRef.current = d.serverUpdatedAt || null;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
@@ -451,6 +506,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               protaList,
               promesList,
               modulAjarList,
+              analisisHariEfektifList,
+              jadwalPelajaranList,
               userPasswords
             };
             await fetch('/api/school-data/sync', {
@@ -501,7 +558,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
               if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
               if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
               if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
-              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
+              if (d.analisisHariEfektifList && Array.isArray(d.analisisHariEfektifList)) setAnalisisHariEfektifList(d.analisisHariEfektifList);
+              if (d.jadwalPelajaranList && Array.isArray(d.jadwalPelajaranList)) setJadwalPelajaranList(d.jadwalPelajaranList);
               if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
               lastServerUpdateRef.current = d.serverUpdatedAt;
               setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
@@ -553,6 +611,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           protaList,
           promesList,
           modulAjarList,
+          analisisHariEfektifList,
+          jadwalPelajaranList,
           userPasswords
         };
         const res = await fetch('/api/school-data/sync', {
@@ -593,6 +653,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     protaList,
     promesList,
     modulAjarList,
+    analisisHariEfektifList,
+    jadwalPelajaranList,
     userPasswords
   ]);
 
@@ -679,6 +741,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         protaList,
         promesList,
         modulAjarList,
+        analisisHariEfektifList,
+        jadwalPelajaranList,
         userPasswords
       };
 
@@ -713,8 +777,9 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (d.protaList && Array.isArray(d.protaList)) setProtaList(d.protaList);
           if (d.promesList && Array.isArray(d.promesList)) setPromesList(d.promesList);
           if (d.modulAjarList && Array.isArray(d.modulAjarList)) setModulAjarList(d.modulAjarList);
-              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
-              if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
+          if (d.analisisHariEfektifList && Array.isArray(d.analisisHariEfektifList)) setAnalisisHariEfektifList(d.analisisHariEfektifList);
+          if (d.jadwalPelajaranList && Array.isArray(d.jadwalPelajaranList)) setJadwalPelajaranList(d.jadwalPelajaranList);
+          if (d.userPasswords && typeof d.userPasswords === 'object') setUserPasswords(d.userPasswords);
           lastServerUpdateRef.current = d.serverUpdatedAt;
           setLastSyncTime(new Date().toLocaleTimeString('id-ID'));
           setSyncStatus('synced');
@@ -755,6 +820,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       protaList,
       promesList,
       modulAjarList,
+      analisisHariEfektifList,
+      jadwalPelajaranList,
       exportedAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -803,6 +870,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           if (parsed.protaList && Array.isArray(parsed.protaList)) setProtaList(parsed.protaList);
           if (parsed.promesList && Array.isArray(parsed.promesList)) setPromesList(parsed.promesList);
           if (parsed.modulAjarList && Array.isArray(parsed.modulAjarList)) setModulAjarList(parsed.modulAjarList);
+          if (parsed.analisisHariEfektifList && Array.isArray(parsed.analisisHariEfektifList)) setAnalisisHariEfektifList(parsed.analisisHariEfektifList);
+          if (parsed.jadwalPelajaranList && Array.isArray(parsed.jadwalPelajaranList)) setJadwalPelajaranList(parsed.jadwalPelajaranList);
           if (parsed.userPasswords && typeof parsed.userPasswords === 'object') setUserPasswords(parsed.userPasswords);
 
           // Sync to server immediately
@@ -1749,6 +1818,8 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setProtaList(initialProtaRecords);
       setPromesList(initialPromesRecords);
       setModulAjarList(initialDeepLearningModules);
+      setAnalisisHariEfektifList(initialAnalisisHariEfektif);
+      setJadwalPelajaranList(initialJadwalPelajaran);
       localStorage.clear();
       fetch('/api/school-data/reset', { method: 'POST' }).catch(() => {});
       alert('Data berhasil direset ke pengaturan awal SD Negeri Nambo 03.');
@@ -1890,6 +1961,120 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
+  const saveAnalisisHariEfektif = (record: AnalisisHariEfektifRecord) => {
+    setAnalisisHariEfektifList(prev => {
+      const idx = prev.findIndex(r => r.id === record.id);
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = { ...record, updatedAt: new Date().toISOString() };
+        return updated;
+      }
+      return [...prev, { ...record, updatedAt: new Date().toISOString() }];
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: 'Analisis Hari Efektif',
+      jenisAksi: 'Ubah',
+      judul: `Simpan Analisis Hari Efektif Semester ${record.semester}`,
+      rincianPerubahan: `Menyimpan kalender analisis hari efektif TA ${record.tahunAjaran} Semester ${record.semester} (${record.totalHariEfektif} HE, ${record.totalMingguEfektif} ME)`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const deleteAnalisisHariEfektif = (id: string) => {
+    const existing = analisisHariEfektifList.find(r => r.id === id);
+    setAnalisisHariEfektifList(prev => prev.filter(r => r.id !== id));
+    markLocalChange();
+    if (existing) {
+      addSyncLog({
+        wargaSekolah: currentActiveUser.name,
+        peran: currentActiveUser.role,
+        lingkup: 'Analisis Hari Efektif',
+        jenisAksi: 'Hapus',
+        judul: `Hapus Analisis Hari Efektif ${existing.semester}`,
+        rincianPerubahan: `Menghapus analisis hari efektif semester ${existing.semester}`,
+        diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+      });
+    }
+  };
+
+  const importAnalisisHariEfektif = (records: AnalisisHariEfektifRecord[]) => {
+    setAnalisisHariEfektifList(prev => {
+      const map = new Map(prev.map(r => [r.id, r]));
+      records.forEach(r => map.set(r.id, { ...r, updatedAt: new Date().toISOString() }));
+      return Array.from(map.values());
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: 'Analisis Hari Efektif',
+      jenisAksi: 'Import Excel',
+      judul: `Import ${records.length} Analisis Hari Efektif`,
+      rincianPerubahan: `Mengimpor berkas kalender dan hari efektif pendidikan SDN Nambo 03`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const saveJadwalPelajaran = (record: JadwalPelajaranRecord) => {
+    setJadwalPelajaranList(prev => {
+      const idx = prev.findIndex(r => r.id === record.id || (r.kelasId === record.kelasId && r.semester === record.semester));
+      if (idx >= 0) {
+        const updated = [...prev];
+        updated[idx] = { ...record, updatedAt: new Date().toISOString() };
+        return updated;
+      }
+      return [...prev, { ...record, updatedAt: new Date().toISOString() }];
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: 'Jadwal Pelajaran',
+      jenisAksi: 'Ubah',
+      judul: `Simpan Jadwal Pelajaran ${record.kelasNama}`,
+      rincianPerubahan: `Menyimpan jadwal pelajaran mingguan kelas ${record.kelasNama} (${record.slots.length} slot JP)`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
+  const deleteJadwalPelajaran = (id: string) => {
+    const existing = jadwalPelajaranList.find(r => r.id === id);
+    setJadwalPelajaranList(prev => prev.filter(r => r.id !== id));
+    markLocalChange();
+    if (existing) {
+      addSyncLog({
+        wargaSekolah: currentActiveUser.name,
+        peran: currentActiveUser.role,
+        lingkup: 'Jadwal Pelajaran',
+        jenisAksi: 'Hapus',
+        judul: `Hapus Jadwal Pelajaran ${existing.kelasNama}`,
+        rincianPerubahan: `Menghapus jadwal pelajaran kelas ${existing.kelasNama}`,
+        diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+      });
+    }
+  };
+
+  const importJadwalPelajaran = (records: JadwalPelajaranRecord[]) => {
+    setJadwalPelajaranList(prev => {
+      const map = new Map(prev.map(r => [r.id, r]));
+      records.forEach(r => map.set(r.id, { ...r, updatedAt: new Date().toISOString() }));
+      return Array.from(map.values());
+    });
+    markLocalChange();
+    addSyncLog({
+      wargaSekolah: currentActiveUser.name,
+      peran: currentActiveUser.role,
+      lingkup: 'Jadwal Pelajaran',
+      jenisAksi: 'Import Excel',
+      judul: `Import ${records.length} Jadwal Pelajaran`,
+      rincianPerubahan: `Mengimpor berkas jadwal pelajaran mingguan siswa`,
+      diverifikasiKepsek: currentActiveUser.role === 'Kepala Sekolah'
+    });
+  };
+
   return (
     <SchoolContext.Provider
       value={{
@@ -1987,6 +2172,14 @@ export const SchoolProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         modulAjarList,
         saveModulAjar,
         deleteModulAjar,
+        analisisHariEfektifList,
+        saveAnalisisHariEfektif,
+        deleteAnalisisHariEfektif,
+        importAnalisisHariEfektif,
+        jadwalPelajaranList,
+        saveJadwalPelajaran,
+        deleteJadwalPelajaran,
+        importJadwalPelajaran,
         userPasswords,
         verifyUserPassword,
         changeUserPassword

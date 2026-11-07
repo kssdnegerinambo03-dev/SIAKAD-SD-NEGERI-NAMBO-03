@@ -5,7 +5,9 @@ import {
   ProtaRecord,
   PromesRecord,
   LearningObjectiveTP,
-  ProtaItem
+  ProtaItem,
+  AnalisisHariEfektifRecord,
+  JadwalPelajaranRecord
 } from '../types';
 
 /**
@@ -610,7 +612,7 @@ export function downloadCurriculumExcelWorkbook(options: {
 /**
  * Downloads standard templates for teachers to fill out
  */
-export function downloadCurriculumTemplate(type: 'tp' | 'prota' | 'promes') {
+export function downloadCurriculumTemplate(type: 'tp' | 'prota' | 'promes' | 'hari-efektif' | 'jadwal-pelajaran') {
   const wb = XLSX.utils.book_new();
 
   if (type === 'tp') {
@@ -673,7 +675,7 @@ export function downloadCurriculumTemplate(type: 'tp' | 'prota' | 'promes') {
     const ws = XLSX.utils.json_to_sheet(sampleProta);
     XLSX.utils.book_append_sheet(wb, ws, 'Template Prota');
     XLSX.writeFile(wb, 'Template_Import_Prota_SDN_Nambo_03.xlsx');
-  } else {
+  } else if (type === 'promes') {
     const samplePromes = [
       {
         'No': 1,
@@ -699,6 +701,88 @@ export function downloadCurriculumTemplate(type: 'tp' | 'prota' | 'promes') {
     const ws = XLSX.utils.json_to_sheet(samplePromes);
     XLSX.utils.book_append_sheet(wb, ws, 'Template Promes');
     XLSX.writeFile(wb, 'Template_Import_Promes_SDN_Nambo_03.xlsx');
+  } else if (type === 'hari-efektif') {
+    const sampleHariEfektif = [
+      {
+        'Bulan': 'Juli 2026',
+        'Kode Bulan': '2026-07',
+        'Semester': 'Ganjil',
+        'Hari Kalender': 31,
+        'Minggu Efektif': 3,
+        'Hari Efektif': 13,
+        'Hari Libur': 18,
+        'Keterangan Agenda': '15-21 Juli: MPLS Murid Baru; 22 Juli: Awal PBM'
+      },
+      {
+        'Bulan': 'Agustus 2026',
+        'Kode Bulan': '2026-08',
+        'Semester': 'Ganjil',
+        'Hari Kalender': 31,
+        'Minggu Efektif': 4,
+        'Hari Efektif': 19,
+        'Hari Libur': 12,
+        'Keterangan Agenda': '17 Agt: HUT RI ke-81; 18 Agt: Lomba Semarak'
+      },
+      {
+        'Bulan': 'September 2026',
+        'Kode Bulan': '2026-09',
+        'Semester': 'Ganjil',
+        'Hari Kalender': 30,
+        'Minggu Efektif': 4,
+        'Hari Efektif': 17,
+        'Hari Libur': 13,
+        'Keterangan Agenda': '14-18 September: STS Ganjil'
+      }
+    ];
+    const ws = XLSX.utils.json_to_sheet(sampleHariEfektif);
+    XLSX.utils.book_append_sheet(wb, ws, 'Template Hari Efektif');
+    XLSX.writeFile(wb, 'Template_Import_Hari_Efektif_SDN_Nambo_03.xlsx');
+  } else if (type === 'jadwal-pelajaran') {
+    const sampleJadwal = [
+      {
+        'Hari': 'Senin',
+        'Jam Ke': 0,
+        'Jam Mulai': '07.00',
+        'Jam Selesai': '07.30',
+        'Mata Pelajaran': 'Upacara Bendera Merah Putih',
+        'Guru Pengampu': 'Dewan Guru SDN Nambo 03',
+        'Ruang': 'Lapangan Utama',
+        'Istirahat (Ya/Tidak)': 'Tidak'
+      },
+      {
+        'Hari': 'Senin',
+        'Jam Ke': 1,
+        'Jam Mulai': '07.30',
+        'Jam Selesai': '08.05',
+        'Mata Pelajaran': 'Pendidikan Pancasila',
+        'Guru Pengampu': 'Nurhaeni, S.Pd.',
+        'Ruang': 'Kelas 1A',
+        'Istirahat (Ya/Tidak)': 'Tidak'
+      },
+      {
+        'Hari': 'Senin',
+        'Jam Ke': 2,
+        'Jam Mulai': '08.05',
+        'Jam Selesai': '08.40',
+        'Mata Pelajaran': 'Pendidikan Pancasila',
+        'Guru Pengampu': 'Nurhaeni, S.Pd.',
+        'Ruang': 'Kelas 1A',
+        'Istirahat (Ya/Tidak)': 'Tidak'
+      },
+      {
+        'Hari': 'Senin',
+        'Jam Ke': 0,
+        'Jam Mulai': '09.15',
+        'Jam Selesai': '09.35',
+        'Mata Pelajaran': 'Istirahat I & Makan Sehat',
+        'Guru Pengampu': '-',
+        'Ruang': 'Halaman Kelas',
+        'Istirahat (Ya/Tidak)': 'Ya'
+      }
+    ];
+    const ws = XLSX.utils.json_to_sheet(sampleJadwal);
+    XLSX.utils.book_append_sheet(wb, ws, 'Template Jadwal Pelajaran');
+    XLSX.writeFile(wb, 'Template_Import_Jadwal_Pelajaran_SDN_Nambo_03.xlsx');
   }
 }
 
@@ -723,4 +807,422 @@ export async function parseCurriculumExcel(file: File): Promise<any[]> {
     reader.onerror = (err) => reject(err);
     reader.readAsBinaryString(file);
   });
+}
+
+/**
+ * Downloads Analisis Hari Efektif as official Microsoft Word (.doc) with Kop Surat
+ */
+export async function downloadHariEfektifWord(record: AnalisisHariEfektifRecord, schoolProfile: SchoolProfile) {
+  let logoNamboDataUrl = schoolProfile.logoUrl || '/logo_nambo_03.jpg';
+  let logoBogorDataUrl = '/logo_kab_bogor.png';
+
+  const toBase64 = async (url: string): Promise<string> => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      return await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => resolve(url);
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return url;
+    }
+  };
+
+  try {
+    const [namboBase64, bogorBase64] = await Promise.all([
+      toBase64(logoNamboDataUrl),
+      toBase64(logoBogorDataUrl)
+    ]);
+    logoNamboDataUrl = namboBase64;
+    logoBogorDataUrl = bogorBase64;
+  } catch (err) {
+    console.warn('Could not encode logos:', err);
+  }
+
+  const rowsBulan = record.daftarBulan.map((b, idx) => `
+    <tr>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 6px;">${idx + 1}</td>
+      <td style="border: 1px solid #1f2937; padding: 6px; font-weight: bold;">${b.bulan}</td>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 6px;">${b.jumlahHariKalender}</td>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 6px; font-weight: bold; color: #1e3a8a;">${b.mingguEfektif}</td>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 6px; font-weight: bold; color: #047857; background: #ecfdf5;">${b.hariEfektif}</td>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 6px; color: #b91c1c;">${b.hariLibur}</td>
+      <td style="border: 1px solid #1f2937; padding: 6px; font-size: 9.5pt;">${b.keteranganKegiatan.join('<br>• ') ? '• ' + b.keteranganKegiatan.join('<br>• ') : '-'}</td>
+    </tr>
+  `).join('');
+
+  const rowsAgenda = record.agendaPendidikan.map((ag, idx) => `
+    <tr>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 5px;">${idx + 1}</td>
+      <td style="border: 1px solid #1f2937; padding: 5px; font-weight: 600;">${ag.tanggalMulai} ${ag.tanggalSelesai && ag.tanggalSelesai !== ag.tanggalMulai ? 's.d. ' + ag.tanggalSelesai : ''}</td>
+      <td style="border: 1px solid #1f2937; padding: 5px;">${ag.kegiatan}</td>
+      <td style="text-align: center; border: 1px solid #1f2937; padding: 5px;"><span style="background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-size: 9pt;">${ag.kategori}</span></td>
+    </tr>
+  `).join('');
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset="utf-8">
+  <title>Analisis Hari Efektif SDN Nambo 03 - Semester ${record.semester}</title>
+  <style>
+    @page { size: A4 portrait; margin: 2cm 2cm 2cm 2cm; }
+    body { font-family: 'Times New Roman', Calibri, serif; font-size: 11pt; line-height: 1.3; color: #111827; }
+    table.kop { width: 100%; border-collapse: collapse; border-bottom: 3px double #000000; margin-bottom: 16px; }
+    table.kop td { vertical-align: middle; padding: 2px; }
+    .kop-pemkab { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin: 0; line-height: 1.2; }
+    .kop-dinas { font-size: 12pt; font-weight: bold; text-transform: uppercase; margin: 0; line-height: 1.2; }
+    .kop-sekolah { font-size: 15pt; font-weight: bold; text-transform: uppercase; margin: 2px 0; letter-spacing: 0.5px; }
+    .kop-alamat { font-size: 8.5pt; margin: 1px 0; line-height: 1.2; }
+    .title-doc { text-align: center; font-size: 12pt; font-weight: bold; text-transform: uppercase; margin: 10px 0 2px 0; text-decoration: underline; }
+    .subtitle-doc { text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 14px; text-transform: uppercase; }
+    table.data-table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 16px; font-size: 10pt; }
+    table.data-table th { background: #f3f4f6; border: 1px solid #1f2937; padding: 6px; font-weight: bold; text-align: center; }
+  </style>
+</head>
+<body>
+  <table class="kop">
+    <tr>
+      <td style="width: 15%; text-align: center;">
+        <img src="${logoBogorDataUrl}" width="82" height="82" alt="Logo Kab Bogor" />
+      </td>
+      <td style="width: 70%; text-align: center;">
+        <div class="kop-pemkab">PEMERINTAH KABUPATEN BOGOR</div>
+        <div class="kop-dinas">DINAS PENDIDIKAN</div>
+        <div class="kop-sekolah">${schoolProfile.namaSekolah || 'SD NEGERI NAMBO 03'}</div>
+        <div class="kop-dinas" style="font-size: 11pt;">KECAMATAN ${schoolProfile.kecamatan?.toUpperCase() || 'KLAPANUNGGAL'}</div>
+        <div class="kop-alamat">${schoolProfile.alamat || 'Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati'}</div>
+        <div class="kop-alamat">Email: ${schoolProfile.email || 'sdnnambo03bantarjati@gmail.com'}</div>
+        <div class="kop-alamat" style="font-weight: bold; margin-top: 2px;">NPSN: ${schoolProfile.npsn || '20200352'} &nbsp;&nbsp;&nbsp;&nbsp; NSS: ${schoolProfile.nss || '101020232021'}</div>
+      </td>
+      <td style="width: 15%; text-align: center;">
+        <img src="${logoNamboDataUrl}" width="84" height="84" alt="Logo SDN Nambo 03" />
+      </td>
+    </tr>
+  </table>
+
+  <div class="title-doc">ANALISIS HARI DAN MINGGU EFEKTIF BELAJAR</div>
+  <div class="subtitle-doc">TAHUN AJARAN ${record.tahunAjaran} - SEMESTER ${record.semester.toUpperCase()}</div>
+
+  <table style="width: 100%; margin-bottom: 12px; font-size: 10.5pt;">
+    <tr>
+      <td style="width: 25%; font-weight: bold;">Satuan Pendidikan</td>
+      <td style="width: 2%;">:</td>
+      <td style="width: 73%;">${schoolProfile.namaSekolah}</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Tahun Ajaran / Semester</td>
+      <td>:</td>
+      <td>${record.tahunAjaran} / Semester ${record.semester}</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Sasaran Pembelajaran</td>
+      <td>:</td>
+      <td>${record.kelasTarget} (${record.mataPelajaran || 'Semua Mata Pelajaran'})</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Alokasi Hari Efektif</td>
+      <td>:</td>
+      <td><strong style="color: #047857;">${record.totalHariEfektif} Hari Efektif</strong> (Minggu Efektif: <strong>${record.totalMingguEfektif} Minggu</strong>)</td>
+    </tr>
+  </table>
+
+  <h4 style="margin: 8px 0 4px 0; font-size: 11pt; text-transform: uppercase;">I. RINCIAN JUMLAH HARI DAN MINGGU EFEKTIF PER BULAN</h4>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 5%;">No</th>
+        <th style="width: 18%;">Bulan & Tahun</th>
+        <th style="width: 10%;">Hari Kalender (HK)</th>
+        <th style="width: 10%;">Minggu Efektif (ME)</th>
+        <th style="width: 10%;">Hari Efektif (HE)</th>
+        <th style="width: 10%;">Hari Libur (HL)</th>
+        <th style="width: 37%;">Keterangan Kegiatan / Agenda Sekolah</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rowsBulan}
+      <tr style="background: #f3f4f6; font-weight: bold;">
+        <td colspan="2" style="text-align: center; border: 1px solid #1f2937; padding: 6px;">JUMLAH TOTAL</td>
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 6px;">${record.daftarBulan.reduce((a, b) => a + b.jumlahHariKalender, 0)}</td>
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 6px; color: #1e3a8a;">${record.totalMingguEfektif}</td>
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 6px; color: #047857; background: #d1fae5;">${record.totalHariEfektif}</td>
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 6px; color: #b91c1c;">${record.daftarBulan.reduce((a, b) => a + b.hariLibur, 0)}</td>
+        <td style="border: 1px solid #1f2937; padding: 6px; font-style: italic;">Sesuai Kalender Pendidikan Resmi SDN Nambo 03</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 style="margin: 12px 0 4px 0; font-size: 11pt; text-transform: uppercase;">II. KALENDER AGENDA KEGIATAN & ASESMEN PENDIDIKAN</h4>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th style="width: 6%;">No</th>
+        <th style="width: 25%;">Rentang Waktu / Tanggal</th>
+        <th style="width: 50%;">Nama Kegiatan Pendidikan / Sekolah</th>
+        <th style="width: 19%;">Kategori</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rowsAgenda}
+    </tbody>
+  </table>
+
+  <div style="margin-top: 8px; font-size: 9.5pt; font-style: italic; color: #4b5563;">
+    Catatan: ${record.catatan || 'Perhitungan alokasi waktu efektif pembelajaran disesuaikan dengan Kurikulum Merdeka dan Panduan Pembelajaran & Asesmen 2025.'}
+  </div>
+
+  <table style="width: 100%; margin-top: 32px; border-collapse: collapse; font-size: 10pt;">
+    <tr>
+      <td style="width: 50%; text-align: center; vertical-align: top;">
+        Mengetahui,<br>
+        Kepala SDN Nambo 03<br><br><br><br><br>
+        <strong><u>${schoolProfile.kepalaSekolah || 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.'}</u></strong><br>
+        NIP. ${schoolProfile.nipKepalaSekolah || '197008121993072001'}
+      </td>
+      <td style="width: 50%; text-align: center; vertical-align: top;">
+        Klapanunggal, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br>
+        Guru / Tim Pengembang Kurikulum<br><br><br><br><br>
+        <strong><u>Nurhaeni, S.Pd.</u></strong><br>
+        NIP. 198306172023212000
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+
+  const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Analisis_Hari_Efektif_SDN_Nambo_03_TA_2026_2027_Smt_${record.semester}.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Downloads Analisis Hari Efektif as Excel (.xlsx)
+ */
+export function downloadHariEfektifExcel(record: AnalisisHariEfektifRecord, schoolProfile: SchoolProfile) {
+  const wb = XLSX.utils.book_new();
+
+  const dataBulan = record.daftarBulan.map((b, idx) => ({
+    'No': idx + 1,
+    'Bulan & Tahun': b.bulan,
+    'Hari Kalender (HK)': b.jumlahHariKalender,
+    'Minggu Efektif (ME)': b.mingguEfektif,
+    'Hari Efektif Belajar (HE)': b.hariEfektif,
+    'Hari Libur (HL)': b.hariLibur,
+    'Keterangan Agenda / Kegiatan': b.keteranganKegiatan.join('; ')
+  }));
+
+  const wsBulan = XLSX.utils.json_to_sheet(dataBulan);
+  wsBulan['!cols'] = [{ wch: 5 }, { wch: 18 }, { wch: 16 }, { wch: 18 }, { wch: 18 }, { wch: 16 }, { wch: 55 }];
+  XLSX.utils.book_append_sheet(wb, wsBulan, `Hari Efektif Smt ${record.semester}`);
+
+  const dataAgenda = record.agendaPendidikan.map((ag, idx) => ({
+    'No': idx + 1,
+    'Tanggal Mulai': ag.tanggalMulai,
+    'Tanggal Selesai': ag.tanggalSelesai || ag.tanggalMulai,
+    'Nama Kegiatan / Agenda': ag.kegiatan,
+    'Semester': ag.semester,
+    'Kategori': ag.kategori
+  }));
+  const wsAgenda = XLSX.utils.json_to_sheet(dataAgenda);
+  wsAgenda['!cols'] = [{ wch: 5 }, { wch: 14 }, { wch: 14 }, { wch: 45 }, { wch: 12 }, { wch: 16 }];
+  XLSX.utils.book_append_sheet(wb, wsAgenda, 'Agenda Pendidikan');
+
+  XLSX.writeFile(wb, `Analisis_Hari_Efektif_SDN_Nambo_03_Smt_${record.semester}.xlsx`);
+}
+
+/**
+ * Downloads Jadwal Pelajaran as official Microsoft Word (.doc) with Kop Surat
+ */
+export async function downloadJadwalPelajaranWord(record: JadwalPelajaranRecord, schoolProfile: SchoolProfile) {
+  let logoNamboDataUrl = schoolProfile.logoUrl || '/logo_nambo_03.jpg';
+  let logoBogorDataUrl = '/logo_kab_bogor.png';
+
+  const toBase64 = async (url: string): Promise<string> => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      return await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => resolve(url);
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return url;
+    }
+  };
+
+  try {
+    const [namboBase64, bogorBase64] = await Promise.all([
+      toBase64(logoNamboDataUrl),
+      toBase64(logoBogorDataUrl)
+    ]);
+    logoNamboDataUrl = namboBase64;
+    logoBogorDataUrl = bogorBase64;
+  } catch (err) {
+    console.warn('Could not encode logos:', err);
+  }
+
+  const hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'] as const;
+
+  const jadwalHtml = hariList.map(h => {
+    const slots = record.slots.filter(s => s.hari === h);
+    if (slots.length === 0) return '';
+
+    const slotRows = slots.map(s => `
+      <tr style="${s.isIstirahat ? 'background: #fef3c7; font-weight: bold;' : ''}">
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 5px;">${s.jamKe === 0 ? '-' : 'Jam ke-' + s.jamKe}</td>
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 5px; font-weight: 600;">${s.jamMulai} - ${s.jamSelesai}</td>
+        <td style="border: 1px solid #1f2937; padding: 5px; font-weight: ${s.isIstirahat ? 'bold' : '600'}; color: ${s.isIstirahat ? '#92400e' : '#111827'};">${s.mataPelajaran}</td>
+        <td style="border: 1px solid #1f2937; padding: 5px;">${s.guruPengampu}</td>
+        <td style="text-align: center; border: 1px solid #1f2937; padding: 5px; font-size: 9pt;">${s.ruangan || '-'}</td>
+      </tr>
+    `).join('');
+
+    return `
+      <h4 style="margin: 14px 0 4px 0; font-size: 11pt; color: #1e3a8a; text-transform: uppercase;">• HARI ${h.toUpperCase()}</h4>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 12%;">Jam Pelajaran</th>
+            <th style="width: 18%;">Waktu (WIB)</th>
+            <th style="width: 38%;">Mata Pelajaran / Pembiasaan</th>
+            <th style="width: 22%;">Guru Pengampu</th>
+            <th style="width: 10%;">Ruang</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${slotRows}
+        </tbody>
+      </table>
+    `;
+  }).join('');
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset="utf-8">
+  <title>Jadwal Pelajaran SDN Nambo 03 - ${record.kelasNama}</title>
+  <style>
+    @page { size: A4 portrait; margin: 2cm 2cm 2cm 2cm; }
+    body { font-family: 'Times New Roman', Calibri, serif; font-size: 11pt; line-height: 1.3; color: #111827; }
+    table.kop { width: 100%; border-collapse: collapse; border-bottom: 3px double #000000; margin-bottom: 16px; }
+    table.kop td { vertical-align: middle; padding: 2px; }
+    .kop-pemkab { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin: 0; line-height: 1.2; }
+    .kop-dinas { font-size: 12pt; font-weight: bold; text-transform: uppercase; margin: 0; line-height: 1.2; }
+    .kop-sekolah { font-size: 15pt; font-weight: bold; text-transform: uppercase; margin: 2px 0; letter-spacing: 0.5px; }
+    .kop-alamat { font-size: 8.5pt; margin: 1px 0; line-height: 1.2; }
+    .title-doc { text-align: center; font-size: 12pt; font-weight: bold; text-transform: uppercase; margin: 10px 0 2px 0; text-decoration: underline; }
+    .subtitle-doc { text-align: center; font-size: 10.5pt; font-weight: bold; margin-bottom: 14px; text-transform: uppercase; }
+    table.data-table { width: 100%; border-collapse: collapse; margin-top: 4px; margin-bottom: 12px; font-size: 9.5pt; }
+    table.data-table th { background: #f3f4f6; border: 1px solid #1f2937; padding: 5px; font-weight: bold; text-align: center; }
+  </style>
+</head>
+<body>
+  <table class="kop">
+    <tr>
+      <td style="width: 15%; text-align: center;">
+        <img src="${logoBogorDataUrl}" width="82" height="82" alt="Logo Kab Bogor" />
+      </td>
+      <td style="width: 70%; text-align: center;">
+        <div class="kop-pemkab">PEMERINTAH KABUPATEN BOGOR</div>
+        <div class="kop-dinas">DINAS PENDIDIKAN</div>
+        <div class="kop-sekolah">${schoolProfile.namaSekolah || 'SD NEGERI NAMBO 03'}</div>
+        <div class="kop-dinas" style="font-size: 11pt;">KECAMATAN ${schoolProfile.kecamatan?.toUpperCase() || 'KLAPANUNGGAL'}</div>
+        <div class="kop-alamat">${schoolProfile.alamat || 'Jln. Raya Nambo Bantarkopo RT 01 RW 04 Desa Bantarjati'}</div>
+        <div class="kop-alamat">Email: ${schoolProfile.email || 'sdnnambo03bantarjati@gmail.com'}</div>
+        <div class="kop-alamat" style="font-weight: bold; margin-top: 2px;">NPSN: ${schoolProfile.npsn || '20200352'} &nbsp;&nbsp;&nbsp;&nbsp; NSS: ${schoolProfile.nss || '101020232021'}</div>
+      </td>
+      <td style="width: 15%; text-align: center;">
+        <img src="${logoNamboDataUrl}" width="84" height="84" alt="Logo SDN Nambo 03" />
+      </td>
+    </tr>
+  </table>
+
+  <div class="title-doc">JADWAL PELAJARAN MINGGUAN KELAS</div>
+  <div class="subtitle-doc">${record.kelasNama.toUpperCase()} - SEMESTER ${record.semester.toUpperCase()} TA ${record.tahunAjaran}</div>
+
+  <table style="width: 100%; margin-bottom: 10px; font-size: 10.5pt;">
+    <tr>
+      <td style="width: 25%; font-weight: bold;">Rombongan Belajar</td>
+      <td style="width: 2%;">:</td>
+      <td style="width: 73%;">${record.kelasNama}</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Wali Kelas</td>
+      <td>:</td>
+      <td>${record.waliKelas}</td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold;">Alokasi Waktu per JP</td>
+      <td>:</td>
+      <td><strong>${record.durasiPerJP} Menit per Jam Pelajaran</strong> (SD Standar Kurikulum Merdeka)</td>
+    </tr>
+  </table>
+
+  ${jadwalHtml}
+
+  <table style="width: 100%; margin-top: 32px; border-collapse: collapse; font-size: 10pt;">
+    <tr>
+      <td style="width: 50%; text-align: center; vertical-align: top;">
+        Mengetahui,<br>
+        Kepala SDN Nambo 03<br><br><br><br><br>
+        <strong><u>${schoolProfile.kepalaSekolah || 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.'}</u></strong><br>
+        NIP. ${schoolProfile.nipKepalaSekolah || '197008121993072001'}
+      </td>
+      <td style="width: 50%; text-align: center; vertical-align: top;">
+        Klapanunggal, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br>
+        Wali Kelas ${record.kelasNama}<br><br><br><br><br>
+        <strong><u>${record.waliKelas}</u></strong><br>
+        NIP. 196805121991032005
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+
+  const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Jadwal_Pelajaran_${record.kelasNama.replace(/\s+/g, '_')}_SDN_Nambo_03_TA_2026_2027.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Downloads Jadwal Pelajaran as Excel (.xlsx)
+ */
+export function downloadJadwalPelajaranExcel(record: JadwalPelajaranRecord, schoolProfile: SchoolProfile) {
+  const wb = XLSX.utils.book_new();
+
+  const dataJadwal = record.slots.map((s, idx) => ({
+    'No': idx + 1,
+    'Hari': s.hari,
+    'Jam Ke': s.jamKe === 0 ? 'Pembiasaan' : s.jamKe,
+    'Jam Mulai': s.jamMulai,
+    'Jam Selesai': s.jamSelesai,
+    'Mata Pelajaran': s.mataPelajaran,
+    'Guru Pengampu': s.guruPengampu,
+    'Ruang': s.ruangan || '-',
+    'Kategori': s.isIstirahat ? 'Istirahat' : 'Pembelajaran'
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(dataJadwal);
+  ws['!cols'] = [{ wch: 5 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 35 }, { wch: 30 }, { wch: 16 }, { wch: 14 }];
+  XLSX.utils.book_append_sheet(wb, ws, `Jadwal ${record.kelasNama}`);
+
+  XLSX.writeFile(wb, `Jadwal_Pelajaran_${record.kelasNama.replace(/\s+/g, '_')}_SDN_Nambo_03.xlsx`);
 }

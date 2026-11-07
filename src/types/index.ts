@@ -228,7 +228,7 @@ export type SchoolRole = 'Kepala Sekolah' | 'Guru Kelas' | 'Guru Mapel' | 'Opera
 export interface SyncAuditLog {
   id: string;
   timestamp: string; // ISO or formatted
-  wargaSekolah: string; // e.g. 'Hj. Siti Rohmah, S.Pd.SD'
+  wargaSekolah: string; // e.g. 'Nurhaeni, S.Pd.'
   peran: SchoolRole;
   lingkup: string; // e.g. 'Kelas 1A', 'Praktik Kinerja', 'Presensi', 'Profil Sekolah', 'Database Pusat'
   jenisAksi: 'Tambah' | 'Ubah' | 'Hapus' | 'Import Excel' | 'Sinkronisasi' | 'Pemulihan';
@@ -440,3 +440,74 @@ export interface DeepLearningModule {
 
 export type UserPasswordMap = Record<string, string>;
 
+// ==========================================
+// ANALISIS HARI EFEKTIF (SESUAI KALENDER PENDIDIKAN)
+// ==========================================
+
+export interface BulanHariEfektif {
+  bulan: string; // e.g. 'Juli 2026'
+  kodeBulan: string; // '2026-07'
+  semester: 'Ganjil' | 'Genap';
+  jumlahHariKalender: number;
+  mingguEfektif: number;
+  hariEfektif: number;
+  hariLibur: number;
+  keteranganKegiatan: string[];
+}
+
+export interface AgendaPendidikan {
+  id: string;
+  tanggalMulai: string; // YYYY-MM-DD
+  tanggalSelesai?: string; // YYYY-MM-DD
+  kegiatan: string;
+  semester: 'Ganjil' | 'Genap';
+  kategori: 'MPLS' | 'STS' | 'ASAS' | 'ASAJ' | 'Libur' | 'Rapor' | 'Kegiatan Khusus';
+  keterangan?: string;
+}
+
+export interface AnalisisHariEfektifRecord {
+  id: string;
+  tahunAjaran: string; // '2026-2027'
+  semester: 'Ganjil' | 'Genap' | 'Setahun';
+  kelasTarget: string; // 'Semua Kelas' | 'Kelas 1' .. 'Kelas 6'
+  mataPelajaran?: string; // Optional per-mapel calculation
+  jamPerMinggu?: number;
+  totalHariEfektif: number;
+  totalMingguEfektif: number;
+  totalJamEfektif?: number;
+  daftarBulan: BulanHariEfektif[];
+  agendaPendidikan: AgendaPendidikan[];
+  catatan?: string;
+  updatedAt: string;
+}
+
+// ==========================================
+// JADWAL PELAJARAN (HARIAN & JAM PELAJARAN 35 MENIT)
+// ==========================================
+
+export type HariBelajar = 'Senin' | 'Selasa' | 'Rabu' | 'Kamis' | 'Jumat' | 'Sabtu';
+
+export interface JadwalSlot {
+  id: string;
+  hari: HariBelajar;
+  jamKe: number; // 0 for Pembiasaan/Upacara/Senam, 1 s.d. 7 for JP Pelajaran
+  jamMulai: string; // e.g. '07.00'
+  jamSelesai: string; // e.g. '07.35'
+  mataPelajaran: string;
+  guruPengampu: string;
+  isIstirahat?: boolean;
+  ruangan?: string;
+  catatan?: string;
+}
+
+export interface JadwalPelajaranRecord {
+  id: string;
+  kelasId: string; // e.g. 'c-1a'
+  kelasNama: string; // e.g. 'Kelas 1A'
+  waliKelas: string;
+  tahunAjaran: string; // '2026-2027'
+  semester: 'Ganjil' | 'Genap';
+  durasiPerJP: number; // 35 menit per JP
+  slots: JadwalSlot[];
+  updatedAt: string;
+}

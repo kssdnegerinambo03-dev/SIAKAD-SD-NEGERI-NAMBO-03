@@ -63,14 +63,18 @@ import {
   downloadCurriculumTemplate,
   parseCurriculumExcel
 } from '../utils/curriculumExportUtils';
+import { AnalisisHariEfektifTab } from './curriculum/AnalisisHariEfektifTab';
+import { JadwalPelajaranTab } from './curriculum/JadwalPelajaranTab';
 
 type SubTab =
   | 'capaian-pembelajaran'
   | 'alur-tujuan-pembelajaran'
   | 'tujuan-pembelajaran'
-  | 'modul-ajar'
+  | 'prota'
   | 'promes'
-  | 'prota';
+  | 'hari-efektif'
+  | 'jadwal-pelajaran'
+  | 'modul-ajar';
 
 export const PerangkatAjarView: React.FC = () => {
   const {
@@ -108,8 +112,14 @@ export const PerangkatAjarView: React.FC = () => {
   // Find Homeroom Teacher for this class
   const currentClassObj = classes.find(c => c.id === selectedKelasId);
   const waliKelasTeacher = teachers.find(t => t.id === currentClassObj?.waliKelasId);
-  const defaultTeacherName = waliKelasTeacher ? waliKelasTeacher.nama : (currentActiveUser.role.startsWith('Guru') ? currentActiveUser.name : 'Hj. Siti Rohmah, S.Pd.SD');
-  const defaultTeacherNIP = waliKelasTeacher?.nip && waliKelasTeacher.nip !== '-' ? waliKelasTeacher.nip : (waliKelasTeacher?.nuptk || '196811121991032007');
+  const defaultTeacherName = waliKelasTeacher
+    ? (waliKelasTeacher.gelar ? `${waliKelasTeacher.nama}, ${waliKelasTeacher.gelar}` : waliKelasTeacher.nama)
+    : (currentActiveUser.role.startsWith('Guru')
+        ? currentActiveUser.name
+        : (teachers[0] ? (teachers[0].gelar ? `${teachers[0].nama}, ${teachers[0].gelar}` : teachers[0].nama) : 'Nurhaeni, S.Pd.'));
+  const defaultTeacherNIP = waliKelasTeacher?.nip && waliKelasTeacher.nip !== '-'
+    ? waliKelasTeacher.nip
+    : (waliKelasTeacher?.nuptk || (teachers[0]?.nip && teachers[0].nip !== '-' ? teachers[0].nip : '198306172023212000'));
 
   // Filter CP for current fase & mapel
   const activeCP = useMemo(() => {
@@ -1328,28 +1338,28 @@ export const PerangkatAjarView: React.FC = () => {
             <span>Alur Urutan Penyusunan Perangkat Pembelajaran:</span>
           </div>
           <span className="text-[10px] bg-emerald-50 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-300">
-            6 Tahapan Pedagogis Terpadu
+            8 Tahapan Pedagogis Terpadu
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2">
           {/* Step 1: CP */}
           <button
             onClick={() => setSelectedSubTab('capaian-pembelajaran')}
-            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
               selectedSubTab === 'capaian-pembelajaran'
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
                 : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
             }`}
           >
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
               selectedSubTab === 'capaian-pembelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
             }`}>
               1
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold leading-tight truncate">1. Capaian (CP)</div>
-              <div className={`text-[10px] truncate ${selectedSubTab === 'capaian-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+              <div className="text-[11px] font-bold leading-tight truncate">1. Capaian (CP)</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'capaian-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
                 {activeCP.length} Elemen BSKAP
               </div>
             </div>
@@ -1358,20 +1368,20 @@ export const PerangkatAjarView: React.FC = () => {
           {/* Step 2: ATP */}
           <button
             onClick={() => setSelectedSubTab('alur-tujuan-pembelajaran')}
-            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
               selectedSubTab === 'alur-tujuan-pembelajaran'
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
                 : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
             }`}
           >
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
               selectedSubTab === 'alur-tujuan-pembelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
             }`}>
               2
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold leading-tight truncate">2. Alur Tujuan (ATP)</div>
-              <div className={`text-[10px] truncate ${selectedSubTab === 'alur-tujuan-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+              <div className="text-[11px] font-bold leading-tight truncate">2. Alur (ATP)</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'alur-tujuan-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
                 {activeTPList.length} Trajektori Alur
               </div>
             </div>
@@ -1380,43 +1390,43 @@ export const PerangkatAjarView: React.FC = () => {
           {/* Step 3: TP */}
           <button
             onClick={() => setSelectedSubTab('tujuan-pembelajaran')}
-            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
               selectedSubTab === 'tujuan-pembelajaran'
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
                 : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
             }`}
           >
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
               selectedSubTab === 'tujuan-pembelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
             }`}>
               3
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold leading-tight truncate">3. Tujuan Belajar (TP)</div>
-              <div className={`text-[10px] truncate ${selectedSubTab === 'tujuan-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+              <div className="text-[11px] font-bold leading-tight truncate">3. Tujuan (TP)</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'tujuan-pembelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
                 {activeTPList.length} TP Terstruktur
               </div>
             </div>
           </button>
 
-          {/* Step 4: Modul Ajar */}
+          {/* Step 4: Prota */}
           <button
-            onClick={() => setSelectedSubTab('modul-ajar')}
-            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
-              selectedSubTab === 'modul-ajar'
+            onClick={() => setSelectedSubTab('prota')}
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'prota'
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
                 : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
             }`}
           >
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-              selectedSubTab === 'modul-ajar' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
+              selectedSubTab === 'prota' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
             }`}>
               4
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold leading-tight truncate">4. Modul Ajar (RPP)</div>
-              <div className={`text-[10px] truncate ${selectedSubTab === 'modul-ajar' ? 'text-emerald-100' : 'text-slate-500'}`}>
-                {filteredModules.length} Modul DL
+              <div className="text-[11px] font-bold leading-tight truncate">4. Prota</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'prota' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {currentProta?.totalJPEfektif || 0} JP Setahun
               </div>
             </div>
           </button>
@@ -1424,43 +1434,87 @@ export const PerangkatAjarView: React.FC = () => {
           {/* Step 5: Promes */}
           <button
             onClick={() => setSelectedSubTab('promes')}
-            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
               selectedSubTab === 'promes'
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
                 : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
             }`}
           >
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
               selectedSubTab === 'promes' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
             }`}>
               5
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold leading-tight truncate">5. Promes</div>
-              <div className={`text-[10px] truncate ${selectedSubTab === 'promes' ? 'text-emerald-100' : 'text-slate-500'}`}>
-                {currentPromes?.totalJPSemester || 0} JP Semester
+              <div className="text-[11px] font-bold leading-tight truncate">5. Promes</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'promes' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {currentPromes?.totalJPSemester || 0} JP Smt
               </div>
             </div>
           </button>
 
-          {/* Step 6: Prota */}
+          {/* Step 6: Hari Efektif */}
           <button
-            onClick={() => setSelectedSubTab('prota')}
-            className={`flex items-start gap-2.5 p-2.5 rounded-xl text-left transition-all cursor-pointer ${
-              selectedSubTab === 'prota'
+            onClick={() => setSelectedSubTab('hari-efektif')}
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'hari-efektif'
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
                 : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
             }`}
           >
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0 ${
-              selectedSubTab === 'prota' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
+              selectedSubTab === 'hari-efektif' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
             }`}>
               6
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold leading-tight truncate">6. Prota</div>
-              <div className={`text-[10px] truncate ${selectedSubTab === 'prota' ? 'text-emerald-100' : 'text-slate-500'}`}>
-                {currentProta?.totalJPEfektif || 0} JP Setahun
+              <div className="text-[11px] font-bold leading-tight truncate">6. Hari Efektif</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'hari-efektif' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                102 / 75 HEB
+              </div>
+            </div>
+          </button>
+
+          {/* Step 7: Jadwal Pelajaran */}
+          <button
+            onClick={() => setSelectedSubTab('jadwal-pelajaran')}
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'jadwal-pelajaran'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
+              selectedSubTab === 'jadwal-pelajaran' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              7
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] font-bold leading-tight truncate">7. Jadwal (35m)</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'jadwal-pelajaran' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                Senin - Sabtu
+              </div>
+            </div>
+          </button>
+
+          {/* Step 8: Modul Ajar */}
+          <button
+            onClick={() => setSelectedSubTab('modul-ajar')}
+            className={`flex items-start gap-2 p-2 rounded-xl text-left transition-all cursor-pointer ${
+              selectedSubTab === 'modul-ajar'
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-700/25 ring-2 ring-emerald-500/50'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
+            }`}
+          >
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 ${
+              selectedSubTab === 'modul-ajar' ? 'bg-white text-emerald-700' : 'bg-slate-200 text-slate-700'
+            }`}>
+              8
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] font-bold leading-tight truncate">8. Modul Ajar (RPP)</div>
+              <div className={`text-[9px] truncate ${selectedSubTab === 'modul-ajar' ? 'text-emerald-100' : 'text-slate-500'}`}>
+                {filteredModules.length} Modul & LKPD
               </div>
             </div>
           </button>
@@ -1950,10 +2004,10 @@ export const PerangkatAjarView: React.FC = () => {
               </button>
 
               <button
-                onClick={() => setSelectedSubTab('modul-ajar')}
+                onClick={() => setSelectedSubTab('prota')}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
               >
-                <span>Lanjut ke Langkah 4: Modul Ajar Deep Learning</span>
+                <span>Lanjut ke Langkah 4: Program Tahunan (Prota)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -2893,18 +2947,18 @@ export const PerangkatAjarView: React.FC = () => {
           {/* Stepper Navigation Footer Banner for Modul Ajar */}
           <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <button
-              onClick={() => setSelectedSubTab('tujuan-pembelajaran')}
+              onClick={() => setSelectedSubTab('jadwal-pelajaran')}
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Kembali ke Langkah 3: TP</span>
+              <span>Kembali ke Langkah 7: Jadwal Pelajaran (35 Menit)</span>
             </button>
 
             <button
-              onClick={() => setSelectedSubTab('promes')}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+              onClick={() => setSelectedSubTab('capaian-pembelajaran')}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-indigo-700/20 active:scale-95 transition-all cursor-pointer"
             >
-              <span>Lanjut ke Langkah 5: Program Semester (Promes)</span>
+              <span>Selesai: Tinjau Ulang dari Langkah 1 (CP)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -3094,18 +3148,18 @@ export const PerangkatAjarView: React.FC = () => {
             {/* Stepper Navigation Footer Banner */}
             <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
-                onClick={() => setSelectedSubTab('modul-ajar')}
+                onClick={() => setSelectedSubTab('prota')}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Kembali ke Langkah 4: Modul Ajar</span>
+                <span>Kembali ke Langkah 4: Prota</span>
               </button>
 
               <button
-                onClick={() => setSelectedSubTab('prota')}
+                onClick={() => setSelectedSubTab('hari-efektif')}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
               >
-                <span>Lanjut ke Langkah 6: Program Tahunan (Prota)</span>
+                <span>Lanjut ke Langkah 6: Analisis Hari Efektif (HEB)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -3272,31 +3326,45 @@ export const PerangkatAjarView: React.FC = () => {
             </div>
 
             {/* Stepper Navigation Footer Banner */}
-            <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="bg-slate-100 rounded-2xl p-5 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
-                onClick={() => setSelectedSubTab('promes')}
+                onClick={() => setSelectedSubTab('tujuan-pembelajaran')}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold border border-slate-300 transition-colors cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Kembali ke Langkah 5: Promes</span>
+                <span>Kembali ke Langkah 3: TP</span>
               </button>
 
-              <div className="flex items-center gap-2">
-                <div className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Seluruh 6 Perangkat Pembelajaran Telah Lengkap!</span>
-                </div>
-                <button
-                  onClick={handleDownloadExcelWorkbook}
-                  className="px-4 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
-                >
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Download Master Excel</span>
-                </button>
-              </div>
+              <button
+                onClick={() => setSelectedSubTab('promes')}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Lanjut ke Langkah 5: Program Semester (Promes)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* LANGKAH 6: ANALISIS HARI EFEKTIF (HEB) */}
+      {/* ========================================================================= */}
+      {selectedSubTab === 'hari-efektif' && (
+        <AnalisisHariEfektifTab
+          onNavigatePrev={() => setSelectedSubTab('promes')}
+          onNavigateNext={() => setSelectedSubTab('jadwal-pelajaran')}
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* LANGKAH 7: JADWAL PELAJARAN (35 MENIT) */}
+      {/* ========================================================================= */}
+      {selectedSubTab === 'jadwal-pelajaran' && (
+        <JadwalPelajaranTab
+          onNavigatePrev={() => setSelectedSubTab('hari-efektif')}
+          onNavigateNext={() => setSelectedSubTab('modul-ajar')}
+        />
       )}
 
       {/* MODAL 1: TAMBAH / EDIT TUJUAN PEMBELAJARAN (TP) */}

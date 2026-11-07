@@ -35,44 +35,47 @@ export const initialClasses: ClassGroup[] = [
   { id: 'c-1a', nama: 'Kelas 1A', jenis: 'Utama', waliKelasId: 't-1', kapasitas: 32, deskripsi: 'Kelas 1 Reguler A' },
   { id: 'c-1b', nama: 'Kelas 1B', jenis: 'Utama', waliKelasId: 't-2', kapasitas: 32, deskripsi: 'Kelas 1 Reguler B' },
   { id: 'c-2a', nama: 'Kelas 2A', jenis: 'Utama', waliKelasId: 't-3', kapasitas: 32, deskripsi: 'Kelas 2 Reguler A' },
-  { id: 'c-2b', nama: 'Kelas 2B', jenis: 'Utama', waliKelasId: 't-4', kapasitas: 32, deskripsi: 'Kelas 2 Reguler B' },
-  { id: 'c-3a', nama: 'Kelas 3A', jenis: 'Utama', waliKelasId: 't-5', kapasitas: 32, deskripsi: 'Kelas 3 Reguler A' },
-  { id: 'c-3b', nama: 'Kelas 3B', jenis: 'Utama', waliKelasId: 't-6', kapasitas: 32, deskripsi: 'Kelas 3 Reguler B' },
-  { id: 'c-4a', nama: 'Kelas 4A', jenis: 'Utama', waliKelasId: 't-8', kapasitas: 32, deskripsi: 'Kelas 4 Fase B Kurikulum Merdeka' },
-  { id: 'c-4b', nama: 'Kelas 4B', jenis: 'Utama', waliKelasId: 't-9', kapasitas: 32, deskripsi: 'Kelas 4 Fase B Kurikulum Merdeka' },
-  { id: 'c-5a', nama: 'Kelas 5A', jenis: 'Utama', waliKelasId: 't-10', kapasitas: 32, deskripsi: 'Kelas 5 Fase C Kurikulum Merdeka' },
-  { id: 'c-5b', nama: 'Kelas 5B', jenis: 'Utama', waliKelasId: 't-10', kapasitas: 32, deskripsi: 'Kelas 5 Fase C Kurikulum Merdeka' },
-  { id: 'c-6a', nama: 'Kelas 6A', jenis: 'Utama', waliKelasId: 't-3', kapasitas: 32, deskripsi: 'Kelas 6 Persiapan Kelulusan' },
-  { id: 'c-6b', nama: 'Kelas 6B', jenis: 'Utama', waliKelasId: 't-4', kapasitas: 32, deskripsi: 'Kelas 6 Persiapan Kelulusan' },
+  { id: 'c-2b', nama: 'Kelas 2B', jenis: 'Utama', waliKelasId: 't-3', kapasitas: 32, deskripsi: 'Kelas 2 Reguler B' },
+  { id: 'c-3a', nama: 'Kelas 3A', jenis: 'Utama', waliKelasId: 't-4', kapasitas: 32, deskripsi: 'Kelas 3 Reguler A' },
+  { id: 'c-3b', nama: 'Kelas 3B', jenis: 'Utama', waliKelasId: 't-4', kapasitas: 32, deskripsi: 'Kelas 3 Reguler B' },
+  { id: 'c-4a', nama: 'Kelas 4A', jenis: 'Utama', waliKelasId: 't-5', kapasitas: 32, deskripsi: 'Kelas 4 Fase B Kurikulum Merdeka' },
+  { id: 'c-4b', nama: 'Kelas 4B', jenis: 'Utama', waliKelasId: 't-6', kapasitas: 32, deskripsi: 'Kelas 4 Fase B Kurikulum Merdeka' },
+  { id: 'c-5a', nama: 'Kelas 5A', jenis: 'Utama', waliKelasId: 't-7', kapasitas: 32, deskripsi: 'Kelas 5 Fase C Kurikulum Merdeka' },
+  { id: 'c-5b', nama: 'Kelas 5B', jenis: 'Utama', waliKelasId: 't-8', kapasitas: 32, deskripsi: 'Kelas 5 Fase C Kurikulum Merdeka' },
+  { id: 'c-6a', nama: 'Kelas 6A', jenis: 'Utama', waliKelasId: 't-9', kapasitas: 32, deskripsi: 'Kelas 6 Persiapan Kelulusan' },
+  { id: 'c-6b', nama: 'Kelas 6B', jenis: 'Utama', waliKelasId: 't-10', kapasitas: 32, deskripsi: 'Kelas 6 Persiapan Kelulusan' },
   // Ekskul
-  { id: 'e-pramuka', nama: 'Pramuka Siaga & Penggalang', jenis: 'Ekskul', pembinaId: 't-11', hariLatihan: 'Jumat', waktuLatihan: '14.00 - 16.00 WIB', deskripsi: 'Ekstrakurikuler Wajib Kepanduan' },
-  { id: 'e-futsal', nama: 'Futsal & Olahraga', jenis: 'Ekskul', pembinaId: 't-11', hariLatihan: 'Sabtu', waktuLatihan: '08.00 - 10.00 WIB', deskripsi: 'Pembinaan Bakat Atletik Siswa' },
-  { id: 'e-tari', nama: 'Seni Tari Tradisional Sunda', jenis: 'Ekskul', pembinaId: 't-5', hariLatihan: 'Rabu', waktuLatihan: '14.00 - 15.30 WIB', deskripsi: 'Pelestarian Budaya Tari Jaipong & Sunda' },
-  { id: 'e-silat', nama: 'Pencak Silat', jenis: 'Ekskul', pembinaId: 't-11', hariLatihan: 'Kamis', waktuLatihan: '15.00 - 16.30 WIB', deskripsi: 'Seni Bela Diri Tradisional Nusantara' },
-  { id: 'e-marawis', nama: 'Marawis & Qasidah', jenis: 'Ekskul', pembinaId: 't-7', hariLatihan: 'Selasa', waktuLatihan: '14.00 - 15.30 WIB', deskripsi: 'Kesenian Musik Islami dan Sholawat' },
-  { id: 'e-dokter', nama: 'Dokter Kecil & UKS', jenis: 'Ekskul', pembinaId: 't-1', hariLatihan: 'Senin', waktuLatihan: '14.00 - 15.00 WIB', deskripsi: 'Pelayanan Kesehatan dan P3K Sekolah' },
-  { id: 'e-sains', nama: 'Klub Sains & Matematika', jenis: 'Ekskul', pembinaId: 't-2', hariLatihan: 'Sabtu', waktuLatihan: '10.00 - 11.30 WIB', deskripsi: 'Persiapan Olimpiade OSN SD' }
+  { id: 'e-pramuka', nama: 'Pramuka Siaga & Penggalang', jenis: 'Ekskul', pembinaId: 't-12', hariLatihan: 'Jumat', waktuLatihan: '14.00 - 16.00 WIB', deskripsi: 'Ekstrakurikuler Wajib Kepanduan' },
+  { id: 'e-futsal', nama: 'Futsal & Olahraga', jenis: 'Ekskul', pembinaId: 't-12', hariLatihan: 'Sabtu', waktuLatihan: '08.00 - 10.00 WIB', deskripsi: 'Pembinaan Bakat Atletik Siswa' },
+  { id: 'e-tari', nama: 'Seni Tari Tradisional Sunda', jenis: 'Ekskul', pembinaId: 't-4', hariLatihan: 'Rabu', waktuLatihan: '14.00 - 15.30 WIB', deskripsi: 'Pelestarian Budaya Tari Jaipong & Sunda' },
+  { id: 'e-silat', nama: 'Pencak Silat', jenis: 'Ekskul', pembinaId: 't-12', hariLatihan: 'Kamis', waktuLatihan: '15.00 - 16.30 WIB', deskripsi: 'Seni Bela Diri Tradisional Nusantara' },
+  { id: 'e-marawis', nama: 'Marawis & Qasidah', jenis: 'Ekskul', pembinaId: 't-11', hariLatihan: 'Selasa', waktuLatihan: '14.00 - 15.30 WIB', deskripsi: 'Kesenian Musik Islami dan Sholawat' },
+  { id: 'e-dokter', nama: 'Dokter Kecil & UKS', jenis: 'Ekskul', pembinaId: 't-7', hariLatihan: 'Senin', waktuLatihan: '14.00 - 15.00 WIB', deskripsi: 'Pelayanan Kesehatan dan P3K Sekolah' },
+  { id: 'e-sains', nama: 'Klub Sains & Matematika', jenis: 'Ekskul', pembinaId: 't-9', hariLatihan: 'Sabtu', waktuLatihan: '10.00 - 11.30 WIB', deskripsi: 'Persiapan Olimpiade OSN SD' }
 ];
 
-// Data 11 Guru Resmi SDN Nambo 03 Berdasarkan Dokumen SK & Template Import GTK
+// Data Resmi 14 Guru & Tendik SDN Nambo 03 Berdasarkan Dokumen Sekolah
 export const initialTeachers: Teacher[] = [
-  { id: 't-1', nip: '199106242022212000', nuptk: '2356769670230272', nama: 'Dian Purnamasari', gelar: 'S.Pd.', jabatan: 'Guru Kelas 1A', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001001', email: 'dian.purnamasari@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-2', nip: '198208042023212000', nuptk: '8352760661210043', nama: 'Nining Sariningsih', gelar: 'S.Pd.', jabatan: 'Guru Kelas 1B', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001002', email: 'nining.sariningsih@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-3', nip: '197605052023211000', nuptk: '4747754656200032', nama: 'Asim', gelar: 'S.Pd.', jabatan: 'Guru Kelas 2A', jenisKelamin: 'L', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001003', email: 'asim@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-4', nip: '198306172023212000', nuptk: '8549761663210102', nama: 'Nurhaeni', gelar: 'S.Pd.', jabatan: 'Guru Kelas 2B', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001004', email: 'nurhaeni@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-5', nip: '-', nuptk: '2548773674230232', nama: 'Siti Rohimah', gelar: 'S.Pd.', jabatan: 'Guru Kelas 3A', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001005', email: 'siti.rohimah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-6', nip: '-', nuptk: '0233777678230043', nama: 'Anggun Nastiti', gelar: 'S.Pd.', jabatan: 'Guru Kelas 3B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001006', email: 'anggun.nastiti@sdnnambo03.sch.id', statusAktif: true, alamat: 'Sleman / Bogor' },
-  { id: 't-7', nip: '-', nuptk: '4945772673230193', nama: 'Siti Mu’arifah', gelar: 'S.Pd.', jabatan: 'Guru PAI & Budi Pekerti', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001007', email: 'siti.muarifah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-8', nip: '-', nuptk: '2146777678230113', nama: 'Amelia Agustina', gelar: 'S.Pd.', jabatan: 'Guru Kelas 4A', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001008', email: 'amelia.agustina@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-9', nip: '-', nuptk: '0643776677230112', nama: 'Resta Putriandari', gelar: 'S.M.', jabatan: 'Guru Kelas 4B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001009', email: 'resta.putriandari@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-10', nip: '-', nuptk: '0947778679230062', nama: 'Fadilah', gelar: 'S.Pd.', jabatan: 'Guru Kelas 5', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001010', email: 'fadilah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
-  { id: 't-11', nip: '-', nuptk: '-', nama: 'Age Prastia', gelar: 'S.Pd.', jabatan: 'Guru PJOK & Pembina Olahraga', jenisKelamin: 'L', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001011', email: 'age.prastia@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' }
+  { id: 't-1', nip: '198306172023212000', nuptk: '8549761663210102', nama: 'Nurhaeni', gelar: 'S.Pd.', jabatan: 'Guru Kelas 1A', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001001', email: 'nurhaeni@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-2', nip: '198804152023212001', nuptk: '7456766667230112', nama: 'Pertiwi', gelar: 'S.Pd.', jabatan: 'Guru Kelas 1B', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001002', email: 'pertiwi@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-3', nip: '-', nuptk: '0947778679230062', nama: 'Fadillah', gelar: 'S.Pd.', jabatan: 'Guru Kelas 2A & 2B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001003', email: 'fadillah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-4', nip: '-', nuptk: '0643776677230112', nama: 'Resta Putriandari', gelar: 'S.M.', jabatan: 'Guru Kelas 3A & 3B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001004', email: 'resta.putriandari@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-5', nip: '197605052023211000', nuptk: '4747754656200032', nama: 'Asim', gelar: 'S.Pd.', jabatan: 'Guru Kelas 4A', jenisKelamin: 'L', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001005', email: 'asim@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-6', nip: '-', nuptk: '2146777678230113', nama: 'Amelia Agustina', gelar: 'S.Pd.', jabatan: 'Guru Kelas 4A & 4B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001006', email: 'amelia.agustina@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-7', nip: '199106242022212000', nuptk: '2356769670230272', nama: 'Dian Purnamasari', gelar: 'S.Pd.', jabatan: 'Guru Kelas 5A', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001007', email: 'dian.purnamasari@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-8', nip: '-', nuptk: '2548773674230232', nama: 'Siti Rohimah', gelar: 'S.Pd.', jabatan: 'Guru Kelas 5B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001008', email: 'siti.rohimah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-9', nip: '198208042023212000', nuptk: '8352760661210043', nama: 'Nining Sariningsih', gelar: 'S.Pd.', jabatan: 'Guru Kelas 6A', jenisKelamin: 'P', statusKepegawaian: 'PPPK', golongan: 'IX', noHp: '081290001009', email: 'nining.sariningsih@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-10', nip: '-', nuptk: '0233777678230043', nama: 'Anggun Nastiti', gelar: 'S.Pd.', jabatan: 'Guru Kelas 6B', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001010', email: 'anggun.nastiti@sdnnambo03.sch.id', statusAktif: true, alamat: 'Sleman / Bogor' },
+  { id: 't-11', nip: '-', nuptk: '4945772673230193', nama: 'Siti Mu’arifah', gelar: 'S.Pd.', jabatan: 'Guru PAI & Budi Pekerti (Semua Kelas)', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001011', email: 'siti.muarifah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-12', nip: '-', nuptk: '3849765666210052', nama: 'Age Prasetia', gelar: 'S.Pd.', jabatan: 'Guru PJOK & Pembina Olahraga (Semua Kelas)', jenisKelamin: 'L', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001012', email: 'age.prasetia@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-13', nip: '-', nuptk: '5142774676230093', nama: 'Putri', gelar: 'S.Pd.', jabatan: 'Guru Bahasa Inggris (Semua Kelas)', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790001013', email: 'putri.inggris@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' },
+  { id: 't-14', nip: '-', nuptk: '3201246409000001', nama: 'Nurvi Latifah', gelar: '', jabatan: 'Tenaga Kependidikan (Tendik / Operator Dapodik & TU)', jenisKelamin: 'P', statusKepegawaian: 'Honorer / GTT', golongan: '-', noHp: '085790002001', email: 'nurvi.latifah@sdnnambo03.sch.id', statusAktif: true, alamat: 'Bogor' }
 ];
 
-// Data 3 Tenaga Kependidikan (Staff) Resmi SDN Nambo 03 Berdasarkan Dokumen
+// Data Tenaga Kependidikan & Penunjang Sekolah SDN Nambo 03
 export const initialStaff: Staff[] = [
-  { id: 's-1', nik: '3201246409000001', nip: '-', nama: 'Nurvi Latifah', tugas: 'Tenaga Administrasi Sekolah / Operator Dapodik & TU', statusKepegawaian: 'Honorer / PTT', pendidikan: 'SMK', noHp: '085790002001', statusAktif: true, alamat: 'Bogor' },
-  { id: 's-2', nik: '3201244208930002', nip: '-', nama: 'Agustini Yunalillah', tugas: 'Petugas Kebersihan Lingkungan Sekolah', statusKepegawaian: 'Honorer / PTT', pendidikan: 'SMA', noHp: '085790002002', statusAktif: true, alamat: 'Bogor' },
+  { id: 's-1', nik: '3201246409000001', nip: '-', nama: 'Nurvi Latifah', tugas: 'Tenaga Administrasi Sekolah / Operator Dapodik & TU (Tendik)', statusKepegawaian: 'Honorer / PTT', pendidikan: 'SMK', noHp: '085790002001', statusAktif: true, alamat: 'Bogor' },
+  { id: 's-2', nik: '3201244208930002', nip: '-', nama: 'Agustini Yusnalillah', tugas: 'Petugas Kebersihan Lingkungan Sekolah', statusKepegawaian: 'Honorer / PTT', pendidikan: 'SMA', noHp: '085790002002', statusAktif: true, alamat: 'Bogor' },
   { id: 's-3', nik: '3201240202850003', nip: '-', nama: 'Minan', tugas: 'Petugas Keamanan / Penjaga Sekolah', statusKepegawaian: 'Honorer / PTT', pendidikan: 'SMP', noHp: '085790002003', statusAktif: true, alamat: 'Bogor' }
 ];
 
@@ -83,17 +86,22 @@ export const initialStudents: Student[] = officialStudentsData;
 export const initialTeachingHours: TeachingHour[] = [
   { id: 'th-1', guruId: 't-1', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-1a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '11.30' },
   { id: 'th-2', guruId: 't-2', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-1b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '11.30' },
-  { id: 'th-3', guruId: 't-3', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-2a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.00' },
-  { id: 'th-4', guruId: 't-4', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-2b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.00' },
-  { id: 'th-5', guruId: 't-5', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-3a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
-  { id: 'th-6', guruId: 't-6', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-3b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
-  { id: 'th-7', guruId: 't-7', mataPelajaran: 'Pendidikan Agama Islam (PAI)', kelasId: 'c-1a', jumlahJP: 4, hari: 'Senin', jamMulai: '08.00', jamSelesai: '10.20' },
-  { id: 'th-8', guruId: 't-7', mataPelajaran: 'Pendidikan Agama Islam (PAI)', kelasId: 'c-2a', jumlahJP: 4, hari: 'Rabu', jamMulai: '08.00', jamSelesai: '10.20' },
-  { id: 'th-9', guruId: 't-8', mataPelajaran: 'Matematika & IPAS', kelasId: 'c-4a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
-  { id: 'th-10', guruId: 't-9', mataPelajaran: 'Bahasa Indonesia & PPKn', kelasId: 'c-4b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
-  { id: 'th-11', guruId: 't-10', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-5a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
-  { id: 'th-12', guruId: 't-11', mataPelajaran: 'Pendidikan Jasmani (PJOK)', kelasId: 'c-1a', jumlahJP: 4, hari: 'Selasa', jamMulai: '07.00', jamSelesai: '09.20' },
-  { id: 'th-13', guruId: 't-11', mataPelajaran: 'Pendidikan Jasmani (PJOK)', kelasId: 'c-2a', jumlahJP: 4, hari: 'Kamis', jamMulai: '07.00', jamSelesai: '09.20' }
+  { id: 'th-3', guruId: 't-3', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-2a', jumlahJP: 14, hari: 'Senin - Rabu', jamMulai: '07.00', jamSelesai: '12.00' },
+  { id: 'th-4', guruId: 't-3', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-2b', jumlahJP: 14, hari: 'Kamis - Sabtu', jamMulai: '07.00', jamSelesai: '12.00' },
+  { id: 'th-5', guruId: 't-4', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-3a', jumlahJP: 14, hari: 'Senin - Rabu', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-6', guruId: 't-4', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-3b', jumlahJP: 14, hari: 'Kamis - Sabtu', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-7', guruId: 't-5', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-4a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-8', guruId: 't-6', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-4b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-9', guruId: 't-7', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-5a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-10', guruId: 't-8', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-5b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-11', guruId: 't-9', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-6a', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-12', guruId: 't-10', mataPelajaran: 'Tematik / Guru Kelas', kelasId: 'c-6b', jumlahJP: 24, hari: 'Senin - Jumat', jamMulai: '07.00', jamSelesai: '12.30' },
+  { id: 'th-13', guruId: 't-11', mataPelajaran: 'Pendidikan Agama Islam (PAI)', kelasId: 'c-1a', jumlahJP: 4, hari: 'Senin', jamMulai: '08.00', jamSelesai: '10.20' },
+  { id: 'th-14', guruId: 't-11', mataPelajaran: 'Pendidikan Agama Islam (PAI)', kelasId: 'c-2a', jumlahJP: 4, hari: 'Rabu', jamMulai: '08.00', jamSelesai: '10.20' },
+  { id: 'th-15', guruId: 't-12', mataPelajaran: 'Pendidikan Jasmani (PJOK)', kelasId: 'c-1a', jumlahJP: 4, hari: 'Selasa', jamMulai: '07.00', jamSelesai: '09.20' },
+  { id: 'th-16', guruId: 't-12', mataPelajaran: 'Pendidikan Jasmani (PJOK)', kelasId: 'c-4a', jumlahJP: 4, hari: 'Kamis', jamMulai: '07.00', jamSelesai: '09.20' },
+  { id: 'th-17', guruId: 't-13', mataPelajaran: 'Bahasa Inggris', kelasId: 'c-1a', jumlahJP: 2, hari: 'Kamis', jamMulai: '10.45', jamSelesai: '11.55' },
+  { id: 'th-18', guruId: 't-13', mataPelajaran: 'Bahasa Inggris', kelasId: 'c-4a', jumlahJP: 2, hari: 'Rabu', jamMulai: '10.45', jamSelesai: '11.55' }
 ];
 
 export const initialPractices: PerformancePractice[] = [
@@ -126,7 +134,7 @@ export const initialPractices: PerformancePractice[] = [
   },
   {
     id: 'pp-2',
-    guruId: 't-8',
+    guruId: 't-5',
     indikator: 'Keteraturan Suasana Kelas',
     catatanGuru: 'Membuat transisi aktivitas pembelajaran yang terstruktur dan responsif terhadap dinamika fokus siswa.',
     statusObservasi: 'Sudah',
@@ -146,14 +154,14 @@ export const initialPractices: PerformancePractice[] = [
     fokusPengamatan: 'Alur percobaan sains terkoordinasi dengan baik. Lembar kerja peserta didik (LKPD) dimengerti semua kelompok.',
     catatanPengamatanKepsek: 'Pengaturan waktu (time management) sangat rapi dan siswa disiplin membersihkan meja kerja laboratorium mini.',
     // 3. Umpan Balik
-    refleksiPascaObservasi: 'Eksperimen berjalan lancar, namun alokasi waktu untuk presentasi hasil masih perlu ditambah sekitar 10 menit.',
-    umpanBalikKepsek: 'Metode eksperimen sudah tepat sasaran. Pertimbangkan pemanfaatan media digital Chromebook untuk merekam hasil pengamatan.',
+    refleksiPascaObservasi: 'Eksperimen berjalan lancar, alokasi waktu presentasi sudah tercapai sesuai alokasi.',
+    umpanBalikKepsek: 'Metode eksperimen sudah tepat sasaran. Terus pertahankan pengelolaan kelas yang dinamis.',
     rencanaTindakLanjut: 'Menyusun rubrik presentasi kelompok interaktif dan mengintegrasikannya dengan asesmen formatif.',
     skorTindakLanjut: 98
   },
   {
     id: 'pp-3',
-    guruId: 't-11',
+    guruId: 't-12',
     indikator: 'Aktivitas Interaktif',
     catatanGuru: 'Melibatkan seluruh siswa dalam permainan pemanasan PJOK berpasangan yang inklusif tanpa membedakan gender.',
     statusObservasi: 'Belum',
@@ -164,7 +172,7 @@ export const initialPractices: PerformancePractice[] = [
     upayaMempelajari: 'Mempelajari asesmen gerak adaptif untuk anak berkebutuhan khusus dan modifikasi permainan tradisional.',
     jadwalRencana: '2026-10-20',
     jamRencana: '07.00 - 08.30 WIB',
-    kelasTargetId: 'c-2a',
+    kelasTargetId: 'c-1a',
     mapelTarget: 'PJOK - Pola Gerak Dasar Lokomotor',
     // 2. Pelaksanaan
     ratingObservasi: 'Belum Dilakukan',
@@ -182,7 +190,7 @@ export const initialBerAKHLAK: PerformanceBerAKHLAK[] = [
   {
     id: 'ba-1',
     guruId: 't-1',
-    berorientasiPelayanan: 'Ramah dan sabar menyambut siswa kelas 1 di gerbang sekolah serta sigap melayani konsultasi wali murid.',
+    berorientasiPelayanan: 'Ramah dan sabar menyambut siswa kelas 1A di gerbang sekolah serta sigap melayani konsultasi wali murid.',
     akuntabel: 'Tepat waktu hadir sebelum jam 06.45 WIB dan menyusun modul ajar lengkap sebelum semester dimulai.',
     kompeten: 'Mengikuti pelatihan Kurikulum Merdeka Fase A daring dari Ditjen GTK Kemendikbudristek.',
     harmonis: 'Menghargai keragaman latar belakang siswa dan menjaga hubungan kekeluargaan sesama rekan sejawat.',
@@ -195,7 +203,7 @@ export const initialBerAKHLAK: PerformanceBerAKHLAK[] = [
   },
   {
     id: 'ba-2',
-    guruId: 't-8',
+    guruId: 't-5',
     berorientasiPelayanan: 'Memberikan bimbingan remedial khusus setelah jam pelajaran bagi siswa yang belum tuntas capaian belajar.',
     akuntabel: 'Mengelola administrasi absensi dan nilai siswa dengan transparan di sistem sekolah.',
     kompeten: 'Berhasil membimbing siswa dalam lomba O2SN tingkat kecamatan Klapanunggal.',
@@ -221,21 +229,30 @@ export const initialAdditionalTasks: AdditionalTask[] = [
   },
   {
     id: 'at-2',
-    guruId: 't-11',
+    guruId: 't-2',
+    namaTugas: 'Wali Kelas 1B',
+    refleksi: 'Membangun iklim kelas yang ramah dan kondusif bagi perkembangan murid kelas 1B.',
+    buktiDukung: 'SK Pembagian Tugas No. 421.2/015/SDN-N03/VII/2026',
+    status: 'Selesai',
+    tanggal: '2026-09-28'
+  },
+  {
+    id: 'at-3',
+    guruId: 't-5',
+    namaTugas: 'Wali Kelas 4A & Koordinator Adiwiyata',
+    refleksi: 'Menggerakkan pemilahan sampah organik dan anorganik serta penanaman apotek hidup.',
+    buktiDukung: 'SK Tim Pelaksana Adiwiyata No. 421.2/020/SDN-N03/2026',
+    status: 'Selesai',
+    tanggal: '2026-09-25'
+  },
+  {
+    id: 'at-4',
+    guruId: 't-12',
     namaTugas: 'Pembina Pramuka Gugus Depan',
     refleksi: 'Mengadakan latihan rutin mingguan setiap Jumat, pelantikan siaga mula dan bantu, serta persiapan Perkemahan Satu Hari (Persari).',
     buktiDukung: 'Program Kerja Gudep 03-045 & Daftar Hadir Latihan',
     status: 'Dalam Proses',
     tanggal: '2026-10-02'
-  },
-  {
-    id: 'at-3',
-    guruId: 't-3',
-    namaTugas: 'Koordinator Projek Penguatan Profil Pelajar Pancasila (P5)',
-    refleksi: 'Menyusun modul proyek tema Kearifan Lokal pembuatan anyaman bambu Nambo dan Gaya Hidup Berkelanjutan pengelolaan sampah sekolah.',
-    buktiDukung: 'Modul P5 Semester Ganjil 2026/2027',
-    status: 'Selesai',
-    tanggal: '2026-09-25'
   }
 ];
 
@@ -335,7 +352,7 @@ export const initialTeacherReportCards = [
     semester: 'Ganjil' as const,
     predikatKinerja: 'Sangat Baik (Di Atas Ekspektasi)' as const,
     nilaiSkorAkhir: 96,
-    catatanKepsek: 'Ibu Hj. Siti Rohmah menunjukkan kepemimpinan pembelajaran yang luar biasa dalam memfasilitasi adaptasi siswa kelas 1 dan penguatan iklim positif.',
+    catatanKepsek: 'Ibu Nurhaeni, S.Pd. menunjukkan kepemimpinan pembelajaran yang luar biasa dalam memfasilitasi adaptasi siswa kelas 1 dan penguatan iklim positif.',
     rekomendasiKepsek: 'Dipertahankan dan dijadikan guru pamong bagi rekan sejawat dalam implementasi Kurikulum Merdeka Fase A.',
     tanggalPenetapan: '2026-12-15',
     status: 'Disetujui Kepala Sekolah' as const
@@ -411,7 +428,7 @@ export const initialSyncLogs: SyncAuditLog[] = [
   {
     id: 'log-2',
     timestamp: '2026-10-16 07:30:15',
-    wargaSekolah: 'Hj. Siti Rohmah, S.Pd.SD',
+    wargaSekolah: 'Nurhaeni, S.Pd.',
     peran: 'Guru Kelas',
     lingkup: 'Kelas 1A',
     jenisAksi: 'Ubah',
@@ -425,7 +442,7 @@ export const initialSyncLogs: SyncAuditLog[] = [
   {
     id: 'log-3',
     timestamp: '2026-10-16 07:45:00',
-    wargaSekolah: 'Dewi Lestari, S.Pd.',
+    wargaSekolah: 'Pertiwi, S.Pd.',
     peran: 'Guru Kelas',
     lingkup: 'Kelas 1B',
     jenisAksi: 'Ubah',
@@ -441,7 +458,7 @@ export const initialSyncLogs: SyncAuditLog[] = [
     timestamp: '2026-10-16 08:15:30',
     wargaSekolah: 'Asim, S.Pd.',
     peran: 'Guru Kelas',
-    lingkup: 'Kelas 2A',
+    lingkup: 'Kelas 4A',
     jenisAksi: 'Ubah',
     judul: 'Pengisian Catatan Kinerja Guru (Perencanaan & Target Perilaku)',
     rincianPerubahan: 'Menambahkan target perilaku observasi: Keteraturan Suasana Kelas dan Eksplorasi Konsep',
@@ -455,7 +472,7 @@ export const initialSyncLogs: SyncAuditLog[] = [
     timestamp: '2026-10-16 08:45:10',
     wargaSekolah: 'Amelia Agustina, S.Pd.',
     peran: 'Guru Kelas',
-    lingkup: 'Kelas 4A',
+    lingkup: 'Kelas 4A & 4B',
     jenisAksi: 'Ubah',
     judul: 'Catatan Presensi Bulanan & Pelaksanaan Observasi Kelas',
     rincianPerubahan: 'Pelaksanaan observasi pembelajaran IPAS berjalan efektif dengan skor 94.',
@@ -481,11 +498,11 @@ export const initialSyncLogs: SyncAuditLog[] = [
   {
     id: 'log-7',
     timestamp: '2026-10-16 09:30:00',
-    wargaSekolah: 'Fadilah, S.Pd.',
+    wargaSekolah: 'Fadillah, S.Pd.',
     peran: 'Guru Kelas',
-    lingkup: 'Kelas 5',
+    lingkup: 'Kelas 2A & 2B',
     jenisAksi: 'Ubah',
-    judul: 'Input Hasil Asesmen Formatif & Kehadiran Kelas 5',
+    judul: 'Input Hasil Asesmen Formatif & Kehadiran Siswa',
     rincianPerubahan: 'Mencatat kehadiran 32 siswa lengkap dan pemantauan persiapan asesmen sumatif.',
     statusSinkron: 'Tersinkron ke Server',
     diverifikasiKepsek: false

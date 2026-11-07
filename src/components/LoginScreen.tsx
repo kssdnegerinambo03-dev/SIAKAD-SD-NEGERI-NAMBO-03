@@ -71,6 +71,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
       let role: SchoolRole = 'Guru Kelas';
       if (t.jabatan.toLowerCase().includes('pai')) role = 'Guru Mapel';
       if (t.jabatan.toLowerCase().includes('pjok')) role = 'Guru Mapel';
+      if (t.jabatan.toLowerCase().includes('inggris')) role = 'Guru Mapel';
+      if (t.jabatan.toLowerCase().includes('tendik') || t.jabatan.toLowerCase().includes('operator')) role = 'Operator Dapodik';
       return {
         id: t.id,
         name: t.gelar ? `${t.nama}, ${t.gelar}` : t.nama,
@@ -83,19 +85,21 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         tag: t.statusKepegawaian
       };
     }),
-    ...staff.map(s => ({
-      id: s.id,
-      name: s.nama,
-      rawName: s.nama,
-      role: (s.tugas.toLowerCase().includes('operator') || s.tugas.toLowerCase().includes('administrasi')
-        ? 'Operator Dapodik'
-        : 'Staf Tata Usaha') as SchoolRole,
-      jabatan: s.tugas,
-      nip: s.nip || '-',
-      nuptk: '-',
-      statusKepegawaian: s.statusKepegawaian,
-      tag: 'Tendik'
-    }))
+    ...staff
+      .filter(s => !teachers.some(t => t.nama.toLowerCase() === s.nama.toLowerCase()))
+      .map(s => ({
+        id: s.id,
+        name: s.nama,
+        rawName: s.nama,
+        role: (s.tugas.toLowerCase().includes('operator') || s.tugas.toLowerCase().includes('administrasi')
+          ? 'Operator Dapodik'
+          : 'Staf Tata Usaha') as SchoolRole,
+        jabatan: s.tugas,
+        nip: s.nip || '-',
+        nuptk: '-',
+        statusKepegawaian: s.statusKepegawaian,
+        tag: 'Tendik'
+      }))
   ];
 
   const handleSelectQuickAccount = (personnelId: string) => {

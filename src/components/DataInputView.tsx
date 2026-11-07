@@ -1071,7 +1071,7 @@ export const DataInputView: React.FC = () => {
                   <label className="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Guru *</label>
                   <input
                     type="text"
-                    placeholder="Contoh: Hj. Siti Rohmah"
+                    placeholder="Contoh: Nurhaeni"
                     value={teacherForm.nama}
                     onChange={e => setTeacherForm({ ...teacherForm, nama: e.target.value })}
                     className="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 font-semibold"

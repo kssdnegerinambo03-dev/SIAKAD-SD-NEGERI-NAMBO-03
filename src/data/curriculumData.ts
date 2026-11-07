@@ -4,7 +4,10 @@ import {
   ProtaRecord,
   PromesRecord,
   DeepLearningModule,
-  CurriculumFase
+  CurriculumFase,
+  AnalisisHariEfektifRecord,
+  JadwalPelajaranRecord,
+  JadwalSlot
 } from '../types';
 
 export const DIMENSI_PROFIL_LULUSAN = [
@@ -1984,3 +1987,300 @@ Bagaimana perasaanmu belajar memprogram teman hari ini?
     updatedAt: new Date().toISOString()
   }
 ];
+
+// ==========================================
+// DATA AWAL ANALISIS HARI EFEKTIF (KALENDER PENDIDIKAN SDN NAMBO 03)
+// ==========================================
+
+export const initialAnalisisHariEfektif: AnalisisHariEfektifRecord[] = [
+  {
+    id: 'he-2026-ganjil',
+    tahunAjaran: '2026-2027',
+    semester: 'Ganjil',
+    kelasTarget: 'Semua Kelas',
+    mataPelajaran: 'Semua Mata Pelajaran',
+    jamPerMinggu: 30,
+    totalHariEfektif: 102,
+    totalMingguEfektif: 19,
+    totalJamEfektif: 570,
+    daftarBulan: [
+      {
+        bulan: 'Juli 2026',
+        kodeBulan: '2026-07',
+        semester: 'Ganjil',
+        jumlahHariKalender: 31,
+        mingguEfektif: 3,
+        hariEfektif: 13,
+        hariLibur: 18,
+        keteranganKegiatan: [
+          '1 - 14 Juli: Libur Akhir Tahun Ajaran 2025/2026',
+          '15 - 21 Juli: Masa Pengenalan Lingkungan Sekolah (MPLS) Murid Baru',
+          '22 Juli: Awal PBM Efektif Semester Ganjil'
+        ]
+      },
+      {
+        bulan: 'Agustus 2026',
+        kodeBulan: '2026-08',
+        semester: 'Ganjil',
+        jumlahHariKalender: 31,
+        mingguEfektif: 4,
+        hariEfektif: 19,
+        hariLibur: 12,
+        keteranganKegiatan: [
+          '17 Agustus: Upacara Peringatan HUT Proklamasi Kemerdekaan RI ke-81',
+          '18 Agustus: Gebyar Lomba Semarak Kemerdekaan & P5'
+        ]
+      },
+      {
+        bulan: 'September 2026',
+        kodeBulan: '2026-09',
+        semester: 'Ganjil',
+        jumlahHariKalender: 30,
+        mingguEfektif: 4,
+        hariEfektif: 17,
+        hariLibur: 13,
+        keteranganKegiatan: [
+          '14 - 18 September: Asesmen / Sumatif Tengah Semester (STS) Ganjil',
+          '21 September: Refleksi & Remedial Pembelajaran'
+        ]
+      },
+      {
+        bulan: 'Oktober 2026',
+        kodeBulan: '2026-10',
+        semester: 'Ganjil',
+        jumlahHariKalender: 31,
+        mingguEfektif: 4,
+        hariEfektif: 22,
+        hariLibur: 9,
+        keteranganKegiatan: [
+          'Pembelajaran Deep Learning Reguler, Penguatan Koding Unplugged & Literasi Numerasi Terintegrasi'
+        ]
+      },
+      {
+        bulan: 'November 2026',
+        kodeBulan: '2026-11',
+        semester: 'Ganjil',
+        jumlahHariKalender: 30,
+        mingguEfektif: 4,
+        hariEfektif: 20,
+        hariLibur: 10,
+        keteranganKegiatan: [
+          '25 November: Peringatan Hari Guru Nasional (HGN) & HUT PGRI'
+        ]
+      },
+      {
+        bulan: 'Desember 2026',
+        kodeBulan: '2026-12',
+        semester: 'Ganjil',
+        jumlahHariKalender: 31,
+        mingguEfektif: 2,
+        hariEfektif: 11,
+        hariLibur: 20,
+        keteranganKegiatan: [
+          '7 - 11 Desember: Asesmen Sumatif Akhir Semester (ASAS) Ganjil',
+          '18 - 19 Desember: PERSARI & PERJUSA Pramuka SDN Nambo 03',
+          '21 - 24 Desember: Titimangsa & Pembagian Buku Laporan Hasil Belajar (Rapor) Smt 1',
+          '28 Desember 2026 - 9 Januari 2027: Libur Akhir Semester Ganjil'
+        ]
+      }
+    ],
+    agendaPendidikan: [
+      { id: 'ag-1', tanggalMulai: '2026-07-15', tanggalSelesai: '2026-07-21', kegiatan: 'Masa Pengenalan Lingkungan Sekolah (MPLS)', semester: 'Ganjil', kategori: 'MPLS' },
+      { id: 'ag-2', tanggalMulai: '2026-08-17', tanggalSelesai: '2026-08-17', kegiatan: 'Peringatan HUT Kemerdekaan RI ke-81', semester: 'Ganjil', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-3', tanggalMulai: '2026-08-18', tanggalSelesai: '2026-08-18', kegiatan: 'Lomba Semarak Kemerdekaan & P5', semester: 'Ganjil', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-4', tanggalMulai: '2026-09-14', tanggalSelesai: '2026-09-18', kegiatan: 'Sumatif Tengah Semester (STS) Ganjil', semester: 'Ganjil', kategori: 'STS' },
+      { id: 'ag-5', tanggalMulai: '2026-11-25', tanggalSelesai: '2026-11-25', kegiatan: 'Hari Guru Nasional (HGN) & HUT PGRI', semester: 'Ganjil', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-6', tanggalMulai: '2026-12-07', tanggalSelesai: '2026-12-11', kegiatan: 'Asesmen Sumatif Akhir Semester (ASAS)', semester: 'Ganjil', kategori: 'ASAS' },
+      { id: 'ag-7', tanggalMulai: '2026-12-18', tanggalSelesai: '2026-12-19', kegiatan: 'PERSARI & PERJUSA Gerakan Pramuka', semester: 'Ganjil', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-8', tanggalMulai: '2026-12-21', tanggalSelesai: '2026-12-24', kegiatan: 'Pembagian Buku Laporan Hasil Belajar (Rapor) Smt 1', semester: 'Ganjil', kategori: 'Rapor' },
+      { id: 'ag-9', tanggalMulai: '2026-12-28', tanggalSelesai: '2027-01-09', kegiatan: 'Libur Akhir Semester Ganjil', semester: 'Ganjil', kategori: 'Libur' }
+    ],
+    catatan: 'Perhitungan Hari Efektif Semester Ganjil mengacu pada Keputusan Kepala Dinas Pendidikan Kab. Bogor & Kalender Pendidikan SDN Nambo 03 TA 2026/2027 (102 HE).',
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'he-2027-genap',
+    tahunAjaran: '2026-2027',
+    semester: 'Genap',
+    kelasTarget: 'Semua Kelas',
+    mataPelajaran: 'Semua Mata Pelajaran',
+    jamPerMinggu: 30,
+    totalHariEfektif: 75,
+    totalMingguEfektif: 15,
+    totalJamEfektif: 450,
+    daftarBulan: [
+      {
+        bulan: 'Januari 2027',
+        kodeBulan: '2027-01',
+        semester: 'Genap',
+        jumlahHariKalender: 31,
+        mingguEfektif: 3,
+        hariEfektif: 15,
+        hariLibur: 16,
+        keteranganKegiatan: [
+          '11 Januari: Hari Pertama Masuk Sekolah Semester 2',
+          '28 Januari: Libur Nasional Peringatan Isra Mi\'raj Nabi Muhammad SAW'
+        ]
+      },
+      {
+        bulan: 'Februari 2027',
+        kodeBulan: '2027-02',
+        semester: 'Genap',
+        jumlahHariKalender: 28,
+        mingguEfektif: 2,
+        hariEfektif: 12,
+        hariLibur: 16,
+        keteranganKegiatan: [
+          '8 - 12 Februari: Perkiraan Libur Awal Ramadhan 1448 H',
+          '15 - 17 Februari: Kegiatan Pesantren Kilat (SANLAT) Ramadhan 1448 H'
+        ]
+      },
+      {
+        bulan: 'Maret 2027',
+        kodeBulan: '2027-03',
+        semester: 'Genap',
+        jumlahHariKalender: 31,
+        mingguEfektif: 1,
+        hariEfektif: 6,
+        hariLibur: 25,
+        keteranganKegiatan: [
+          '8 - 19 Maret: Libur Hari Raya Idul Fitri 1448 H',
+          '24 - 25 Maret: Tes Kemampuan Akademik (TKA)'
+        ]
+      },
+      {
+        bulan: 'April 2027',
+        kodeBulan: '2027-04',
+        semester: 'Genap',
+        jumlahHariKalender: 30,
+        mingguEfektif: 3,
+        hariEfektif: 16,
+        hariLibur: 14,
+        keteranganKegiatan: [
+          '5 - 10 April: Sumatif Akhir Jenjang (SAS) Kelas 6',
+          '21 April: Peringatan Hari Kartini'
+        ]
+      },
+      {
+        bulan: 'Mei 2027',
+        kodeBulan: '2027-05',
+        semester: 'Genap',
+        jumlahHariKalender: 31,
+        mingguEfektif: 3,
+        hariEfektif: 14,
+        hariLibur: 17,
+        keteranganKegiatan: [
+          '1 Mei: Libur Nasional Hari Buruh Internasional',
+          '3 - 15 Mei: Ujian Praktik (UP) & Asesmen Sekolah'
+        ]
+      },
+      {
+        bulan: 'Juni 2027',
+        kodeBulan: '2027-06',
+        semester: 'Genap',
+        jumlahHariKalender: 30,
+        mingguEfektif: 2,
+        hariEfektif: 12,
+        hariLibur: 18,
+        keteranganKegiatan: [
+          '7 - 11 Juni: Sumatif Akhir Tahun (ASAJ) Kelas 1-5',
+          '7 - 18 Juni: Asesmen Akhir Fase',
+          '25 Juni: Pembagian Rapor Semester Genap & Kenaikan Kelas',
+          '28 Juni - Juli: Libur Akhir Tahun Pelajaran'
+        ]
+      }
+    ],
+    agendaPendidikan: [
+      { id: 'ag-10', tanggalMulai: '2027-01-11', tanggalSelesai: '2027-01-11', kegiatan: 'Hari Pertama Masuk Sekolah Semester 2', semester: 'Genap', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-11', tanggalMulai: '2027-01-28', tanggalSelesai: '2027-01-28', kegiatan: 'Libur Nasional Isra Mi\'raj Nabi Muhammad SAW', semester: 'Genap', kategori: 'Libur' },
+      { id: 'ag-12', tanggalMulai: '2027-02-08', tanggalSelesai: '2027-02-12', kegiatan: 'Perkiraan Libur Awal Ramadhan 1448 H', semester: 'Genap', kategori: 'Libur' },
+      { id: 'ag-13', tanggalMulai: '2027-02-15', tanggalSelesai: '2027-02-17', kegiatan: 'Pesantren Kilat (SANLAT) Ramadhan', semester: 'Genap', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-14', tanggalMulai: '2027-03-08', tanggalSelesai: '2027-03-19', kegiatan: 'Libur Hari Raya Idul Fitri 1448 H & Cuti Bersama', semester: 'Genap', kategori: 'Libur' },
+      { id: 'ag-15', tanggalMulai: '2027-03-24', tanggalSelesai: '2027-03-25', kegiatan: 'Tes Kemampuan Akademik (TKA)', semester: 'Genap', kategori: 'STS' },
+      { id: 'ag-16', tanggalMulai: '2027-04-05', tanggalSelesai: '2027-04-10', kegiatan: 'Sumatif Akhir Jenjang (SAS) Kelas 6', semester: 'Genap', kategori: 'ASAJ' },
+      { id: 'ag-17', tanggalMulai: '2027-04-21', tanggalSelesai: '2027-04-21', kegiatan: 'Peringatan Hari Kartini', semester: 'Genap', kategori: 'Kegiatan Khusus' },
+      { id: 'ag-18', tanggalMulai: '2027-05-03', tanggalSelesai: '2027-05-15', kegiatan: 'Ujian Praktik (UP) & Asesmen Sekolah', semester: 'Genap', kategori: 'ASAJ' },
+      { id: 'ag-19', tanggalMulai: '2027-06-07', tanggalSelesai: '2027-06-11', kegiatan: 'Asesmen Sumatif Akhir Jenjang/Tahun (ASAJ)', semester: 'Genap', kategori: 'ASAJ' },
+      { id: 'ag-20', tanggalMulai: '2027-06-25', tanggalSelesai: '2027-06-25', kegiatan: 'Titimangsa & Pembagian Rapor Semester Genap', semester: 'Genap', kategori: 'Rapor' },
+      { id: 'ag-21', tanggalMulai: '2027-06-28', tanggalSelesai: '2027-07-10', kegiatan: 'Libur Akhir Tahun Pelajaran 2026/2027', semester: 'Genap', kategori: 'Libur' }
+    ],
+    catatan: 'Perhitungan Hari Efektif Semester Genap mengacu pada Kalender Pendidikan SDN Nambo 03 TA 2026/2027 (75 HE). Total 1 Tahun = 177 Hari Efektif.',
+    updatedAt: new Date().toISOString()
+  }
+];
+
+// ==========================================
+// DATA AWAL JADWAL PELAJARAN (SD NEGERI NAMBO 03)
+// ==========================================
+
+export const initialJadwalPelajaran: JadwalPelajaranRecord[] = [
+  {
+    id: 'jadwal-c1a',
+    kelasId: 'c-1a',
+    kelasNama: 'Kelas 1A',
+    waliKelas: 'Nurhaeni, S.Pd.',
+    tahunAjaran: '2026-2027',
+    semester: 'Ganjil',
+    durasiPerJP: 35,
+    slots: [
+      // Senin
+      { id: 's-sn-0', hari: 'Senin', jamKe: 0, jamMulai: '07.00', jamSelesai: '07.30', mataPelajaran: 'Upacara Bendera Merah Putih', guruPengampu: 'Dewan Guru SDN Nambo 03', ruangan: 'Lapangan Utama' },
+      { id: 's-sn-1', hari: 'Senin', jamKe: 1, jamMulai: '07.30', jamSelesai: '08.05', mataPelajaran: 'Pendidikan Pancasila', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sn-2', hari: 'Senin', jamKe: 2, jamMulai: '08.05', jamSelesai: '08.40', mataPelajaran: 'Pendidikan Pancasila', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sn-3', hari: 'Senin', jamKe: 3, jamMulai: '08.40', jamSelesai: '09.15', mataPelajaran: 'Bahasa Indonesia', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sn-ist1', hari: 'Senin', jamKe: 0, jamMulai: '09.15', jamSelesai: '09.35', mataPelajaran: 'Istirahat I & Makan Sehat', guruPengampu: '-', isIstirahat: true },
+      { id: 's-sn-4', hari: 'Senin', jamKe: 4, jamMulai: '09.35', jamSelesai: '10.10', mataPelajaran: 'Bahasa Indonesia', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sn-5', hari: 'Senin', jamKe: 5, jamMulai: '10.10', jamSelesai: '10.45', mataPelajaran: 'Matematika', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sn-6', hari: 'Senin', jamKe: 6, jamMulai: '10.45', jamSelesai: '11.20', mataPelajaran: 'Matematika', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+
+      // Selasa
+      { id: 's-sl-0', hari: 'Selasa', jamKe: 0, jamMulai: '07.00', jamSelesai: '07.30', mataPelajaran: 'Pembiasaan Karakter & Literasi Pagi', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sl-1', hari: 'Selasa', jamKe: 1, jamMulai: '07.30', jamSelesai: '08.05', mataPelajaran: 'Pendidikan Agama Islam dan Budi Pekerti', guruPengampu: 'Siti Mu’arifah, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sl-2', hari: 'Selasa', jamKe: 2, jamMulai: '08.05', jamSelesai: '08.40', mataPelajaran: 'Pendidikan Agama Islam dan Budi Pekerti', guruPengampu: 'Siti Mu’arifah, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sl-3', hari: 'Selasa', jamKe: 3, jamMulai: '08.40', jamSelesai: '09.15', mataPelajaran: 'Pendidikan Agama Islam dan Budi Pekerti', guruPengampu: 'Siti Mu’arifah, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sl-ist1', hari: 'Selasa', jamKe: 0, jamMulai: '09.15', jamSelesai: '09.35', mataPelajaran: 'Istirahat I & Kudapan Bergizi', guruPengampu: '-', isIstirahat: true },
+      { id: 's-sl-4', hari: 'Selasa', jamKe: 4, jamMulai: '09.35', jamSelesai: '10.10', mataPelajaran: 'Matematika', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sl-5', hari: 'Selasa', jamKe: 5, jamMulai: '10.10', jamSelesai: '10.45', mataPelajaran: 'Matematika', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-sl-6', hari: 'Selasa', jamKe: 6, jamMulai: '10.45', jamSelesai: '11.20', mataPelajaran: 'Seni Rupa & Kriya', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+
+      // Rabu
+      { id: 's-rb-0', hari: 'Rabu', jamKe: 0, jamMulai: '07.00', jamSelesai: '07.30', mataPelajaran: 'Pembiasaan Asmaul Husna & Dhuha Bersama', guruPengampu: 'Siti Mu’arifah, S.Pd.', ruangan: 'Musholla Al-Ikhlas' },
+      { id: 's-rb-1', hari: 'Rabu', jamKe: 1, jamMulai: '07.30', jamSelesai: '08.05', mataPelajaran: 'Bahasa Indonesia', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-rb-2', hari: 'Rabu', jamKe: 2, jamMulai: '08.05', jamSelesai: '08.40', mataPelajaran: 'Bahasa Indonesia', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-rb-3', hari: 'Rabu', jamKe: 3, jamMulai: '08.40', jamSelesai: '09.15', mataPelajaran: 'Koding & Kecerdasan Artifisial (Unplugged)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Lab Digital / Kelas 1A' },
+      { id: 's-rb-ist1', hari: 'Rabu', jamKe: 0, jamMulai: '09.15', jamSelesai: '09.35', mataPelajaran: 'Istirahat I & Bermain Edukatif', guruPengampu: '-', isIstirahat: true },
+      { id: 's-rb-4', hari: 'Rabu', jamKe: 4, jamMulai: '09.35', jamSelesai: '10.10', mataPelajaran: 'Koding & Kecerdasan Artifisial (Unplugged)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Lab Digital / Kelas 1A' },
+      { id: 's-rb-5', hari: 'Rabu', jamKe: 5, jamMulai: '10.10', jamSelesai: '10.45', mataPelajaran: 'Pendidikan Pancasila', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-rb-6', hari: 'Rabu', jamKe: 6, jamMulai: '10.45', jamSelesai: '11.20', mataPelajaran: 'Pendidikan Pancasila', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+
+      // Kamis
+      { id: 's-km-0', hari: 'Kamis', jamKe: 0, jamMulai: '07.00', jamSelesai: '07.30', mataPelajaran: 'Pemanasan & Senam Sehat Bersama', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Lapangan Utama' },
+      { id: 's-km-1', hari: 'Kamis', jamKe: 1, jamMulai: '07.30', jamSelesai: '08.05', mataPelajaran: 'PJOK (Pendidikan Jasmani Olahraga Kesehatan)', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Lapangan Olahraga' },
+      { id: 's-km-2', hari: 'Kamis', jamKe: 2, jamMulai: '08.05', jamSelesai: '08.40', mataPelajaran: 'PJOK', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Lapangan Olahraga' },
+      { id: 's-km-3', hari: 'Kamis', jamKe: 3, jamMulai: '08.40', jamSelesai: '09.15', mataPelajaran: 'PJOK', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Lapangan Olahraga' },
+      { id: 's-km-ist1', hari: 'Kamis', jamKe: 0, jamMulai: '09.15', jamSelesai: '09.35', mataPelajaran: 'Istirahat I & Minum Air Putih Sehat', guruPengampu: '-', isIstirahat: true },
+      { id: 's-km-4', hari: 'Kamis', jamKe: 4, jamMulai: '09.35', jamSelesai: '10.10', mataPelajaran: 'Bahasa Sunda (Muatan Lokal)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-km-5', hari: 'Kamis', jamKe: 5, jamMulai: '10.10', jamSelesai: '10.45', mataPelajaran: 'Bahasa Sunda (Muatan Lokal)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-km-6', hari: 'Kamis', jamKe: 6, jamMulai: '10.45', jamSelesai: '11.20', mataPelajaran: 'Bahasa Inggris', guruPengampu: 'Putri, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+
+      // Jumat
+      { id: 's-jm-0', hari: 'Jumat', jamKe: 0, jamMulai: '07.00', jamSelesai: '07.30', mataPelajaran: 'Jumat Berkah & Tadarus Al-Qur\'an', guruPengampu: 'Siti Mu’arifah, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+      { id: 's-jm-1', hari: 'Jumat', jamKe: 1, jamMulai: '07.30', jamSelesai: '08.05', mataPelajaran: 'Projek Penguatan Profil Pelajar Pancasila (P5)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Kebun / Ruang Kelas 1A' },
+      { id: 's-jm-2', hari: 'Jumat', jamKe: 2, jamMulai: '08.05', jamSelesai: '08.40', mataPelajaran: 'Projek Penguatan Profil Pelajar Pancasila (P5)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Kebun / Ruang Kelas 1A' },
+      { id: 's-jm-3', hari: 'Jumat', jamKe: 3, jamMulai: '08.40', jamSelesai: '09.15', mataPelajaran: 'Projek Penguatan Profil Pelajar Pancasila (P5)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Kebun / Ruang Kelas 1A' },
+      { id: 's-jm-ist1', hari: 'Jumat', jamKe: 0, jamMulai: '09.15', jamSelesai: '09.35', mataPelajaran: 'Istirahat I & Bersih Kelas', guruPengampu: '-', isIstirahat: true },
+      { id: 's-jm-4', hari: 'Jumat', jamKe: 4, jamMulai: '09.35', jamSelesai: '10.10', mataPelajaran: 'Bahasa Indonesia (Literasi Cerita)', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Pojok Baca Kelas 1A' },
+      { id: 's-jm-5', hari: 'Jumat', jamKe: 5, jamMulai: '10.10', jamSelesai: '10.45', mataPelajaran: 'Persiapan Ibadah Shalat Jumat & Kepulangan', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kelas 1A' },
+
+      // Sabtu
+      { id: 's-sb-0', hari: 'Sabtu', jamKe: 0, jamMulai: '07.00', jamSelesai: '07.30', mataPelajaran: 'Upacara Pembukaan Latihan Pramuka Siaga', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Halaman Sekolah' },
+      { id: 's-sb-1', hari: 'Sabtu', jamKe: 1, jamMulai: '07.30', jamSelesai: '08.05', mataPelajaran: 'Kepramukaan Wajib (Dwi Satya & Dwi Darma)', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Halaman Sekolah' },
+      { id: 's-sb-2', hari: 'Sabtu', jamKe: 2, jamMulai: '08.05', jamSelesai: '08.40', mataPelajaran: 'Kepramukaan Wajib (Ketangkasan Siaga)', guruPengampu: 'Age Prasetia, S.Pd.', ruangan: 'Halaman Sekolah' },
+      { id: 's-sb-3', hari: 'Sabtu', jamKe: 3, jamMulai: '08.40', jamSelesai: '09.15', mataPelajaran: 'Pengembangan Diri / Seni Budaya Pilihan', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Ruang Kesenian' },
+      { id: 's-sb-ist1', hari: 'Sabtu', jamKe: 0, jamMulai: '09.15', jamSelesai: '09.35', mataPelajaran: 'Istirahat I', guruPengampu: '-', isIstirahat: true },
+      { id: 's-sb-4', hari: 'Sabtu', jamKe: 4, jamMulai: '09.35', jamSelesai: '10.10', mataPelajaran: 'Refleksi Mingguan & Kebersihan Lingkungan Sekolah', guruPengampu: 'Nurhaeni, S.Pd.', ruangan: 'Lingkungan Sekolah' }
+    ],
+    updatedAt: new Date().toISOString()
+  }
+];
+

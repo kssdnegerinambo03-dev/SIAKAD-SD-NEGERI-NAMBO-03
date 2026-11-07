@@ -234,11 +234,21 @@ export const StaffManagementView: React.FC = () => {
   // Combined and filtered staff/teachers list
   const filteredGtkList = useMemo(() => {
     const list: Array<{ type: 'guru' | 'tu'; item: Teacher | Staff }> = [];
+    const seenNames = new Set<string>();
+
     if (roleFilter === 'all' || roleFilter === 'guru') {
-      teachers.forEach(t => list.push({ type: 'guru', item: t }));
+      teachers.forEach(t => {
+        list.push({ type: 'guru', item: t });
+        seenNames.add(t.nama.trim().toLowerCase());
+      });
     }
     if (roleFilter === 'all' || roleFilter === 'tu') {
-      staff.forEach(s => list.push({ type: 'tu', item: s }));
+      staff.forEach(s => {
+        if (!seenNames.has(s.nama.trim().toLowerCase())) {
+          list.push({ type: 'tu', item: s });
+          seenNames.add(s.nama.trim().toLowerCase());
+        }
+      });
     }
 
     return list.filter(({ item }) => {
@@ -599,7 +609,7 @@ export const StaffManagementView: React.FC = () => {
           <Users className="w-4 h-4" />
           <span>Data GTK (Guru & TU)</span>
           <span className="text-[10px] bg-white/20 px-1.5 py-0.2 rounded-full font-mono">
-            {teachers.length + staff.length}
+            {teachers.length + staff.filter(s => !teachers.some(t => t.nama.toLowerCase() === s.nama.toLowerCase())).length}
           </span>
         </button>
 

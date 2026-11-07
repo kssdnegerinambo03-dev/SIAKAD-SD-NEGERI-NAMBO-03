@@ -41,6 +41,7 @@ export const SyncMonitoringView: React.FC = () => {
     schoolProfile,
     students,
     teachers,
+    staff,
     classes
   } = useSchool();
 
@@ -62,30 +63,53 @@ export const SyncMonitoringView: React.FC = () => {
   const [manualJudul, setManualJudul] = useState('');
   const [manualRincian, setManualRincian] = useState('');
 
-  // Pre-configured school roles for switcher
-  const availableUsers: { name: string; role: SchoolRole; label: string }[] = [
-    {
-      name: schoolProfile.kepalaSekolah || 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.',
-      role: 'Kepala Sekolah',
-      label: `Kepala Sekolah (${schoolProfile.kepalaSekolah || 'AM. MEGA PURNAMATATI'})`
-    },
-    { name: 'Hj. Siti Rohmah, S.Pd.SD', role: 'Guru Kelas', label: 'Guru Kelas 1A (Hj. Siti Rohmah, S.Pd.SD)' },
-    { name: 'Dewi Lestari, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 1B (Dewi Lestari, S.Pd.)' },
-    { name: 'Nurul Hidayah, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 2A (Nurul Hidayah, S.Pd.)' },
-    { name: 'Rina Marlina, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 2B (Rina Marlina, S.Pd.)' },
-    { name: 'Eni Maryani, S.Pd.SD', role: 'Guru Kelas', label: 'Guru Kelas 3A (Eni Maryani, S.Pd.SD)' },
-    { name: 'Fitri Handayani, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 3B (Fitri Handayani, S.Pd.)' },
-    { name: 'Asep Saepudin, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 4A (Asep Saepudin, S.Pd.)' },
-    { name: 'Dini Anggraeni, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 4B (Dini Anggraeni, S.Pd.)' },
-    { name: 'Bambang Supriyanto, S.Pd.SD, M.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 5A (Bambang Supriyanto, S.Pd.SD, M.Pd.)' },
-    { name: 'Ika Pratiwi, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 5B (Ika Pratiwi, S.Pd.)' },
-    { name: 'Drs. H. Mulyadi, M.M.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 6A (Drs. H. Mulyadi, M.M.Pd.)' },
-    { name: 'Sri Wahyuni, S.Pd.', role: 'Guru Kelas', label: 'Guru Kelas 6B (Sri Wahyuni, S.Pd.)' },
-    { name: 'Rian Permana, S.Pd.Jas.', role: 'Guru Mapel', label: 'Guru PJOK & Pramuka (Rian Permana, S.Pd.Jas.)' },
-    { name: 'Ustadz Ahmad Fauzi, S.Pd.I.', role: 'Guru Mapel', label: 'Guru PAI & Budi Pekerti (Ahmad Fauzi, S.Pd.I.)' },
-    { name: 'Rizky Ramadhan', role: 'Operator Dapodik', label: 'Operator Dapodik (Rizky Ramadhan)' },
-    { name: 'Dedi Kurniawan', role: 'Staf Tata Usaha', label: 'Kepala TU (Dedi Kurniawan)' }
-  ];
+  // Dynamically derive available switcher users from registered teachers and staff
+  const availableUsers: { name: string; role: SchoolRole; label: string }[] = useMemo(() => {
+    const list: { name: string; role: SchoolRole; label: string }[] = [
+      {
+        name: schoolProfile.kepalaSekolah || 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.',
+        role: 'Kepala Sekolah',
+        label: `Kepala Sekolah (${schoolProfile.kepalaSekolah || 'AM. MEGA PURNAMATATI, S. Pd.,M.Pd.'})`
+      }
+    ];
+
+    // Add registered teachers
+    teachers.forEach(t => {
+      const assignedClass = classes.find(c => c.waliKelasId === t.id);
+      const isMapel = t.jabatan.toLowerCase().includes('mapel') ||
+                      t.jabatan.toLowerCase().includes('pjok') ||
+                      t.jabatan.toLowerCase().includes('agama') ||
+                      t.jabatan.toLowerCase().includes('inggris');
+      const isTendik = t.jabatan.toLowerCase().includes('tendik') || t.jabatan.toLowerCase().includes('tata usaha') || t.jabatan.toLowerCase().includes('operator');
+
+      let role: SchoolRole = 'Guru Kelas';
+      if (isTendik) {
+        role = 'Operator Dapodik';
+      } else if (isMapel) {
+        role = 'Guru Mapel';
+      }
+
+      list.push({
+        name: t.nama,
+        role,
+        label: `${t.jabatan}${assignedClass ? ` (${assignedClass.nama})` : ''} - ${t.nama}`
+      });
+    });
+
+    // Add registered staff without duplicates
+    staff.forEach(s => {
+      if (!list.some(u => u.name.toLowerCase().trim() === s.nama.toLowerCase().trim())) {
+        const isOperator = s.tugas.toLowerCase().includes('dapodik');
+        list.push({
+          name: s.nama,
+          role: isOperator ? 'Operator Dapodik' : 'Staf Tata Usaha',
+          label: `${s.tugas} - ${s.nama}`
+        });
+      }
+    });
+
+    return list;
+  }, [schoolProfile, teachers, staff, classes]);
 
   const handleForceSync = async () => {
     setIsSyncing(true);
